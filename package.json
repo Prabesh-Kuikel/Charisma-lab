@@ -1,0 +1,43 @@
+{
+  "name": "charisma-lab",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "dev": "node scripts/dev.mjs",
+    "dev:api": "node server/index.js",
+    "dev:web": "vite",
+    "build": "vite build",
+    "start": "node server/index.js",
+    "preview": "npm run build && node server/index.js",
+    "doctor": "node scripts/doctor.mjs",
+    "build:static": "VITE_LOCAL=1 vite build",
+    "test": "node test/local.test.mjs && node test/game.test.mjs && node test/ai.test.mjs",
+    "audit": "node scripts/audit.mjs",
+    "audit:api": "node scripts/audit-api.mjs",
+    "test:ui": "node test/render.test.mjs && node test/coach-ai.test.mjs && node test/academy.test.mjs && node test/frameworks.test.mjs && node test/newviews.test.mjs",
+    "bundle:test": "esbuild test/entry.jsx --bundle --format=esm --platform=node --jsx=automatic --loader:.js=jsx --loader:.css=empty --outfile=test/app.mjs",
+    "build:pages": "BASE_PATH=./ VITE_LOCAL=1 vite build --outDir docs --emptyOutDir"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "express": "^5.3.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1"
+  },
+  "optionalDependencies": {
+    "better-sqlite3": "^12.11.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.7.0",
+    "jsdom": "^29.1.1",
+    "vite": "^5.4.21"
+  },
+  "type": "module",
+  "engines": {
+    "node": ">=22.13"
+  }
+}

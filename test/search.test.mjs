@@ -1,0 +1,28 @@
+import { JSDOM } from 'jsdom';
+const dom = new JSDOM('<!doctype html><html><body><div id="root"></div></body></html>', { url: 'http://localhost:3000/', pretendToBeVisual: true });
+const { window } = dom;
+Object.defineProperty(global, 'navigator', { value: window.navigator, configurable: true });
+Object.assign(global, { window, document: window.document, HTMLElement: window.HTMLElement, Element: window.Element, Node: window.Node, getComputedStyle: window.getComputedStyle, localStorage: window.localStorage, MediaRecorder: class { static isTypeSupported(){return false;} } });
+global.requestAnimationFrame = (cb) => setTimeout(() => cb(Date.now()), 0);
+global.cancelAnimationFrame = (id) => clearTimeout(id);
+window.scrollTo = () => {};
+const realFetch = global.fetch;
+global.fetch = (u, o) => realFetch(u.startsWith('http') ? u : 'http://127.0.0.1:3000' + u, o);
+const errors = []; const oe = console.error; console.error = (...a) => { errors.push(a.join(' ')); oe(...a); };
+localStorage.setItem('cl.view', 'library');
+await import('./app.mjs');
+const wait = (ms) => new Promise(r => setTimeout(r, ms));
+const txt = (el) => el.textContent.replace(/\s+/g,' ').trim();
+await wait(1200);
+const input = document.querySelector('.input');
+const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set;
+setter.call(input, 'silence');
+input.dispatchEvent(new window.Event('input', { bubbles: true }));
+await wait(900);
+console.log('AFTER SEARCH:', txt(document.querySelector('.content')).slice(0, 260));
+// open first item
+document.querySelector('.lib-head').dispatchEvent(new window.MouseEvent('click', { bubbles: true }));
+await wait(300);
+console.log('OPENED:', txt(document.querySelector('.lib-body') || document.createElement('div')).slice(0, 220));
+console.log('ERRORS:', errors.length ? errors.slice(0,5) : 'none');
+process.exit(0);

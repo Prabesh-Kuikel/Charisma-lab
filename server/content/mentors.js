@@ -1,0 +1,88 @@
+export const MENTORS = {
+  ultraspeaking: {
+    id: 'ultraspeaking',
+    name: 'UltraSpeaking',
+    tagline: 'Train like an athlete, not a lecturer.',
+    color: '#7c5cff',
+    principles: [
+      'Games beat drills — novelty forces your brain to stay online.',
+      'Speak in short "verse" chunks, then breathe.',
+      'Consequence creates presence: imagine a real listener who needs this.',
+      'Say it badly first. Fluency is the ability to be imperfect and keep going.',
+    ],
+  },
+  carnegie: {
+    id: 'carnegie',
+    name: 'Dale Carnegie',
+    tagline: 'Win friends, influence people.',
+    color: '#ff8a3d',
+    principles: [
+      'Become genuinely interested in other people.',
+      'The sweetest sound to a person is their own name.',
+      'Arouse in the other person an eager want.',
+      'Give honest and sincere appreciation — praise the specific, not the general.',
+      'Let the other person save face.',
+    ],
+  },
+  greene: {
+    id: 'greene',
+    name: 'Robert Greene',
+    tagline: 'Power, strategy, and social mastery.',
+    color: '#e0475b',
+    principles: [
+      'Never outshine the master — make those above you feel comfortably superior.',
+      'Conceal your intentions; use decoys and ambiguity.',
+      'Say less than necessary — silence is power.',
+      'Win through your actions, never through argument.',
+      'Assume formlessness — adapt, never be predictable.',
+    ],
+  },
+  vanessa: {
+    id: 'vanessa',
+    name: 'Vanessa Van Edwards',
+    tagline: 'Captivate: charisma is learnable.',
+    color: '#2ec4b6',
+    principles: [
+      'Charisma is a series of micro-choices you can rehearse.',
+      'Use "sparkle words" and open loops to hold attention.',
+      'The warm/warm + competent/warm balance builds trust fast.',
+      'Code your body language: eye contact 60–70%, open torso, visible hands.',
+    ],
+  },
+  giang: {
+    id: 'giang',
+    name: 'Vin Pham',
+    tagline: 'The voice is an instrument — play it.',
+    color: '#f2c14e',
+    principles: [
+      'The voice has 5 dials: pitch, pace, pause, projection, tone.',
+      'Silence is the most underused tool in speaking.',
+      'Fill your mouth with air — articulation comes from space, not force.',
+      'Say the last word of a sentence downward to sound certain.',
+    ],
+  },
+  humm: {
+    id: 'humm',
+    name: 'Philipp Humm',
+    tagline: 'Stand up, speak up, own the room.',
+    color: '#5aa9e6',
+    principles: [
+      'Structure beats content: head–heart–hands framing.',
+      'Cut the abstract. One story outranks five statistics.',
+      'Energy is contagious — lead the room\'s tempo.',
+      'Call to action is a gift, not a demand; always end with one.',
+    ],
+  },
+  clark: {
+    id: 'clark',
+    name: 'Dorie Clark',
+    tagline: 'Long-game charisma and personal narrative.',
+    color: '#9b8cff',
+    principles: [
+      'Build a narrative arc around what you are becoming.',
+      'Small, repeated, low-risk risks compound into reputation.',
+      'Recognize the "internal advocate" — give people language to describe you.',
+      'Consistency of message across contexts is credibility.',
+    ],
+  },
+};
