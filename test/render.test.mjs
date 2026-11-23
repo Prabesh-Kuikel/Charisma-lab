@@ -12,10 +12,12 @@ global.requestAnimationFrame = (cb) => setTimeout(() => cb(Date.now()), 0);
 global.cancelAnimationFrame = (id) => clearTimeout(id);
 global.localStorage = window.localStorage;
 global.MediaRecorder = class { static isTypeSupported() { return false; } };
+global.MutationObserver = window.MutationObserver;
 window.scrollTo = () => {};
 
-const realFetch = global.fetch;
-global.fetch = (url, opts) => realFetch(url.startsWith('http') ? url : 'http://127.0.0.1:3000' + url, opts);
+// Browser-only mode: exactly what the live GitHub Pages build does, so the
+// suite needs no API server (the SQLite driver is not built in every sandbox).
+global.__CL_LOCAL = true;
 
 const errors = [];
 const origErr = console.error;

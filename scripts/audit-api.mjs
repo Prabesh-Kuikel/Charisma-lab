@@ -23,12 +23,40 @@ check('content has new modules',
   `games ${content.json.games?.length}, skills ${content.json.skills?.length}, drills ${content.json.daily?.drills?.length}`);
 
 check('GET /content — academy modules',
-  (content.json.academy?.length || 0) === 6 && content.json.academy.every((m) => m.drills?.length >= 4 && m.reads?.length >= 4),
+  (content.json.academy?.length || 0) === 16 && content.json.academy.every((m) => m.drills?.length >= 4 && m.reads?.length >= 4),
   `${content.json.academy?.length} modules, ${(content.json.academy || []).reduce((n, m) => n + m.drills.length, 0)} drills`);
 
-check('GET /content — body deck is 40 cards with notes',
-  (content.json.body?.length || 0) === 40 && Object.keys(content.json.bodyNotes || {}).length >= 8,
+check('GET /content — conversation gym',
+  (content.json.gym?.length || 0) >= 31 && content.json.gym.every((g) => g.steps?.length >= 4 && g.lines?.length >= 3),
+  `${content.json.gym?.length} playbooks, ${(content.json.gymCategories || []).length} categories`);
+
+check('GET /content — library, all three wings',
+  (content.json.library?.length || 0) >= 83 && content.json.library.filter((l) => l.hasChapter).length >= 83,
+  `${content.json.library?.length} entries, ${content.json.library?.filter((l) => l.hasChapter).length} with chapters`);
+
+check('GET /content — body deck is 48 cards across 6 clusters',
+  (content.json.body?.length || 0) === 48 && Object.keys(content.json.bodyNotes || {}).length >= 6,
   `${content.json.body?.length} cards, ${Object.keys(content.json.bodyNotes || {}).length} cluster notes`);
+
+// ── round 5: both arena wings and all eight skill tracks must be served ──
+check('GET /content — arena has both wings and 6 scenes',
+  (content.json.arena?.length || 0) === 13 && new Set((content.json.arena || []).map((a) => a.scene)).size === 6,
+  `${content.json.arena?.length} personas, ${new Set((content.json.arena || []).map((a) => a.scene)).size} scenes`);
+
+check('GET /content — skill tracks are 8 with cross-links',
+  (content.json.skills?.length || 0) === 8 &&
+  content.json.skills.every((t) => (t.exercises || []).length >= 3 && (t.reads || []).length >= 2 && (t.arena || []).length >= 1),
+  `${content.json.skills?.length} tracks, ${(content.json.skills || []).reduce((n, t) => n + t.exercises.length, 0)} exercises`);
+
+check('GET /content — every arena persona ships read-next chapters',
+  content.json.arena.every((a) => (a.reads || []).length >= 2),
+  `${content.json.arena.filter((a) => (a.reads || []).length >= 2).length}/${content.json.arena.length} personas linked`);
+
+// the payload must not leak the persona scripts — the solver lives in the browser anyway,
+// but the served brief should never contain the fact/probe ladder
+check('GET /content — arena briefs do not ship facts or probes',
+  content.json.arena.every((a) => a.facts === undefined && a.probes === undefined && a.reactions === undefined),
+  'fact/probe ladders stripped');
 
 const aiStatus = await call('GET', '/ai/status');
 check('GET /ai/status', aiStatus.status === 200 && Array.isArray(aiStatus.json.providers) && aiStatus.json.providers.length >= 2,

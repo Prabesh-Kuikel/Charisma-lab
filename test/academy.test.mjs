@@ -8,7 +8,7 @@ global.requestAnimationFrame = (cb) => setTimeout(() => cb(Date.now()), 0);
 global.cancelAnimationFrame = (id) => clearTimeout(id);
 window.scrollTo = () => {};
 if (!window.Element.prototype.scrollIntoView) window.Element.prototype.scrollIntoView = () => {};
-const rf = global.fetch; global.fetch = (u, o) => rf(u.startsWith('http') ? u : 'http://127.0.0.1:3000' + u, o);
+global.__CL_LOCAL = true; // browser-only mode: no API server needed
 const errors = []; const oe = console.error; console.error = (...a) => { errors.push(a.join(' ').slice(0, 200)); oe(...a); };
 const wait = (ms) => new Promise((r) => setTimeout(r, ms));
 const txt = (el) => (el ? el.textContent.replace(/\s+/g, ' ').trim() : '(none)');
@@ -20,8 +20,7 @@ const problems = [];
 const check = (ok, msg) => { if (!ok) problems.push(msg); };
 
 const xpNow = async () => {
-  const r = await fetch('/api/bootstrap');
-  return (await r.json()).user.xp;
+  try { return JSON.parse(localStorage.getItem('charisma-lab.state.v1') || '{}').user?.xp ?? 0; } catch { return 0; }
 };
 
 localStorage.setItem('cl.view', 'academy');
@@ -33,11 +32,11 @@ await wait(1600);
 const modChips = () => [...document.querySelectorAll('.card .chip.clickable')].filter((c) => !/principles|mechanics|scripts|drills|cautions/i.test(txt(c)));
 const names = modChips().map(txt);
 console.log('MODULE CHIPS:', names.join(' · '));
-check(names.length === 6, `expected 6 module chips, saw ${names.length}: ${names.join(',')}`);
+check(names.length === 16, `expected 16 module chips, saw ${names.length}: ${names.join(',')}`);
 const head = txt(document.querySelector('.content'));
 check(/charismatic/i.test(head), 'academy landing should describe the first module');
 
-// 2 ── every tab renders real content for every module
+// 2 ── every tab renders real content for every module (14 modules × 5 tabs)
 const TABS = ['Principles', 'Mechanics', 'Scripts', 'Drills', 'Cautions'];
 for (const name of names) {
   click(modChips().find((c) => txt(c) === name));

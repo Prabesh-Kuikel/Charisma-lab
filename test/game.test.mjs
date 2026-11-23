@@ -2,6 +2,9 @@
 import { GAMES } from '../server/content/games.js';
 import { scoreGame, promptFor } from '../server/gameEngine.js';
 import { SKILL_TRACKS } from '../server/content/skills.js';
+import { SKILL_TRACKS_EXTRA } from '../server/content/skills-extra.js';
+import { ARENA_SCENARIOS } from '../server/content/arena.js';
+import { ARENA_EXTRA } from '../server/content/arena-extra.js';
 import { DAILY_DRILLS } from '../server/content/daily.js';
 import { CREATOR_PILLARS, CREATOR_FORMATS, HOOK_PATTERNS, CREATOR_SKILLS, FOUR_WEEK_PLAN } from '../server/content/creator.js';
 
@@ -26,11 +29,30 @@ ok(good.score > bad.score, `yes-and: good (${good.score}) > bad (${bad.score})`)
 const sellGood = scoreGame({ gameId: 'sell-this', prompt: 'A jar of air.', text: 'For the person who misses a city they left, this is that city air in a jar, so you can open it on a bad Tuesday. It costs £12. Would you like one?' });
 ok(sellGood.score >= 80, `sell-this good rep scores ${sellGood.score}`);
 
-ok(SKILL_TRACKS.length === 5, 'five skill tracks');
-for (const t of SKILL_TRACKS) {
+const ALL_TRACKS = [...SKILL_TRACKS, ...SKILL_TRACKS_EXTRA];
+ok(ALL_TRACKS.length === 8, `eight skill tracks (got ${ALL_TRACKS.length})`);
+const trackIds = new Set();
+for (const t of ALL_TRACKS) {
+  ok(!trackIds.has(t.id), `${t.id} is a unique track id`);
+  trackIds.add(t.id);
   ok(t.principles.length >= 5, `${t.id} principles`);
   ok(t.exercises.length === 5, `${t.id} has 5 exercises`);
-  for (const e of t.exercises) ok(e.steps?.length >= 3 && e.success, `${t.id}/${e.id} complete`);
+  ok(t.scripts.length >= 3, `${t.id} has literal scripts`);
+  ok((t.reads || []).length >= 2 && (t.arena || []).length >= 1, `${t.id} cross-links chapters and personas`);
+  for (const e of t.exercises) ok(e.steps?.length >= 3 && e.success && e.time > 0, `${t.id}/${e.id} complete`);
+}
+
+// ── arena: two wings, unique ids, and no persona that scores blind ──
+const ALL_ARENA = [...ARENA_SCENARIOS, ...ARENA_EXTRA];
+ok(ALL_ARENA.length === 13, `thirteen personas (got ${ALL_ARENA.length})`);
+ok(new Set(ALL_ARENA.map((a) => a.id)).size === 13, 'arena persona ids are unique');
+ok(new Set(ALL_ARENA.map((a) => a.scene)).size >= 6, 'six scenes');
+for (const a of ALL_ARENA) {
+  ok(a.opener?.length > 20 && (a.facts || []).length >= 3 && (a.probes || []).length >= 1, `${a.id} has a playable script`);
+  ok((a.exits || []).length >= 1 && (a.traits || []).length >= 2, `${a.id} has exits and traits`);
+  ok(a.reactions && ['cold', 'neutral', 'warm'].every((t) => (a.reactions[t] || []).length >= 2),
+    `${a.id} has a full reaction repertoire (cold/neutral/warm)`);
+  ok((a.reads || []).length >= 2, `${a.id} points at chapters to read first`);
 }
 ok(DAILY_DRILLS.length >= 30, 'thirty daily drills');
 ok(CREATOR_PILLARS.length === 6 && CREATOR_FORMATS.length === 6 && HOOK_PATTERNS.length === 8, 'creator content');

@@ -7,7 +7,7 @@ global.cancelAnimationFrame = (id) => clearTimeout(id);
 window.scrollTo = () => {};
 if (!window.Element.prototype.scrollIntoView) window.Element.prototype.scrollIntoView = () => {};
 Object.defineProperty(global, 'navigator', { value: window.navigator, configurable: true });
-const rf = global.fetch; global.fetch = (u, o) => rf(u.startsWith('http') ? u : 'http://127.0.0.1:3000' + u, o);
+global.__CL_LOCAL = true; // browser-only mode: no API server needed
 const errors = []; const oe = console.error; console.error = (...a) => { errors.push(a.join(' ').slice(0, 200)); oe(...a); };
 const wait = (ms) => new Promise((r) => setTimeout(r, ms));
 const txt = (el) => (el ? el.textContent.replace(/\s+/g, ' ').trim() : '(none)');
