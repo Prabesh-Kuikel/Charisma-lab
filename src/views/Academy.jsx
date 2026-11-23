@@ -4,9 +4,9 @@ import { Ico } from '../components/ui';
 
 const TONE = { violet: 'violet', amber: 'amber', rose: 'rose', mint: 'mint', cyan: 'cyan', orange: 'orange' };
 
-export default function Academy({ content, notify, go }) {
+export default function Academy({ content, notify, go, boot }) {
   const modules = content.academy || [];
-  const [activeId, setActiveId] = useState(modules[0]?.id || null);
+  const [activeId, setActiveId] = useState(boot?.moduleId || modules[0]?.id || null);
   const [tab, setTab] = useState('principles');
   const [done, setDone] = useState([]);
 

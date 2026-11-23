@@ -5,14 +5,15 @@ import { Ico } from '../components/ui';
 const TONE = {
   Clarity: 'cyan', Persuasion: 'violet', Sales: 'rose', Storytelling: 'mint',
   Conflict: 'amber', Negotiation: 'violet', Performance: 'orange', Feedback: 'mint',
+  Care: 'rose', Family: 'amber', Money: 'mint', Self: 'cyan',
 };
 
-export default function Frameworks({ content, notify, go }) {
+export default function Frameworks({ content, notify, go, boot }) {
   const all = content.frameworks || [];
   const cats = content.frameworkCategories || [];
   const [q, setQ] = useState('');
   const [cat, setCat] = useState('All');
-  const [open, setOpen] = useState(all[0]?.id || null);
+  const [open, setOpen] = useState(boot?.openId || all[0]?.id || null);
   const [practised, setPractised] = useState([]);
 
   const items = useMemo(() => {

@@ -4,7 +4,19 @@ import { Ico, Ring, ScoreRow, Spinner, Bar } from '../components/ui';
 import { askAI, aiEnabled } from '../local/ai-client.js';
 import { arenaSystemPrompt } from '../../server/ai.js';
 
-export default function Arena({ content, notify }) {
+// Scenes in teaching order, with the sentence that tells you why it is hard.
+const SCENE_META = {
+  Networking: 'Rooms where nobody owes you attention. Warmth plus a specific reason to keep talking.',
+  'Date / Casual Bar': 'Low stakes on paper, high stakes in the body. Play, curiosity, and no interview energy.',
+  'Resolving Tension': 'Someone is upset and you are the one who has to fix it without grovelling or defending.',
+  Interview: 'You are being judged on evidence. Stories with numbers, and honest edges left on.',
+  Group: 'Two people who already have a rhythm, and you arriving in the middle of it.',
+  Care: 'Talking to someone in pain. The hardest skill here is not solving anything.',
+};
+
+const SCENE_ORDER = Object.keys(SCENE_META);
+
+export default function Arena({ content, notify, go }) {
   const [scene, setScene] = useState('Networking');
   const [session, setSession] = useState(null); // {sessionId, scenario, history, trust}
   const [msg, setMsg] = useState('');
@@ -15,7 +27,12 @@ export default function Arena({ content, notify }) {
   const [aiPersona, setAiPersona] = useState(() => aiEnabled());
   const chatRef = useRef(null);
 
+  const sceneTabs = [...new Set([
+    ...SCENE_ORDER.filter((s) => content.arena.some((a) => a.scene === s)),
+    ...content.arena.map((a) => a.scene).filter((s) => !SCENE_ORDER.includes(s)),
+  ])];
   const scenarios = content.arena.filter((a) => a.scene === scene);
+  const chapterTitle = (id) => (content.library.find((c) => c.id === id) || {}).title;
 
   useEffect(() => {
     chatRef.current?.scrollTo({ top: chatRef.current.scrollHeight, behavior: 'smooth' });
@@ -93,13 +110,22 @@ export default function Arena({ content, notify }) {
           <>
             <div className="row wrap">
               <div className="tabs">
-                {content.arena.length > 0 && ['Networking', 'Date / Casual Bar', 'Resolving Tension'].map((s) => (
-                  <button key={s} className={`tab ${scene === s ? 'active' : ''}`} onClick={() => setScene(s)}>{s}</button>
+                {sceneTabs.map((s) => (
+                  <button key={s} className={`tab ${scene === s ? 'active' : ''}`} onClick={() => setScene(s)}>
+                    {s}
+                    <span className="tiny dim" style={{ marginLeft: 6 }}>{content.arena.filter((a) => a.scene === s).length}</span>
+                  </button>
                 ))}
               </div>
               <div className="spacer" />
               <span className="chip violet"><Ico name="chat" size={11} /> dynamic persona engine</span>
             </div>
+
+            {SCENE_META[scene] && (
+              <div className="feedback" style={{ background: 'rgba(139,92,246,0.07)', borderColor: 'rgba(139,92,246,0.25)' }}>
+                <strong style={{ color: '#a78bfa' }}>{scene}:</strong> {SCENE_META[scene]}
+              </div>
+            )}
 
             <div className="grid g3">
               {scenarios.map((a) => (
@@ -235,6 +261,19 @@ export default function Arena({ content, notify }) {
                 <div className="row wrap" style={{ gap: 5 }}>
                   {sc?.dislikes.map((l) => <span key={l} className="chip rose" style={{ fontSize: 10 }}>{l}</span>)}
                 </div>
+                {(sc?.reads || []).length > 0 && (
+                  <>
+                    <div className="tiny dim" style={{ margin: '14px 0 6px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Read before you walk in</div>
+                    <div className="row wrap" style={{ gap: 5 }}>
+                      {(sc?.reads || []).filter(chapterTitle).map((id) => (
+                        <button key={id} className="chip clickable" style={{ fontSize: 10 }}
+                          onClick={() => go('library', { openId: id })}>
+                          {chapterTitle(id)}
+                        </button>
+                      ))}
+                    </div>
+                  </>
+                )}
               </div>
               <div className="card">
                 <h3 className="card-title" style={{ marginBottom: 10 }}><Ico name="bolt" size={14} /> Moves that work here</h3>
@@ -272,7 +311,7 @@ export default function Arena({ content, notify }) {
                     ? 'bring one concrete example or number per turn.'
                     : summary.scores.momentum < 60
                       ? 'keep turns between 12 and 50 words and hand the floor back.'
-                      : 'you are ready for a harder persona — try Marco or Elena.'}
+                      : 'you are ready for a harder persona — try Marco, Elena, Priya at the counter, or the three-person table.'}
               </div>
               <div className="row" style={{ marginTop: 12, gap: 8 }}>
                 <button className="btn primary full" onClick={() => start(sc.id)}>Run it again</button>

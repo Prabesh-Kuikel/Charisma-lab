@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import { Ico, Ring, Bar, Stat } from '../components/ui';
+import { dueItems } from '../local/srs';
 
 const LAUNCHERS = [
   { key: 'impromptu', icon: 'mic', tone: '#8b5cf6', name: 'Impromptu Sprint', desc: 'Random prompt, 60–150s timer, instant analysis', view: 'impromptu' },
@@ -51,6 +52,10 @@ export default function Dashboard({ content, stats, progress, go }) {
   }, [stats.days]);
 
   const tip = content.library[(new Date().getDate() * 3) % content.library.length];
+  const dueGym = useMemo(() => dueItems((content.gym || []).map((g) => g.id)), [content.gym]);
+  const assessed = useMemo(() => {
+    try { return JSON.parse(localStorage.getItem('charisma-lab.assessment.v1') || 'null'); } catch { return null; }
+  }, []);
   const hour = new Date().getHours();
   const greeting = hour < 5 ? 'Still up' : hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening';
 

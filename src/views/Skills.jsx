@@ -5,6 +5,12 @@ import { getSkills, markSkill } from '../local/progress-log.js';
 
 export default function Skills({ content, notify, go }) {
   const tracks = content.skills || [];
+  const chapterTitle = useMemo(() => {
+    const map = {};
+    for (const c of content.library || []) map[c.id] = c.title;
+    return map;
+  }, [content.library]);
+  const persona = (id) => (content.arena || []).find((a) => a.id === id);
   const [activeId, setActiveId] = useState(tracks[0]?.id || null);
   const [done, setDone] = useState(() => Object.keys(getSkills()));
   const [openEx, setOpenEx] = useState(null);
@@ -52,13 +58,16 @@ export default function Skills({ content, notify, go }) {
             <div className="lesson-label cyan">Lines that work</div>
             <div className="script">
               {track.scripts.map((s, i) => (
-                <div key={i} className="script-line">
-                  <span className="script-who">{s.them}</span>
-                  <span className="script-line you" style={{ display: 'block', border: 'none', background: 'none', padding: 0 }}>
+                <React.Fragment key={i}>
+                  <div className="script-line">
+                    <span className="script-who">Them</span>
+                    <span style={{ fontStyle: 'italic', color: 'var(--text-dim)' }}>“{s.them}”</span>
+                  </div>
+                  <div className="script-line you">
                     <span className="script-who">You</span>
                     <span>{s.you}</span>
-                  </span>
-                </div>
+                  </div>
+                </React.Fragment>
               ))}
             </div>
           </div>
@@ -97,11 +106,45 @@ export default function Skills({ content, notify, go }) {
             );
           })}
 
+          {(track.reads || []).length > 0 && (
+            <div className="card">
+              <div className="lesson-label">Read this first</div>
+              <p className="card-desc" style={{ marginBottom: 10 }}>
+                The chapters this track assumes. Each one opens at the right place.
+              </p>
+              <div className="stack" style={{ gap: 6 }}>
+                {(track.reads || []).filter((r) => chapterTitle[r]).map((r) => (
+                  <button key={r} className="chip clickable" style={{ justifyContent: 'flex-start' }}
+                    onClick={() => go('library', { openId: r })}>
+                    {chapterTitle[r]}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
           <div className="card">
             <div className="card-title">Practise it live</div>
             <p className="card-desc" style={{ marginBottom: 10 }}>Reading about it changes nothing. Take it into the simulator.</p>
+            {(track.arena || []).length > 0 && (
+              <div style={{ marginBottom: 10 }}>
+                <div className="lesson-label" style={{ color: 'var(--violet)' }}>Personas that drill this</div>
+                <div className="row wrap" style={{ gap: 6 }}>
+                  {(track.arena || []).map((id) => {
+                    const a = persona(id);
+                    if (!a) return null;
+                    return (
+                      <button key={id} className="chip clickable" onClick={() => go('arena')}>
+                        {a.emoji} {a.name} <span className="dim">{a.scene}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
             <div className="row wrap" style={{ gap: 6 }}>
               <button className="chip clickable" onClick={() => go('arena')}>Conversation Arena</button>
+              <button className="chip clickable" onClick={() => go('gym')}>Conversation Gym{(track.gym || []).length ? ` · ${track.gym.join(', ')}` : ''}</button>
               <button className="chip clickable" onClick={() => go('games')}>Games</button>
               <button className="chip clickable" onClick={() => go('coach')}>Ask the coach</button>
               <button className="chip clickable" onClick={() => go('library')}>Library</button>

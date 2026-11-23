@@ -29,6 +29,7 @@ export default function Library({ content, go, boot }) {
   const [open, setOpen] = useState(boot?.openId || null);
   const [items, setItems] = useState(content.library);
   const [busy, setBusy] = useState(false);
+  const [chapters, setChapters] = useState({}); // id → chapter, fetched on open
   const openRef = useRef(null);
 
   const cats = useMemo(() => ['All', ...new Set(content.library.map((i) => i.category))], [content.library]);
@@ -51,6 +52,20 @@ export default function Library({ content, go, boot }) {
     }, 180);
     return () => { live = false; clearTimeout(t); };
   }, [q, cat, content.library]);
+
+  // the prose is a lazy chunk: fetch it when an entry is actually opened
+  useEffect(() => {
+    if (!open || chapters[open]) return;
+    let live = true;
+    (async () => {
+      try {
+        const ch = await api.chapter(open);
+        if (live && ch) setChapters((c) => ({ ...c, [open]: ch }));
+        else if (live) setChapters((c) => ({ ...c, [open]: null }));
+      } catch { /* leave it collapsed */ }
+    })();
+    return () => { live = false; };
+  }, [open, chapters]);
 
   // scroll to a deep-linked entry
   useEffect(() => {
@@ -87,7 +102,7 @@ export default function Library({ content, go, boot }) {
         )}
         {items.map((i) => {
           const isOpen = open === i.id;
-          const chapter = i.chapter;
+          const chapter = chapters[i.id] || null;
           return (
             <div className="lib-item" key={i.id} ref={isOpen ? openRef : null} style={isOpen ? { borderColor: 'rgba(139,92,246,0.4)' } : undefined}>
               <div className="lib-head" onClick={() => setOpen(isOpen ? null : i.id)}>
