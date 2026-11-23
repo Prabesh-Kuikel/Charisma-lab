@@ -1,0 +1,371 @@
+// ─────────────────────────────────────────────────────────────
+//  Library · Third wing, long-form chapters
+//  One chapter per entry in library-extra-3.js, same shape as
+//  library-extra-deep.js: thesis, deep[], script[], failureModes[],
+//  drill[], related[].
+// ─────────────────────────────────────────────────────────────
+
+export const LIBRARY_EXTRA_3_DEEP = {
+  // ── Family ───────────────────────────────────────────────
+  'lib-fam1': {
+    thesis: 'A boundary only holds if the warmth and the rule arrive in the same breath. Separate them and you get either a doormat or a wall.',
+    deep: [
+      'Most people fail at family boundaries for a structural reason, not a moral one: they choose between being loved and being free, and they choose it every single time the topic comes up. The warm boundary is the refusal of that binary. It says, in one sentence, that the relationship is permanent and the subject is closed. Two clauses, two different kinds of permanence, and the reason it works is that the other person no longer has to guess which one they are getting.',
+      'Notice what the first clause is doing mechanically. It is not flattery; it is a status gift. Your aunt has been asking the same question for six years, and on some level she knows she is being tolerated. Naming her care as real care gives her something she has been trying to get the whole time, and once she has it, the question loses its function. People press on topics where they feel unseen. Being seen is the thing that finally lets them stop.',
+      'The second clause must be a topic rule, never a character rule. "I am not discussing it at dinner" is a topic rule: it tells everyone what is not happening in this room. "You always do this" is a character rule: it tells one person what they are, and you will be arguing about their personality at midnight. Topic rules can be obeyed. Character rules can only be defended or avenged.',
+      'The third element people forget is the substitute. A boundary with no redirect leaves a hole in the conversation, and holes get filled with the same subject again in ten minutes. "I will call you the day there is news" is a substitute: it gives her a future in which she is first, so she does not have to fight for information now. Warmth, rule, substitute. The whole structure is three beats and it takes nine seconds to say.',
+      'The hardest part is the repeat. Family systems test boundaries not out of malice but out of habit — the conversation has grooves, and everyone rolls back into them. Your second delivery matters more than your first. If the first was warm and the second is exasperated ("I literally just said—"), you have taught the table that the boundary was a mood. Same words, same tone, second time. That consistency, not the content, is what eventually rewrites the groove.',
+      'Finally: expect the boundary to be tested hardest by the person who loves you most. A mother who watches your face instead of listening to your words is not being hostile; she is running a longer-term project and your boundary is data. Hold it without punishing her for checking. "Same answer, and I am glad you care enough to keep asking" is the sentence that lets a persistent person keep her dignity while learning the rule.',
+    ],
+    script: [
+      { line: '"Auntie, you ask because you actually care, and I love that — and I am not discussing it at dinner."', note: 'Warmth and rule in one breath. Do not pause between the clauses.' },
+      { line: 'Them: "We are only asking because we worry."', note: 'The move to notice: the question was never about information, it was about being needed.' },
+      { line: '"I know you worry. That is exactly why I will tell you myself the day there is news."', note: 'Substitute: gives her a future where she is first.' },
+      { line: '"Same answer as earlier, and I am glad you care enough to keep asking."', note: 'The repeat, without irritation. This is the sentence that rewrites the groove.' },
+      { line: '"Let us make this a no-question topic at dinner. Everything else is fair game."', note: 'A rule for the table, not a shot at one person.' },
+    ],
+    failureModes: [
+      'Warmth without a rule: a lovely conversation in which nothing is decided, and the same question at the next dinner, and the one after.',
+      'Rule without warmth: "I am not talking about this." Perfectly clear, and now there is a family story about how you have changed.',
+      'Delivering the second repeat with irritation, which retroactively turns the first delivery into a performance you were not committed to.',
+      'Letting a relative turn it into a negotiation about their feelings ("so I am not allowed to care?") instead of simply restating the topic rule.',
+      'Using a sibling or partner as the reason, which relocates the boundary onto someone who did not consent to defend it.',
+    ],
+    drill: [
+      'Write your own three beats for a topic your family will not drop: warmth, topic rule, substitute. Keep the whole thing under thirty-five words. Say it out loud until you can deliver it while pouring tea — because you will be pouring tea when it happens.',
+      'Then rehearse the repeat. Have someone ask you the same question three times in a row. Your only allowed answer is the same sentence, same tone, three times. Most people break on the second.',
+    ],
+    related: ['lib-fam2', 'lib-dc4', 'lib-hm3', 'lib-ei4'],
+  },
+  'lib-fam2': {
+    thesis: 'Defensive people are not arguing about the facts. They are defending their standing. Change the grammatical subject and the conversation becomes survivable.',
+    deep: [
+      'With a proud person — and parents are the archetype — every sentence you say is being sorted into one of two piles: information or indictment. Once something lands in the indictment pile, the content stops mattering entirely and the whole mind goes to the defence of character. This is why the most carefully reasoned case you have ever built in your life produces the response "so everything I have done means nothing". That reply is not a non sequitur. It is a perfectly logical response to being put on trial.',
+      'The lever is the grammatical subject. "You are hiding something about the house" makes them the subject and the verb an accusation. "I have not been sleeping because I do not understand what is happening with the house" makes you the subject and the verb a condition. Both contain the same information. Only one of them can be answered without defending an identity, which is why only one of them gets answered.',
+      'The second lever is specificity. Patterns are identity claims in disguise: "you always interfere" is a sentence about who someone is. Incidents are events: "when you told Ramesh to ignore the letter, I was scared" is a sentence about one Tuesday. An event can be discussed and even conceded. A pattern must be denied, because to accept it is to accept a permanent demotion. If you have three incidents, name one tonight and leave the other two in your pocket — you do not need them, and their presence in the room turns a conversation into a case file.',
+      'Third: build the face-saving door before you need it. "It is possible I have this wrong, and if I do, tell me where" is not a rhetorical nicety. It is the only mechanism by which a proud person can change position without losing rank in front of themselves. Without it, agreement costs them something in their own eyes, and people almost never pay that price in front of their child. With it, agreement becomes a correction rather than a defeat.',
+      'Fourth: ask for an action, never a character change. "You need to start being honest with me" is unanswerable and unperformable. "Will you come with me on Thursday?" is a yes or a no, and yes is available. This is the whole craft of getting change from defensive people: reduce the ask until it is small enough to be accepted without a loss of face, then let the acceptance do the work of rebuilding the relationship around a new behaviour.',
+      'Finally, close with what has not changed. A hard conversation with a parent leaves a silence at the end, and that silence gets filled with meaning. "None of this changes that I came to you first" fills it correctly. Love stated after a correction is what marks the difference between being told off and being trusted, and proud people listen for exactly that distinction.',
+    ],
+    script: [
+      { line: '"You have been on my side my whole life. That is exactly why I am coming to you and not going around you."', note: 'Establishes standing before the content, so the content cannot become a trial.' },
+      { line: '"I have not been sleeping, because I do not understand what is happening with the house."', note: 'State, not charge. You are the subject.' },
+      { line: '"When you told Ramesh to ignore the letter, I was scared."', note: 'One incident, not a pattern. The other two stay in your pocket.' },
+      { line: '"It is possible I have this wrong. If I do, tell me where, and I will drop it."', note: 'Face-saving door, offered in advance.' },
+      { line: '"I am not asking for a promise. I am asking whether you will come with me on Thursday."', note: 'One action, answerable today.' },
+      { line: '"I came to you first because you are still the person I come to. That is not changing."', note: 'Fill the closing silence with the relationship, not with a summary.' },
+    ],
+    failureModes: [
+      'Bringing the history, which converts a solvable Thursday into a trial of the last twelve years.',
+      'Recruiting a sibling as corroboration, which makes it a coalition and therefore a war.',
+      'Softening so completely that the Thursday appointment never gets asked for, and leaving with a warm feeling and no change.',
+      'Winning the point and losing the standing, then discovering that every subsequent conversation has a new formality in it.',
+      'Saying "I am not accusing you" while delivering a charge — the disclaimer does not survive the next sentence.',
+    ],
+    drill: [
+      'Take the hardest thing you need to say to a parent and rewrite it three times, each version starting with "I" instead of "you". Keep the version that is still true. Then say it out loud and record it; listen for "always", "never" or "again" and cut them.',
+      'Then rehearse being interrupted. Someone cuts you off mid-sentence and your only reply is: "Let me finish this one part, then you can tell me where I am wrong." Ten times.',
+    ],
+    related: ['lib-fam1', 'lib-dc1', 'lib-dc2', 'lib-ei2'],
+  },
+  'lib-fam3': {
+    thesis: 'In family labour disputes the currency is not hours, it is being taken for granted. Fix the assumption and the rota fixes itself.',
+    deep: [
+      'The stated conflict is usually about who does what. The real conflict is about whether anyone has noticed. This is why the hours argument never resolves: you can win a fact about Thursday and still lose the thing you actually wanted, which was acknowledgement. Anyone trying to settle this by arithmetic alone will be having the same fight next month with a new spreadsheet.',
+      'Start with the private list, and be strict about its two uses. Use one: protect yourself from gaslighting, because "I do most of it" is easy to dispute and "eleven visits, six pharmacy runs, four insurance calls in October" is not. Use two: keep your own account honest so you are not litigating a feeling. What the list must never be is evidence in the room. Once the ledger is on the table, the conversation becomes an audit of the past, and nobody has ever repaired a family by winning an audit.',
+      'Impact beats unfairness, every time. "I have cancelled work twice this month and I am running on empty" is a fact about your capacity, and it is impossible to dispute without disputing your own experience. "You never help" is a verdict, and verdicts get appealed. If you want a sibling to move, you have to give them something they can accept without admitting they were the villain — which means describing the cost, not the fault.',
+      'Ask for tasks, not effort. "Can you help more?" is a mood; it produces a warm yes on Sunday and nothing on Thursday. "Will you take the hospital visits on Thursdays and the pharmacy every other week?" is a decision that can be scheduled. The more specific the ask, the more real the answer — including when the answer is no, which is information you need.',
+      'Let them choose. People resist assignments and over-deliver on selections. Offer two or three real slots and let your sibling pick, then take the rest without commentary. The deeper move is that choosing makes them a participant rather than a defendant, and participants show up.',
+      'Build the ritual before you need it. Ten minutes every Sunday, before resentment has a case to make, is what prevents the annual explosion. The purpose is not scheduling — it is maintaining the relationship at a frequency where small problems are still small. Families that talk weekly fight yearly; families that talk yearly fight permanently.',
+    ],
+    script: [
+      { line: '"We are both trying to do right by her. I do not think either of us needs to be the villain here."', note: 'Naming the fear of being the villain removes the need to defend against it.' },
+      { line: '"I have cancelled work twice this month and I am running on empty."', note: 'Impact, not unfairness. Undisputable.' },
+      { line: '"What I need is not more effort. I need the Thursday visits and the pharmacy every other week."', note: 'A task, not a mood.' },
+      { line: '"Pick whichever you can actually do — visits, pharmacy, or the insurance calls. I will take the other two."', note: 'Choice converts a defendant into a participant.' },
+      { line: '"Ten minutes every Sunday, just us. If we stop talking, we end up fighting."', note: 'Maintenance beats reconciliation.' },
+    ],
+    failureModes: [
+      'Leading with the ledger, which turns a shared problem into a court case about the past.',
+      'Accepting "I will try" as a commitment — try is the sound a task makes as it disappears.',
+      'Escalating to the parent, who is both the subject of the care and the least able to arbitrate it.',
+      'Keeping a score you never intend to mention, which curdles into contempt and eventually leaks out at the worst possible moment.',
+      'Doing everything yourself "for now", which trains the whole family that the rota needs no discussion.',
+    ],
+    drill: [
+      'Write your October task list with counts. Then write one specific ask in a single sentence with a day of the week and a frequency in it. Say the ask out loud with no explanation attached — every clause of justification you add is an invitation to negotiate the reasons instead of the task.',
+      'Then practise the no. Have someone refuse your ask, and answer only: "That is fair. Which of the other two can you take?"',
+    ],
+    related: ['lib-fam5', 'lib-dc4', 'lib-pr4', 'lib-mny2'],
+  },
+  'lib-fam4': {
+    thesis: 'In irreversible situations, the offer to fix is about your discomfort. Presence is the only help that does not require the situation to be manageable.',
+    deep: [
+      'Watch yourself in the first minute of bad news. Almost everyone produces a solution within fifteen seconds, and almost everyone reports later that the solution was not the point. The solution exists to end the silence, and the silence is what is unbearable to you. This is not a character flaw, it is a nervous system, but it is the reason so much comfort lands as abandonment: the person with the diagnosis has just been told, by implication, that their situation would be fine if they were handling it better.',
+      'The alternative is to be unsolved with them. "That sounds unbearable, and I am not going to pretend I can fix it" does something no advice can: it confirms their reality. Most of what a person in crisis is doing in conversation is checking whether what is happening is as bad as it feels. Everyone else is minimising, because minimising is easier to be around. The person who agrees it is bad, and stays anyway, is the one they will remember.',
+      'The second half of the sentence matters as much as the first. "And I am not going anywhere" is what makes the honesty safe. Naming the unbearable without staying is just accurate cruelty. Presence is a package: the truth plus the continued body in the room.',
+      'Then get practical in a way that costs them nothing to accept. "Let me know if you need anything" is a task handed to someone with no capacity. "I am bringing food Thursday at six — what can you not eat?" is a decision they can answer in three words, and it removes the exhausting work of asking. Specific help is the only help that gets taken.',
+      'Follow their lead on register. Some days the person wants to plan the funeral; most days they want to talk about cricket, because cricket does not remind them. Being good company in the ordinary register is not avoidance, it is a service — you are lending them a few hours in which they are a person rather than a patient. The failure here is insisting on the serious version in order to prove your depth.',
+      'And then the long tail. Support arrives in a flood and leaves in a drought. The fourth month is emptier than the first. The single most valuable thing you can do is put a reminder in your phone for a date everyone else has forgotten, and call on an ordinary Tuesday with nothing to offer but company.',
+    ],
+    script: [
+      { line: '"That sounds unbearable, and I am not going to pretend I can fix it."', note: 'Confirms their reality instead of minimising it.' },
+      { line: '"And I am not going anywhere."', note: 'Makes the honesty safe. The two sentences are one unit.' },
+      { line: '"How was today? You can answer with one word."', note: '"How are you?" is unanswerable; a day can be answered.' },
+      { line: '"I am bringing food Thursday at six. What can you not eat?"', note: 'Specific, answerable, costs them nothing.' },
+      { line: '"We can talk about it, or we can talk about the match. Both are fine with me."', note: 'Follow their lead on register.' },
+      { line: '"It has been three months and everyone has gone quiet. I have not."', note: 'The fourth-month call, which almost nobody makes.' },
+    ],
+    failureModes: [
+      'The fifteen-second solution, which tells them the situation is manageable and their feelings are excessive.',
+      'The bright side — "everything happens for a reason" — which is comfort for the speaker, delivered as though it were for the listener.',
+      'Comparisons to someone who survived, which turns a lived situation into a probability problem.',
+      'Crying until they comfort you, which reverses the transaction and guarantees they will not call again.',
+      'Disappearing after the funeral, which is when the silence becomes loudest.',
+    ],
+    drill: [
+      'Write the two-sentence unit — the honesty and the staying — for the hardest situation in your life right now. Say it out loud. If it makes you reach for a fix in the following breath, you have not finished; rehearse until you can sit in ten seconds of silence after it without rescuing anyone.',
+      'Then put one reminder in your phone for ninety days from now, for someone who is currently in crisis.',
+    ],
+    related: ['lib-ei5', 'lib-ei1', 'lib-fam1', 'lib-ei3'],
+  },
+  'lib-fam5': {
+    thesis: 'Adults sharing a home inherit whatever arrangement is not discussed in the first fortnight. Terms written early are warmer than resentment written late.',
+    deep: [
+      'The pattern is so reliable it is almost a law. Week one is a holiday: everyone is generous, everything is temporary, and nobody wants to be the person who raises money. Week three is a tribunal: the mother is tidying a room she was told was private, or the sibling is commenting on the hours someone keeps, and both sides are now arguing from facts that were never agreed. The blow-up is not a failure of goodwill. It is the predictable result of running an adult household on inherited teenager rules.',
+      'The first move is timing, and it is non-negotiable. The conversation must happen while there is nothing to defend — in week one, in daylight, with tea, before anyone has been annoyed. Every day you wait, the old arrangement hardens into "how we are", and then any proposal sounds like a criticism of the last twenty years.',
+      'The second move is asking before offering. You are almost certainly wrong about what they want. Many parents do not want rent; they want presence, or to feel useful, or to know you are not going to vanish the moment your finances recover. "What would make this feel fair to you while I am here?" is a question that produces the actual currency of the household, which is rarely money.',
+      'Then propose terms, specifically. Contribution, chores, guests, quiet hours, the one space that is genuinely yours, and a review date. Written on the fridge is not cold; it is what saves you from renegotiating in the middle of an argument, when the terms proposed are always the harshest ones. Concrete terms are also a form of respect: they say you take the arrangement seriously enough to be bound by it.',
+      'Protect one domain and be generous everywhere else. If the kitchen runs by her rules, that is cheap — say yes, mean it, and it buys enormous credit. But your schedule and your room are not negotiable, and it is far easier to hold one clear line than to fight eleven small skirmishes. The one line should be stated in the terms conversation, not discovered later at a door.',
+      'Finally, the review clause. "Let us look at this again in two months" quietly converts a permanent regression into a temporary arrangement, which is what both of you actually need to hear. It also gives you a scheduled, unemotional moment to fix what is not working — before it becomes a story about the time you moved back and everything went wrong.',
+    ],
+    script: [
+      { line: '"This is a big thing you are doing for me. I do not want to be casual about it."', note: 'Gratitude first, and mean it. It is not leverage, it is truth.' },
+      { line: '"Before I say what I think — what would make this feel fair to you while I am here?"', note: 'Asking first usually reveals the real currency is presence, not rent.' },
+      { line: '"I want to be clear about money, chores and evenings, so none of it becomes a dinner-table fight."', note: 'Terms framed as a service to the relationship.' },
+      { line: '"The kitchen is completely yours. What I need is my room stays mine and I do not have to explain my evenings."', note: 'One line, held properly, beats eleven small skirmishes.' },
+      { line: '"Let us look at this again in two months and change what is not working."', note: 'The review clause that turns permanence into a lease.' },
+    ],
+    failureModes: [
+      'Silent gratitude, which they read as ingratitude, and which then becomes the real subject of every disagreement.',
+      'Treating the house as a hotel — coming and going with no notice in a shared home is not independence.',
+      'Letting them subsidise you for the sake of peace, which creates standing, and standing creates commentary.',
+      'Having the terms conversation for the first time during a fight, when both of you will propose the worst version of everything.',
+      'Agreeing to terms you cannot keep in order to seem reasonable, which teaches everyone that the agreement is decoration.',
+    ],
+    drill: [
+      'Write your terms on one page: contribution, chores, guests, quiet hours, your one non-negotiable space, review date. Then rehearse the gratitude sentence until it sounds like you and not like a press release.',
+      'Then rehearse the one line. Have someone ask you where you were last night and answer with the line — once, warmly, without explanation.',
+    ],
+    related: ['lib-fam1', 'lib-fam3', 'lib-dc3', 'lib-st4'],
+  },
+
+  // ── Money ────────────────────────────────────────────────
+  'lib-mny1': {
+    thesis: 'People avoid debts because of shame, not greed. Take the shame out of the room and the arithmetic becomes discussable.',
+    deep: [
+      'The eight-month silence is not laziness. It is a person who feels worse every month and therefore contacts you less, which makes the debt feel bigger, which makes them contact you even less. This is a doom loop with a very specific engine: the moment they see your name on their phone, they feel the amount plus the failure. Your job in the first ten seconds of the conversation is to disable that engine, because a person in shame cannot make a plan — they can only endure the conversation and then avoid you again.',
+      '"I never followed up because it felt awkward, and that is on me" is a strange-sounding sentence that does more work than any demand. It admits a fault of your own that is real (you did avoid it too), it does not reduce the debt by a rupee, and it gives your friend their dignity back. Once they are not being prosecuted, the negotiation can start.',
+      'Then give structure immediately, because vagueness is the medium shame grows in. "I am not asking for it all at once. Does 5,000 a month from next month work?" is a proposal with a number, a date and a frequency, and it is answerable. Notice the wording: you are not asking whether they remember the debt, or whether they intend to pay; you are asking about a payment plan. Precisely framed questions get precise answers.',
+      'Let them adjust the structure. If 5,000 is impossible, the goal is not to win the number, it is to have a number. A plan they helped shape is a plan with a psychological owner, and people pay things they own. What you must not do is accept "I will sort it out soon" — that is not a structure, it is a deferral with good manners.',
+      'Name the stake once, plainly. "I would rather have this awkward ten minutes than have this change the way we are with each other." This sentence is usually true, and it is the one that reframes the whole conversation from debt collection to friendship maintenance. It also tells them what will happen if the plan fails, without a threat: the thing at risk is not your money, it is the ease between you.',
+      'And confirm in writing the same day, lightly. Not a contract — a kindness that protects the next conversation. "Confirming: 5,000 by the 5th, and I will nudge you if I have not heard by the 7th." You are also giving them a way to be reminded without either of you having to feel like an adversary.',
+      'One more decision to make before you open your mouth: is the outcome money, a plan, or the friendship without the debt? All three are legitimate. Choosing one makes the conversation coherent; asking for all three at once is how it becomes a fight. If you decide to forgive it, forgive it out loud, because a silent forgiveness leaves them feeling the debt and you remembering it.',
+    ],
+    script: [
+      { line: '"I want to sort out the money from March properly, so it stops being a thing between us."', note: 'Names it in the first sentence. Ambiguity is what kept it alive for eight months.' },
+      { line: '"I never followed up because it felt awkward. That is on me."', note: 'Takes the shame out of the room without touching the debt.' },
+      { line: '"I am not asking for it all at once. Does 5,000 a month from next month work?"', note: 'Structure, not a demand.' },
+      { line: '"I would rather have this awkward ten minutes than have this change the way we are with each other."', note: 'The stake, named once.' },
+      { line: '"Confirming: 5,000 by the 5th, and I will nudge you by the 7th — that is me keeping my own word."', note: 'Written confirmation framed as your discipline, not their unreliability.' },
+    ],
+    failureModes: [
+      'Hinting — "so, things better now?" — which teaches them the topic is a trap.',
+      'Asking in front of others, which produces public defensiveness and a private grudge.',
+      'Forgiving silently, which leaves the debt live for both of you.',
+      'Adding interest, history or insults to the first ask; one topic per conversation.',
+      'Accepting "soon" as a plan, which is the same deferral that produced the eight months.',
+    ],
+    drill: [
+      'Write the amount, the original date, and the monthly plan you are asking for. Say the opening two sentences out loud five times until "awkward" costs you nothing to say. Then practise the answer to "I will sort it out soon": "I know you will. Let us put a number and a date on it so neither of us has to think about it again."',
+    ],
+    related: ['lib-mny2', 'lib-fam3', 'lib-dc4', 'lib-mny3'],
+  },
+  'lib-mny2': {
+    thesis: 'Money becomes corrosive when it is private and vague. A number in a group is arithmetic; a number in private is an accusation.',
+    deep: [
+      'The shared bill is a social problem disguised as a maths problem. Everyone at the dinner knows roughly what they owe, precisely none of them want to be the person who asks, and the one person who does ask is volunteering to be the villain of the memory. That is the trap: the cost of raising it feels personal, so nobody raises it, so the person who is out of pocket carries a resentment that is far more expensive than the amount.',
+      'The design that works is public, specific and self-directed. Public, because a number stated to the group cannot be reinterpreted as a personal insinuation. Specific, because vagueness is where avoidance lives — "I think it was around six hundred each?" invites three weeks of non-answers. Self-directed, because paying your own share in the same message removes any suggestion that you are collecting on behalf of your own needs.',
+      '"I am going to be that person: dinner was 4,800 total, so 600 each. Sending mine to Ramesh now." Six seconds of read, four pieces of information, zero accusation. The self-mocking opening is not decoration: it acknowledges the social rule that naming money is gauche, and steps over it deliberately. Everyone exhales, because you have done the thing nobody wanted to do and taken the small social cost for the group.',
+      'Then respect the volume rules. One clear ask in the group is the entire social contract. A second nudge after about a week, still light, still specific, is entirely reasonable. A third converts the money into a bigger object than the friendship, and from there the group remembers the year someone would not let go of six hundred rupees.',
+      'Handle the individual privately and once. If one person has not paid, the group message must not single them out — a public naming is a humiliation that will outlive the debt. A private note is fine: "no rush, just keeping the spreadsheet honest." Then, if they cannot pay, let them say it and move on with "cover it and get the next one", said once, warmly, and never referenced again.',
+      'Finally, install the norm before it recurs. "Shall we split as we order from now on?" is a structural fix, and structures beat willpower. The awkwardness was never about the amount; it was about the absence of a rule. Give the group a rule and the topic disappears, which is the only durable outcome worth having.',
+    ],
+    script: [
+      { line: '"I am going to be that person: dinner was 4,800 total, so 600 each. Sending mine to Ramesh now."', note: 'Public, specific, self-directed. Six seconds.' },
+      { line: '"Two of us still in on Friday — 600 each, no rush, just keeping the spreadsheet honest."', note: 'The second nudge, a week later. There is no third.' },
+      { line: '"Shall we split as we order from now on? I keep forgetting and then it gets weird."', note: 'A norm, not a complaint. Structures beat willpower.' },
+      { line: '"Cover it and get the next one. I will not remember, and I would rather not."', note: 'Grace that ends the topic permanently.' },
+    ],
+    failureModes: [
+      'Silent resentment, which is a real cost paid on a fake debt.',
+      'Publicly naming the one person who has not paid, which is a humiliation with a long half-life.',
+      'Rounding up to make a point, which is not a joke to everyone.',
+      'Never mentioning it and then declining the next dinner, so everyone reads a mood and nobody learns the rule.',
+      'Chasing four times, which converts a small debt into a large story about you.',
+    ],
+    drill: [
+      'Write the group message exactly as you would send it, then read it aloud and delete every word that explains yourself. The final version should be two sentences: the number and what you are doing about your own share.',
+      'Then practise saying "shall we split as we order?" in a way that sounds like a suggestion rather than a correction.',
+    ],
+    related: ['lib-mny1', 'lib-st4', 'lib-fam3', 'lib-f6'],
+  },
+  'lib-mny3': {
+    thesis: 'Speed reads as doubt. Say the number flatly, attach it to scope in one clause, and let the silence do the negotiating.',
+    deep: [
+      'The price conversation is decided before the objection, in the three seconds after you say the number. Most people spend those three seconds worried about the other person’s reaction, and the body answers before the mouth does: the sentence accelerates, the pitch rises, a small disclaimer gets appended. All three are heard as uncertainty. The client is not evaluating whether your price is fair; they are evaluating whether you believe it is. If you do not, they are obliged to help you lower it.',
+      'Remove the runway. "So, given everything, we were thinking maybe somewhere around, if that works for you…" is not a price, it is a request for permission. Permission is expensive. "It is X, and that includes the strategy, the build and two rounds of revisions" is a statement about the world. One clause of scope does more work than a minute of justification, because it converts a number into a package and a package into a comparison that is in your favour.',
+      'Then stop. The five seconds of silence after your own number are the most profitable discomfort in business. Whatever you say in that gap will be a discount: a joke, a nervous laugh, a softening clause, "but we can be flexible". Say nothing. Let them be the first to speak, even if you have to count in your head.',
+      'When "that is too expensive" arrives — and it usually will — do not defend the price. Defending a price is arguing about your worth, and it validates the frame that the number is negotiable on rate. Ask about their budget instead: "What number were you working with?" You move from fear to information in one sentence, and you keep the conversation about fit rather than about your margin.',
+      'If you must move, move scope, never rate. "I can do it for Y if we drop the revisions and you handle the copy. Same rate, smaller job." Discounting tells them your first number was fiction, and clients who discover fiction keep looking for it. De-scoping keeps the number true and gives the client a real choice about what they want to buy.',
+      'And be willing to lose it well, out loud. "That may be more than this is worth to you, and that is a fair answer. If it changes, I would like to do it." Walking away cleanly is the only mechanism that over time raises your average price, and it takes about eleven words to do it with grace.',
+    ],
+    script: [
+      { line: '"It is X. That covers the strategy, the build and two rounds of revisions."', note: 'No runway, one clause of scope, then stop.' },
+      { line: '(Silence. Five full seconds.)', note: 'Everything you say here is a discount. Say nothing.' },
+      { line: '"What number were you working with?"', note: 'Replaces defending the price with collecting information.' },
+      { line: '"I can do it for Y if we drop the revisions and you handle the copy. Same rate, smaller job."', note: 'De-scope, never discount.' },
+      { line: '"That may be more than this is worth to you, and that is a fair answer. If it changes, I would like to do it."', note: 'Losing well is a pricing strategy, not a consolation.' },
+    ],
+    failureModes: [
+      'A range — "between A and B" means B, and everyone in the room knows it.',
+      'The apologising sentence: "sorry, I know it is a lot, but…" which agrees with the objection before it is made.',
+      'Explaining your costs, which invites the client to audit your life instead of evaluating your work.',
+      'Discounting to close, which teaches the client that your numbers are opening bids.',
+      'Filling the silence with a joke, which converts a firm number into a nervous one.',
+    ],
+    drill: [
+      'Say your real number out loud, flat, then sit in silence for five seconds on a timer. Ten reps. You are training the pause, not the sentence.',
+      'Then practise the de-scope: for your last quote, write down two things you could remove so the price can fall without the rate falling.',
+    ],
+    related: ['lib-bz3', 'lib-bz2', 'lib-f5', 'lib-mny1'],
+  },
+
+  // ── Humour ───────────────────────────────────────────────
+  'lib-hm1': {
+    thesis: 'Humour fails when the audience has to work out whether they were the joke. Make yourself the target and the calculation disappears.',
+    deep: [
+      'Funny is a social judgement, not a comedic one. A line that would kill in a club can die at a dinner table because the room is busy running a threat assessment: is the person holding the floor about to make one of us the punchline? Until that question is answered, nothing is funny. A self-targeted joke answers it instantly and answers it in your favour, which is why the safest humour in an unknown group is always at your own expense.',
+      'The status arithmetic is counterintuitive and worth spelling out. Making yourself the target raises your status, because you chose the target and you are not bruised by it — that is what composure looks like. Being made the target by someone else lowers it. The same content, aimed inward, reads as security; aimed outward, it reads as aggression. Confidence is the ability to be the butt of your own joke without flinching.',
+      'The rule that keeps this charming rather than pitiful is specificity plus confidence. "I once tried to be mysterious at a party and someone asked if I was feeling alright" is precise, small, and told as a finished fact. "I am just useless with people, honestly" is a bid for reassurance, and everyone can tell the difference within one sentence. Self-deprecation without specificity becomes self-pity; self-pity asks the room to look after you, and the room stops finding you funny.',
+      'There is a limit and it is lower than most people think. One or two self-targeted jokes per conversation is warmth; five is a persona, and a persona is a mask that stops people getting close. The same line that makes a group relax on first meeting becomes a way of never being known by the twentieth. Use it to open, then let it go so the conversation can move to something with more risk in it.',
+      'The best version of this is not jokes at all — it is honest failure, told without an apology. Someone asks how the new job is going. "I have learned that I am the kind of person who needs three reminders to attach a file" gets a real laugh because it is true, because it is ordinary, and because you delivered it as information rather than as a confession. Aim for that register: things that actually happened to you, described with enough precision to be funny.',
+      'And never undercut the joke with an explanation or a hedge. "Sorry, that was stupid" after a self-deprecating line undoes the composure that made it work, which is the only thing making it funny. If it dies, let it die. A dead joke handled well is more charming than a live one handled nervously.',
+    ],
+    script: [
+      { line: '"I tried to be mysterious at a party once. Someone asked if I was feeling alright."', note: 'Specific, small, delivered as a finished fact.' },
+      { line: '"I am the kind of person who needs three reminders to attach a file."', note: 'Honest failure told as information, not as a confession.' },
+      { line: '"That joke usually works, so I am going to blame the room."', note: 'Handling a dead joke with composure — the recovery is the charm.' },
+      { line: '"I have peaked. Everything after this is admin."', note: 'Small, self-directed, does not ask the room for reassurance.' },
+    ],
+    failureModes: [
+      '"I am just useless with people, honestly" — self-pity in a joke costume, which asks the room to look after you.',
+      'Five self-deprecating lines in a row, which builds a persona and blocks intimacy.',
+      'Apologising after the line, which removes the composure that made it funny.',
+      'Using a self-deprecating joke as a way to pre-empt criticism you actually fear, which reads as anxious rather than warm.',
+      'Targeting a nearby person "gently" in a group you have just joined — gentle is a judgement the audience makes, not the speaker.',
+    ],
+    drill: [
+      'Write three true things that happened to you this week that are mildly embarrassing and not serious. Cut each to one sentence with a specific detail. Say all three out loud to one person and watch which one actually lands — the winner is usually the most specific, not the most dramatic.',
+    ],
+    related: ['lib-hm2', 'lib-hm4', 'lib-w1', 'lib-st5'],
+  },
+  'lib-hm2': {
+    thesis: 'New jokes demonstrate wit; returning jokes demonstrate attention. A callback is the cheapest intimacy available.',
+    deep: [
+      'Attention is the scarce good in conversation, not cleverness. Everyone can produce a decent joke; almost nobody remembers what the other person said forty minutes ago. This is why the callback is such an efficient social instrument: it is evidence. The joke is only the vehicle — what the other person hears underneath it is "I was listening, I remembered, and we have a world that is ours".',
+      'The raw material is ordinary and easy to collect once you know to look. Oddly specific things: the coffee that tasted like a decision, the chair that collapsed, the colleague who says "circle back", the dog with no respect for anyone. You are not looking for the funniest moment in the evening, you are looking for the most particular one, because particularity is what makes a callback recognisable. A generic memory cannot be called back, because nobody is sure it happened.',
+      'Timing has three usable windows. Same conversation, after a lull — a callback is far better than a topic change because it restarts the energy without any work. Same evening, in a bigger group — this is the strongest use, because it makes the earlier person feel like your co-author in front of others. And days later, in a message — "still thinking about the coffee that tasted like a decision" is a whole relationship in eleven words and requires no reason to text at all.',
+      'The frequency rule is two. Two callbacks in one conversation is wit and warmth. The third turns the shared joke into a bit, and bits are entertainments rather than conversations — the person becomes an audience for your running gag and the intimacy stops growing. Retire the reference early and keep it available for a later date; a callback works best when it has had time to become a memory.',
+      'The advanced move is the callback with an upgrade: returning the joke in a form that adds something. "The chair that collapsed has been promoted — it is now in the hallway with a new role." You are demonstrating memory and invention in the same breath, and you are co-writing a private canon with that person. This is how groups become groups: not through shared interests, but through shared references nobody else in the room understands.',
+      'The failure mode is the callback that requires explanation, which is a joke about your own memory. If you have to say "remember when I said…", the recall has failed and you are now performing a footnote. Keep the reference short enough to be self-evident and you never have to explain it.',
+    ],
+    script: [
+      { line: '"Still thinking about the coffee that tasted like a decision."', note: 'The next-day callback. Requires no reason to text.' },
+      { line: '"The chair has been promoted. It now has a role in the hallway."', note: 'Callback with an upgrade: memory plus invention.' },
+      { line: '"I see we are back on the topic of the dog with no respect."', note: 'Same-evening callback in a bigger group — makes them your co-author.' },
+      { line: '"We are going to be the people who never let that go, are we not?"', note: 'Names the shared world out loud.' },
+    ],
+    failureModes: [
+      'The callback that requires "remember when I said…", which turns a joke into a footnote.',
+      'Three callbacks in one conversation, which converts a friendship into a fanbase.',
+      'Calling back something that was embarrassing to the other person rather than jointly absurd.',
+      'Collecting material so deliberately that you stop being present in the conversation.',
+      'Calling back a reference nobody else remembers, which is a private joke with an audience of one.',
+    ],
+    drill: [
+      'For one evening, collect exactly three specific references — not funny things, specific things. Then use one in the same conversation, one the following day, and hold the third for a week. Notice that the week-old one lands hardest.',
+    ],
+    related: ['lib-hm1', 'lib-hm3', 'lib-w5', 'lib-st5'],
+  },
+  'lib-hm3': {
+    thesis: 'A joke can carry a truth a sentence cannot, because it offers everyone an exit. The craft is the truth ratio.',
+    deep: [
+      'In families and workplaces there is a category of true thing that cannot be said directly. Saying it plainly produces a war; not saying it produces a slow rot. The joke is the only vehicle that can move cargo across this border, because it is deniable. If it lands badly, everyone can agree it was a joke and the subject retreats safely. If it lands, the subject has been opened and nobody has been publicly accused.',
+      'The mechanism is the exit, and it must be real rather than rhetorical. A joke that has no way back is just an accusation with a laugh track, and everyone in the room knows it. "So nobody noticed the deadline until it was two days past, which is a bold strategy" leaves the whole group an exit; "So Ramesh decided the deadline was optional, interesting" leaves one person with none, and that person will remember it precisely and for years.',
+      'Truth ratio is the dial. At 100% joke you have probably bought a laugh and changed nothing — pleasant, forgettable, and the true thing remains unsaid. At 100% truth you have made a speech and dressed it up, which is heard as passive-aggression and produces exactly the defensiveness you were trying to avoid. Aim for one true observation wrapped in something light, delivered once: a hypothesis about the situation, offered at an angle, with warmth in the delivery.',
+      'Delivery details decide whether it survives. Keep it short — a joke that needs a sentence and a half of setup loses its exit before the punchline. Keep your body relaxed and your eyes on the group rather than on the person it is aimed at; a joke aimed with the eyes becomes a dart. And keep your tone affectionate: the same words delivered cold become a public correction, and the exit closes.',
+      'Then stop, and never explain. Explanation is where the exit closes — once you say "obviously I mean that we should…", you have withdrawn the joke and claimed the accusation. If someone asks whether you were serious, the correct answer is warm and true: "half." Half is honest, keeps the exit, and invites the conversation to continue if the other person wants it.',
+      'Two more guards. First, only use this where you have accumulated goodwill; pressure-valve humour aimed at someone who does not yet trust you reads as an attack with plausible deniability, which is the worst thing a joke can be. Second, never use it twice on the same subject in one sitting. Once is a signal, the second is a campaign, and the third is how a family gets a new tradition of not speaking.',
+    ],
+    script: [
+      { line: '"Nobody noticed the deadline until two days after, which is certainly a bold strategy."', note: 'One true observation, whole-group target, exit intact.' },
+      { line: '"I am told the meeting could have been an email. It was in fact an email. It was also an hour."', note: 'Pressure valve aimed at a situation, not a person.' },
+      { line: 'Them: "Wait, are you being serious?"', note: 'The moment the exit is tested.' },
+      { line: '"Half."', note: 'Warm, true, keeps the exit open, and invites the real conversation if they want it.' },
+      { line: 'Them: "That is a fair point, actually."', note: 'The subject is now open, and nobody lost face getting there.' },
+    ],
+    failureModes: [
+      'Aiming the pressure valve at one person in front of everyone — that is a public correction with a laugh track.',
+      'Explaining the joke, which withdraws the exit and confirms the accusation.',
+      'Using it twice on the same subject, which converts a signal into a campaign.',
+      'Delivering it cold, which removes the warmth that makes it deniable.',
+      'Using it before any goodwill exists, which reads as an attack by someone clever enough to deny it.',
+    ],
+    drill: [
+      'Write the unsayable thing in your family or team as a plain sentence. Then wrap it into one light observation of twelve words or fewer, aimed at the situation rather than the person. Say it to a mirror and check your own tone is warm, not clipped. If you hear a prosecutor, cut the sentence in half.',
+      'Then rehearse "half" as an answer to "were you serious?" — and stop there.',
+    ],
+    related: ['lib-hm1', 'lib-fam1', 'lib-ei4', 'lib-dc1'],
+  },
+  'lib-hm4': {
+    thesis: 'Teasing is only charming when the care is on the record. Until then, tease the situation and keep the person out of it.',
+    deep: [
+      'Teasing is a status manoeuvre. One person holds the floor and makes the other person the subject of attention, and whether that feels delightful or humiliating depends entirely on two variables: is there warmth underneath, and who else is watching. In a new interaction, neither variable is in your favour yet, which is why early teasing so often produces a polite laugh and a small step back rather than chemistry.',
+      'The safe target in early conversation is the third thing: the queue, the institution, the weather, the absurdity of the venue, the coincidence that you are both there. Teasing the situation makes you allies against a shared object. Teasing the person makes you the audience and them the act. The direction is everything, and it is invisible to the person doing it — which is why so many people are baffled when their banter does not land.',
+      'Once warmth is established, the arithmetic changes. Teasing a person with whom you have a record of care reads as affection, because the underlying claim is "you are too secure with me to take this seriously". That is a gift. Without the record, the same sentence is a claim about their standing, made in public, and they have to decide instantly whether to laugh or to fight back — a decision that costs them something either way.',
+      'Playfulness done well is mutual. The tell is whether they can tease you back comfortably, and whether you receive it well. A tease you cannot receive is not play, it is one-directional commentary. So offer a target, allow a return, and take the return with visible pleasure — "that was good, that was better than mine" — which is what converts a jab into a game. People relax the moment they discover the game is not rigged.',
+      'Keep the subject small and the truth real. Teasing something that is true and acknowledged is warm; teasing something they are actually insecure about, even lightly, is a wound dressed as a joke. If their face changes, stop immediately and name it: "That one was too close, I am sorry." Recovery is a skill and it costs three words. People forgive a clumsy tease far more readily than a missing apology.',
+      'One final distinction worth carrying everywhere: flirtation is not insults with a nice voice. Warmth, attention, specificity and a little risk of your own are the ingredients. Teasing is a garnish. Used as the main ingredient, it produces a person who is laughing and slightly on guard, which is the opposite of the effect everyone claims to want.',
+    ],
+    script: [
+      { line: '"This queue has clearly been designed by someone who has never had to stand in it."', note: 'Tease the situation: you are allies against the third thing.' },
+      { line: '"Right, I am going to say something slightly risky and then pretend I did not."', note: 'Names the risk, so it becomes play rather than a test.' },
+      { line: 'Them: "That was rude."', note: 'The moment warmth has not been established yet.' },
+      { line: '"That was too close, I am sorry — genuinely."', note: 'Recovery in three words. People forgive clumsiness far more than a missing apology.' },
+      { line: 'Them: (teases you back)', note: 'The tell that it is mutual.' },
+      { line: '"That was better than mine. I am going to let that sit for a second."', note: 'Taking a return well is what converts a jab into a game.' },
+    ],
+    failureModes: [
+      'Teasing a person you met an hour ago, which asks them to pay for warmth they have not yet received.',
+      'Teasing in front of an audience before you have any private warmth, which is a public status move.',
+      'Aiming at a real insecurity — what a joke costs you is measured by their face, not your intention.',
+      'Building the whole interaction out of teasing, which makes the other person laugh and stay slightly guarded.',
+      'Not apologising when a tease cuts, and instead doubling down with "it was just a joke", which converts clumsiness into untrustworthiness.',
+    ],
+    drill: [
+      'For one week, practise situational teasing with strangers: one observation about the queue, the venue, the weather. Notice how easy the laugh is compared to person-directed humour. Then find one person you already trust and practise being teased back and receiving it with visible pleasure.',
+    ],
+    related: ['lib-hm1', 'lib-hm2', 'lib-wm1', 'lib-w2'],
+  },
+};

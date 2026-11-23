@@ -358,11 +358,18 @@ export function scoreWit({ scenario = {}, response = '' }) {
 const PERSONA_KEYS = {
   maya: { likes: [/mud|sensor|farm|field|hardware|messy|honest/i, /why|how come|what made|actually/i], dislikes: [/synergy|disrupt|space|pitch|raise|invest|networking is/i] },
   daniel: { likes: [/\d+|percent|weeks|shipped|shipped|failed|learned/i, /^.{0,120}$/], dislikes: [/passionate|vision|hardworking|excited to|opportunity|job|hire me/i] },
+  'daniel-manager': { likes: [/\d+|percent|weeks|quarter|one thing|i own|my fault|what do you need/i, /\?$/], dislikes: [/other teams|everyone says|nobody|unfair|toxic|the real problem|you always/i] },
   alea: { likes: [/weird|embarrass|red flag|worst|unpopular|honestly/i, /\b(i hate|i love|i once)\b/i], dislikes: [/where do you work|what do you do|hobbies|how old|travel much/i] },
   jonah: { likes: [/football|match|school|tired|week|honestly/i, /\?$/], dislikes: [/crypto|business|linkedin|growth/i] },
   priya: { likes: [/i'?m sorry|i apolog|that'?s on me|you'?re right|i should have|the impact/i], dislikes: [/but |however|actually,|to be fair|the reason was|process/i] },
   marco: { likes: [/here'?s what i'?ll do|tonight|by \w+day|owner|i own|my fault|you'?ll know before/i], dislikes: [/policy|unfortunately|as per|escalate|discount/i] },
   elena: { likes: [/\d|percent|number|risk|wrong|don'?t know|honest/i], dislikes: [/huge market|revolutionary|disrupt|game.?chang|trust me/i] },
+  // second wing: work, tenancy, family, interview, group, grief
+  sunita: { likes: [/by (mon|tues|wednes|thurs|fri)day|in writing|i will|we can|the pump|part/i, /\?$/], dislikes: [/deposit|lawyer|legal|formal complaint|rent strike|unacceptable/i] },
+  bua: { likes: [/you have driven|your judgement|what would you|consult|your call|i am not telling you/i], dislikes: [/at your age|the doctor said|for your own good|we have decided|you cannot/i] },
+  'priya-interview': { likes: [/\d|percent|weeks|cost|i got wrong|i do not know|specifically/i], dislikes: [/passionate|team player|culture fit|great opportunity|i am a people person/i] },
+  'group-three': { likes: [/aisha|you two|both of you|what were you saying|sorry to interrupt/i], dislikes: [/actually i|i have seen it too|let me tell you|better than/i] },
+  'marcus-grief': { likes: [/how was today|i am not going to|thursday|i will take|no reason/i], dislikes: [/let me know if you need|everything happens|at least|time heals|i know how you feel/i] },
 };
 
 export function arenaReply({ scenario, history = [], message = '', turn = 0 }) {
@@ -446,11 +453,17 @@ export function arenaReply({ scenario, history = [], message = '', turn = 0 }) {
   const coldPressure = {
     maya: 'Sorry — I\'m going to be honest, this is starting to feel like a pitch.',
     daniel: 'I\'m going to stop you there. What\'s the actual point?',
+    'daniel-manager': 'I\'m going to stop you there — is any of this going to change next quarter?',
     alea: 'Okay, I\'m going to get another drink in a minute.',
     jonah: 'Right. Anyway.',
     priya: 'This isn\'t what I need to hear right now.',
     marco: 'You\'re losing me. Give me something concrete.',
     elena: 'I\'ve heard enough adjectives. Next.',
+    sunita: 'I am going to stop you there — I am not the enemy here.',
+    bua: 'Then there is nothing more to say about it.',
+    'priya-interview': 'I am going to move on. That answer was not for me.',
+    'group-three': 'Sorry — we were in the middle of something.',
+    'marcus-grief': 'I am going to get back to work.',
   };
 
   let line;

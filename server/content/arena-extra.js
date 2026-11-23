@@ -1,0 +1,178 @@
+// ─────────────────────────────────────────────────────────────
+//  Conversation Arena · second wing
+//  Six personas for rooms the first seven never entered: a work
+//  confrontation, a landlord, a parent, an interview, a group of
+//  three, and someone who just got bad news.
+//  Same shape as arena.js: brief, facts by turn, probes, exits.
+// ─────────────────────────────────────────────────────────────
+
+export const ARENA_EXTRA = [
+  {
+    id: 'daniel-manager', name: 'Rowan', role: 'Your manager, twelve minutes into a performance meeting',
+    scene: 'Resolving Tension', emoji: '🧑‍💼', difficulty: 4, color: '#f0b429',
+    brief: 'A quarterly review that has turned into a list of small failures. Rowan is not hostile — he is nervous, because he has to justify a budget line, and nervous managers sound like critics.',
+    goal: 'Leave with one agreed change and no damage to the relationship.',
+    traits: ['fair but anxious', 'escalates when he feels unheard', 'responds to specifics', 'hates surprises in writing'],
+    likes: ['owning the small stuff', 'numbers', 'one clear ask', 'being asked what he needs'],
+    dislikes: ['being told he is wrong in general terms', 'comparisons to other teams', 'sarcasm', 'silence without an answer'],
+    opener: 'So I have gone through the quarter and the pattern I am seeing is that things land late, and I need to understand why.',
+    probes: [
+      'Help me understand what happened with the March deadline.',
+      'Do you think this is a resourcing problem or a you problem?',
+      'What would you do in my position?',
+    ],
+    facts: [
+      { turn: 1, text: 'I am not enjoying this either. My director wants the budget line justified and I have to say something true.' },
+      { turn: 2, text: 'Honestly, the deadline slipped because I moved the goalposts twice. I would rather not put that in the notes.' },
+      { turn: 3, text: 'What I need is a yes or no by Tuesday. What I do not need is a plan for the whole year.' },
+      { turn: 4, text: 'You have been the steadiest person on this team. I have not said it well this morning.' },
+    ],
+    reactions: {
+      cold: ["Right. So nothing changes.", "I am writing this down, just so you know.", "This is the part of the meeting I dread."],
+      neutral: ["Okay. That is more like it.", "Fair. Go on.", "I can work with that."],
+      warm: ["Good. I would rather have this conversation than the one I was braced for.", "See, that is the version of you I need in these meetings.", "Right. Let me cancel the second half of this."],
+    },
+    reads: ['lib-dc2', 'lib-dc1', 'lib-pr4'],
+    exits: ['Let us pick this up after I have had coffee and you have had a fair chance to answer.', 'I will write it up and we can disagree with the wording later.'],
+  },
+  {
+    id: 'sunita', name: 'Sunita', role: 'Your landlord, five years into a good tenancy',
+    scene: 'Resolving Tension', emoji: '🏠', difficulty: 3, color: '#2ec4b6',
+    brief: 'The water has been off twice this month and she keeps saying "it is being looked at". You need a date, and you like her, which makes it harder.',
+    goal: 'Get a written date and a rent conversation you can both live with, without turning a decent relationship into a fight.',
+    traits: ['warm', 'conflict-avoidant', 'defends her son who manages the building', 'responds to being treated as reasonable'],
+    likes: ['being asked, not told', 'acknowledgement that she is not the enemy', 'specific windows', 'keeping things verbal and friendly'],
+    dislikes: ['threats about the deposit', 'being copied on formal email too early', 'general accusations', 'public complaint'],
+    opener: 'I know, I know — the water. It is being looked at, I have asked him twice.',
+    probes: [
+      'Is it the pump again or something else this time?',
+      'What do you want me to do here?',
+      'Do you think I am being unreasonable?',
+    ],
+    facts: [
+      { turn: 1, text: 'The pump man has been twice and says the part is not in the country. That is what I am dealing with.' },
+      { turn: 2, text: 'My son handles this and he does not tell me the dates. It is easier for both of us if you ask him directly.' },
+      { turn: 3, text: 'I do not want you to be cold in that flat. If it is not fixed by Friday I will pay for a plumber myself.' },
+      { turn: 4, text: 'You have been a good tenant. I am not going to forget that when the rent comes up.' },
+    ],
+    reactions: {
+      cold: ["I am not the enemy here.", "You think I enjoy this?", "Right. I will tell him you said so."],
+      neutral: ["Okay. That is fair.", "I can ask again, but I cannot promise a date.", "Hm. Let me write it down."],
+      warm: ["You have been good about this and I know it.", "Thank you for not shouting at me about it.", "Right — I will ring him now, while I have you here."],
+    },
+    reads: ['lib-dc4', 'lib-fam5', 'lib-dc2'],
+    exits: ['Right, I am going to ring him now while you are here.', 'Let me send you a message by tonight so you have it in writing.'],
+  },
+  {
+    id: 'bua', name: 'Bua', role: 'Your father, who has just been told he should stop driving',
+    scene: 'Resolving Tension', emoji: '👨‍🦳', difficulty: 5, color: '#a78bfa',
+    brief: 'The doctor said it, gently, in front of you. Your father has said nothing since. He is not going to argue about the medicine; he is going to argue about what losing the car means, and he will not say that out loud.',
+    goal: 'Have the conversation about the car without making him smaller, and agree one practical next step.',
+    traits: ['proud', 'protective of his independence', 'says "I am fine" reflexively', 'warms to being taken seriously'],
+    likes: ['being consulted', 'practical arrangements', 'respect for what he has done', 'not being managed'],
+    dislikes: ['being spoken about in the third person', 'the phrase "at your age"', 'being told what the doctor said again', 'sympathy'],
+    opener: 'We do not need to talk about it. I have driven that road for forty years.',
+    probes: [
+      'Do you think I have lost my judgement?',
+      'What would you do if it were you?',
+      'Has your mother said something to you?',
+    ],
+    facts: [
+      { turn: 1, text: 'It is not the driving. It is the being told.' },
+      { turn: 2, text: 'I do not want to be a passenger in my own life, and I know how that sounds.' },
+      { turn: 3, text: 'The market is a ten-minute walk. That is not the point and I know it is not the point.' },
+      { turn: 4, text: 'If I say yes to the mornings only, does that make you feel better or does it just put it off?' },
+    ],
+    reactions: {
+      cold: ["Then we have nothing to discuss.", "I am not a child, whatever the doctor thinks.", "Say what you came to say and let me be."],
+      neutral: ["Hm. Go on then.", "You have thought about this more than I gave you credit for.", "That is not what I expected you to say."],
+      warm: ["You have driven with me. You know I am not reckless.", "Alright. You have been fair about it, which is more than the doctor was.", "I am not saying yes. I am saying keep talking."],
+    },
+    reads: ['lib-fam1', 'lib-ei5', 'lib-fam4'],
+    exits: ['Let me think about it. Not today.', 'Go on then. But I am keeping the keys in the drawer.'],
+  },
+  {
+    id: 'priya-interview', name: 'Priya', role: 'Interviewer, thirty minutes in, testing whether you are real',
+    scene: 'Interview', emoji: '🧑‍💹', difficulty: 4, color: '#22d3ee',
+    brief: 'A second-round interview. Priya has heard eleven rehearsed answers today. She is not looking for polish; she is looking for the moment you stop performing.',
+    goal: 'Answer three questions with specifics and one honest limit, and leave her with something she will repeat to the panel.',
+    traits: ['direct', 'allergic to buzzwords', 'tests with follow-ups', 'notes the exact sentence you use'],
+    likes: ['numbers and names', 'admitting a failure precisely', 'being asked what the job actually needs', 'short answers'],
+    dislikes: ['"passionate"', 'team-shaped answers to individual questions', 'rambling past forty seconds', 'pretending to know'],
+    opener: 'Tell me about something you got wrong. Not a humble one.',
+    probes: [
+      'What did you actually do, specifically?',
+      'What would you do differently on day one here?',
+      'Why should we not hire you?',
+    ],
+    facts: [
+      { turn: 1, text: 'That is better than the last three answers. Nobody ever tells me the cost.' },
+      { turn: 2, text: 'I will be honest: the role is messier than the description. Half of it is chasing people.' },
+      { turn: 3, text: 'What I am actually testing is whether you will tell me when you do not know something.' },
+      { turn: 4, text: 'One thing I will remember from today is that you did not oversell the last project.' },
+    ],
+    reactions: {
+      cold: ["Okay. That is an answer.", "Right. I will note that.", "Let me move on — I have four more of these."],
+      neutral: ["That is more specific. Good.", "Mm, that is the first non-rehearsed thing you have said.", "Okay. I believe that one."],
+      warm: ["That is what I would have said. Which is annoying, because I am meant to be testing you.", "Good. I am going to stop writing now and actually listen.", "That is the answer I will remember at the panel."],
+    },
+    reads: ['lib-pr2', 'lib-pr3', 'lib-pr5'],
+    exits: ['I have got what I need. Do you have anything you want to ask me?', 'Let us stop there while it is going well.'],
+  },
+  {
+    id: 'group-three', name: 'The Kitchen Group', role: 'Three people mid-conversation at a party',
+    scene: 'Group', emoji: '🧑‍🤝‍🧑', difficulty: 4, color: '#fb923c',
+    brief: 'Two are talking across the third, who is nodding and looking at the floor. The topic is a film you have not seen. There is no gap, and no obvious way in that does not involve interrupting.',
+    goal: 'Enter without interrupting, bring the quiet person in, and be part of one real exchange rather than a spectator.',
+    traits: ['fast', 'in-jokey', 'one dominant talker', 'one person waiting to be included'],
+    likes: ['comments on the situation you all share', 'questions aimed at the quiet one', 'brevity', 'not competing'],
+    dislikes: ['topping the story', 'a new topic announced at volume', 'monologues', 'ignoring the person who has not spoken'],
+    opener: '(The dominant talker is mid-sentence about a film. The quiet one catches your eye for a second.)',
+    probes: [
+      'Have you seen it? (Everyone turns to you at once.)',
+      'So what do you do, anyway? (Sam, filling a gap he does not need to fill.)',
+      'What did you think of the ending? (He has not checked whether you have seen it.)',
+    ],
+    facts: [
+      { turn: 1, text: 'Sam: "— and then the whole third act just, I do not know, gave up." (Nobody notices you have joined.)' },
+      { turn: 2, text: 'Aisha, quietly: "I have not seen it either." (This is your opening, if you take it.)' },
+      { turn: 3, text: 'Sam: "Sorry — who are you here with?" (The group notices you and waits.)' },
+      { turn: 4, text: 'Aisha: "You are the only person who has asked me anything all evening."' },
+    ],
+    reactions: {
+      cold: ["Sorry — we were mid-thing.", "Yeah. Anyway.", "Sam: 'Right, so as I was saying.'"],
+      neutral: ["Aisha: 'Oh. Hi.'", "Sam: 'Sorry — carry on.'", "Aisha: 'You have not seen it either?'"],
+      warm: ["Aisha: 'Thank God, someone normal.'", "Sam: 'Actually, that is a good question.'", "Aisha: 'Sit with us, you are the only person who has asked me anything.'"],
+    },
+    reads: ['lib-f4', 'lib-f8', 'lib-st1'],
+    exits: ['I am going to get a drink before Sam starts the sequel debate.', 'I will leave you lot to it — good to meet you, Aisha.'],
+  },
+  {
+    id: 'marcus-grief', name: 'Marcus', role: 'A colleague whose father died eleven days ago, back at his desk',
+    scene: 'Care', emoji: '🕯️', difficulty: 5, color: '#fb7185',
+    brief: 'He is back because sitting at home was worse. Everyone has been relentlessly normal, and the one person who said "sorry for your loss" then talked for four minutes about their own father. He is braced for that again.',
+    goal: 'Acknowledge it once, offer something practical, and follow his lead on how deep the conversation goes.',
+    traits: ['exhausted', 'dry humour intact', 'flinches at sympathy', 'grateful for ordinary company'],
+    likes: ['one sentence and then silence', 'practical offers', 'being treated as competent', 'the ordinary register'],
+    dislikes: ['"everything happens for a reason"', 'being asked for details', 'people crying at him', '"let me know if you need anything"'],
+    opener: 'Before you say anything — I am fine. I am actually better here than at home.',
+    probes: [
+      'How was today?',
+      'Do you want to talk about it or not talk about it?',
+      'Can I take the Thursday calls off you?',
+    ],
+    facts: [
+      { turn: 1, text: 'That is the first time anyone has not immediately told me about their own father.' },
+      { turn: 2, text: 'Thursday is the hard one. That is when we used to have lunch.' },
+      { turn: 3, text: 'I keep expecting him to text me about the cricket. Stupid.' },
+      { turn: 4, text: 'You can stay and talk about the deck, if you want. I would quite like to think about something else for twenty minutes.' },
+    ],
+    reactions: {
+      cold: ["I am fine. Really.", "Right. Thanks.", "I have had a lot of that this week."],
+      neutral: ["Yeah. It is what it is.", "Mostly I want the work to be normal.", "That is kind of you."],
+      warm: ["That is the first time anyone has asked me how the day went instead of how I am.", "Thank you for not doing the face.", "You can stay. I am not going to cry on you."],
+    },
+    reads: ['lib-ei2', 'lib-ei5', 'lib-ei1'],
+    exits: ['I am going to get a coffee. Thank you — genuinely.', 'Right. Back to the deck before I think about it again.'],
+  },
+];

@@ -7,27 +7,40 @@ import { TRACKS, TRACK_MAP } from './content/courses.js';
 import { IMPROMPTU_PROMPTS, TWISTERS, PANGERAMS } from './content/lab.js';
 import { WIT_SCENARIOS, WIT_META } from './content/wit.js';
 import { ARENA_SCENARIOS } from './content/arena.js';
+import { ARENA_EXTRA } from './content/arena-extra.js';
 import { BODY_CARDS, BODY_CLUSTERS } from './content/body.js';
 import { LIBRARY } from './content/library.js';
 import { FAST_LESSONS } from './content/lessons-fast.js';
 import { ARCHIVE_LESSONS as DEEP_1 } from './content/lessons-deep.js';
 import { BATCH2 as DEEP_2 } from './content/lessons-deep-2.js';
 import { BATCH3 as DEEP_3 } from './content/lessons-deep-3.js';
-import { LIBRARY_DEEP, LIBRARY_COURSE_LINKS } from './content/library-deep.js';
+import { LIBRARY_DEEP } from './content/library-deep.js';
+import { LIBRARY_COURSE_LINKS } from './content/library-links.js';
 import { LIBRARY_DEEP_2 } from './content/library-deep-2.js';
 import { LIBRARY_DEEP_3 } from './content/library-deep-3.js';
 import { GAMES } from './content/games.js';
 import { ACADEMY } from './content/academy.js';
+import { ACADEMY_EXTRA } from './content/academy-extra.js';
+import { LIBRARY_EXTRA } from './content/library-extra.js';
+import { LIBRARY_EXTRA_DEEP } from './content/library-extra-deep.js';
+import { GYM_SCENARIOS, GYM_CATEGORIES } from './content/gym.js';
+import { GYM_EXTRA, GYM_EXTRA_CATEGORIES } from './content/gym-extra.js';
+import { LIBRARY_EXTRA_3 } from './content/library-extra-3.js';
+import { LIBRARY_EXTRA_3_DEEP } from './content/library-extra-3-deep.js';
+import { ACADEMY_EXTRA_3 } from './content/academy-extra-3.js';
+import { EXTRA_FRAMEWORKS, EXTRA_FRAMEWORK_CATEGORIES, EXTRA_WIT, EXTRA_BODY_V4, EXTRA_DAILY } from './content/content-v4.js';
 import { EXTRA_BODY_CARDS, BODY_CLUSTER_NOTES } from './content/body-extra.js';
 import { FRAMEWORKS, FRAMEWORK_CATEGORIES } from './content/frameworks.js';
 import { EXTRA_PROMPTS, EXTRA_TWISTERS, EXTRA_PANGERAMS } from './content/lab-extra.js';
 import { SKILL_TRACKS } from './content/skills.js';
+import { SKILL_TRACKS_EXTRA } from './content/skills-extra.js';
 import {
   CREATOR_PILLARS, CREATOR_FORMATS, HOOK_PATTERNS, PLATFORM_NOTES,
   CREATOR_SKILLS, FOUR_WEEK_PLAN, CREATOR_CHECKLIST, IDEA_TOPICS, IDEA_ANGLES,
 } from './content/creator.js';
 import { WEEKLY_THEMES, DAILY_DRILLS } from './content/daily.js';
 import { COACH_MODES, coachRespond } from './coach.js';
+import { rateLimit, concurrency, gzipJSON } from './guard.js';
 import { aiChat, aiStatus, PROVIDERS, coachSystemPrompt, arenaSystemPrompt, arenaJudgePrompt } from './ai.js';
 import { analyzeSpeech, scoreWit, scorePronunciation, arenaReply, arenaSummary } from './analysis.js';
 import {
@@ -35,12 +48,88 @@ import {
   recentSessions, db,
 } from './db.js';
 
+const ARENA_ALL = [...ARENA_SCENARIOS, ...ARENA_EXTRA];
+
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use(cors());
-app.use(express.json({ limit: '2mb' }));
+// do not advertise the framework in every response
+app.disable('x-powered-by');
+
+// ── Security headers ───────────────────────────────────────
+// A single-user local app still renders untrusted text (AI replies, pasted drafts),
+// so lock the document down: no inline script, no external script/frame origins.
+// Kept compatible with the Vite build (which emits external hashed assets only).
+app.use((_req, res, next) => {
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'DENY');
+  res.setHeader('Referrer-Policy', 'no-referrer');
+  // microphone is allowed for this origin only: the Impromptu/Rehearsal recorders
+  // need it when the app is served from this server, but no iframe should get it
+  res.setHeader('Permissions-Policy', 'geolocation=(), camera=(), payment=(), microphone=(self)');
+  res.setHeader('Cross-Origin-Opener-Policy', 'same-origin');
+  res.setHeader('Cross-Origin-Resource-Policy', 'same-origin');
+  // nothing here is worth caching in a proxy, and cached API JSON leaks between users
+  res.setHeader('Cache-Control', 'no-store');
+  res.setHeader(
+    'Content-Security-Policy',
+    [
+      "default-src 'self'",
+      // the static bundle has one inline style block and inline style attributes
+      "style-src 'self' 'unsafe-inline'",
+      // No inline script, no eval: the bundle is external and inert. The Vite
+      // module-preload polyfill is inlined as text but only runs when it is
+      // attached to a <link> callback, so blocking inline script does not break
+      // the app (verified in Chromium against the built docs/ page).
+      "script-src 'self'",
+      "img-src 'self' data: blob:",
+      "font-src 'self' data:",
+      // the AI coach may call a provider directly (CORS-open, keyless)
+      "connect-src 'self' https://text.pollinations.ai https://openrouter.ai http://127.0.0.1:11434 http://localhost:11434",
+      "media-src 'self' blob:",
+      "object-src 'none'",
+      "manifest-src 'self'",
+      "worker-src 'self' blob:",
+      "base-uri 'self'",
+      "form-action 'self'",
+      "frame-ancestors 'none'",
+    ].join('; '),
+  );
+  next();
+});
+
+// ── CORS: same-origin only unless you opt in ────────────────
+// This used to be app.use(cors()) — i.e. `Access-Control-Allow-Origin: *` — which
+// let ANY web page the user visited drive this API from their browser: read
+// /api/sessions, PATCH /api/user, POST /api/reset. The loopback bind is no
+// protection against that, because the request comes from the user's own machine.
+//
+// If you host the UI somewhere else (e.g. the GitHub Pages build talking to a
+// deployed API), list that origin explicitly:
+//   ALLOWED_ORIGINS=https://prabesh-kuikel.github.io
+const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS || '')
+  .split(',')
+  .map((o) => o.trim().replace(/\/$/, ''))
+  .filter(Boolean);
+
+app.use(cors({
+  origin(origin, cb) {
+    // same-origin requests and curl carry no Origin header — always fine
+    if (!origin) return cb(null, true);
+    const bare = origin.replace(/\/$/, '');
+    const self = `http://${process.env.HOST || '127.0.0.1'}:${process.env.PORT || 3000}`;
+    if (bare === self || bare === `http://localhost:${process.env.PORT || 3000}`) return cb(null, true);
+    if (ALLOWED_ORIGINS.includes(bare)) return cb(null, true);
+    return cb(null, false);
+  },
+  credentials: false,
+  methods: ['GET', 'POST', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type'],
+  maxAge: 600,
+}));
+// cap request bodies: every endpoint here takes a few KB, never megabytes
+app.use(express.json({ limit: '256kb' }));
 
 const user = ensureUser();
 const uid = user.id;
@@ -86,13 +175,30 @@ const libraryItem = (i) => ({
     .slice(0, 6),
 });
 
-const CHAPTERS = { ...LIBRARY_DEEP, ...LIBRARY_DEEP_2, ...LIBRARY_DEEP_3 };
+const CHAPTERS = { ...LIBRARY_DEEP, ...LIBRARY_DEEP_2, ...LIBRARY_DEEP_3, ...LIBRARY_EXTRA_DEEP, ...LIBRARY_EXTRA_3_DEEP };
+// the base shelf plus the second wing, in one list the UI already knows how to render
+const ALL_LIBRARY = [...LIBRARY, ...LIBRARY_EXTRA, ...LIBRARY_EXTRA_3];
+const ALL_ACADEMY = [...ACADEMY, ...ACADEMY_EXTRA, ...ACADEMY_EXTRA_3];
 
-const LIBRARY_FULL = LIBRARY.map(libraryItem);
+const GYM_ALL = [...GYM_SCENARIOS, ...GYM_EXTRA];
+const LIBRARY_FULL = ALL_LIBRARY.map(libraryItem);
+
+// ── Rate limiting ─────────────────────────────────────────────
+// Nothing guarded these before: a loop could hammer /api/ai/chat (up to 45 s of
+// upstream work per call) or /api/analyze/* and burn the free AI quota or pin
+// the process. Three buckets: page traffic, scoring writes, and the AI relay.
+const pageLimit = rateLimit({ capacity: 120, perMinute: 120, key: 'page' });
+const writeLimit = rateLimit({ capacity: 40, perMinute: 40, key: 'write' });
+const aiLimit = rateLimit({ capacity: 8, perMinute: 8, key: 'ai' });
+const aiSlot = concurrency({ max: 4, name: 'AI' });
+
+app.use('/api', pageLimit);
+for (const route of ['/api/analyze', '/api/activity', '/api/progress', '/api/arena', '/api/body', '/api/reset', '/api/ai/chat']) {
+  app.use(route, writeLimit);
+}
 
 // ── Content ────────────────────────────────────────────────
-app.get('/api/content', (_req, res) => {
-  res.json({
+const CONTENT_PAYLOAD = () => ({
     mentors: MENTORS,
     tracks: TRACKS.map((t) => ({
       id: t.id, name: t.name, subtitle: t.subtitle, description: t.description,
@@ -102,28 +208,32 @@ app.get('/api/content', (_req, res) => {
     prompts: [...IMPROMPTU_PROMPTS, ...EXTRA_PROMPTS],
     twisters: [...TWISTERS, ...EXTRA_TWISTERS],
     pangerams: [...PANGERAMS, ...EXTRA_PANGERAMS],
-    wit: WIT_SCENARIOS,
+    wit: [...WIT_SCENARIOS, ...EXTRA_WIT],
     witMeta: WIT_META,
-    arena: ARENA_SCENARIOS.map(({ facts, probes, reactions, ...rest }) => rest),
-    body: [...BODY_CARDS, ...EXTRA_BODY_CARDS],
+    arena: ARENA_ALL.map(({ facts, probes, reactions, ...rest }) => rest),
+    body: [...BODY_CARDS, ...EXTRA_BODY_CARDS, ...EXTRA_BODY_V4],
     bodyClusters: BODY_CLUSTERS,
     bodyNotes: BODY_CLUSTER_NOTES,
     library: LIBRARY_FULL,
     chaptersWritten: Object.keys(CHAPTERS).length,
     games: GAMES,
-    academy: ACADEMY,
-    frameworks: FRAMEWORKS,
-    frameworkCategories: FRAMEWORK_CATEGORIES,
-    skills: SKILL_TRACKS,
+    academy: ALL_ACADEMY,
+    gym: GYM_ALL,
+    gymCategories: [...GYM_CATEGORIES, ...GYM_EXTRA_CATEGORIES],
+    frameworks: [...FRAMEWORKS, ...EXTRA_FRAMEWORKS],
+    frameworkCategories: [...FRAMEWORK_CATEGORIES, ...EXTRA_FRAMEWORK_CATEGORIES],
+    skills: [...SKILL_TRACKS, ...SKILL_TRACKS_EXTRA],
     creator: {
       pillars: CREATOR_PILLARS, formats: CREATOR_FORMATS, hooks: HOOK_PATTERNS,
       platforms: PLATFORM_NOTES, ladder: CREATOR_SKILLS, plan: FOUR_WEEK_PLAN,
       checklist: CREATOR_CHECKLIST, topics: IDEA_TOPICS, angles: IDEA_ANGLES,
     },
-    daily: { themes: WEEKLY_THEMES, drills: DAILY_DRILLS },
-    coachModes: COACH_MODES,
-  });
+    daily: { themes: WEEKLY_THEMES, drills: [...DAILY_DRILLS, ...EXTRA_DAILY] },
+  coachModes: COACH_MODES,
 });
+
+// ~640 KB of JSON → ~150 KB on the wire, compressed once at boot.
+app.get('/api/content', gzipJSON('content', CONTENT_PAYLOAD));
 
 app.get('/api/track/:id', (req, res) => {
   const track = TRACK_MAP[req.params.id];
@@ -225,7 +335,7 @@ app.post('/api/body/answer', (req, res) => {
 // ── Conversation Arena ─────────────────────────────────────
 app.post('/api/arena/start', (req, res) => {
   const { scenarioId } = req.body || {};
-  const scenario = ARENA_SCENARIOS.find((s) => s.id === scenarioId);
+  const scenario = ARENA_ALL.find((s) => s.id === scenarioId);
   if (!scenario) return res.status(404).json({ error: 'Scenario not found' });
   const history = [{ role: 'persona', text: scenario.opener, kind: 'opener' }];
   const payload = { scenarioId, history, turn: 0, trust: 50 };
@@ -239,7 +349,7 @@ app.post('/api/arena/message', (req, res) => {
   const row = getSession(uid, sessionId);
   if (!row) return res.status(404).json({ error: 'Session not found' });
   const payload = JSON.parse(row.payload);
-  const scenario = ARENA_SCENARIOS.find((s) => s.id === payload.scenarioId);
+  const scenario = ARENA_ALL.find((s) => s.id === payload.scenarioId);
   if (!scenario) return res.status(404).json({ error: 'Scenario not found' });
 
   payload.history.push({ role: 'user', text: message, at: new Date().toISOString() });
@@ -257,7 +367,7 @@ app.post('/api/arena/end', (req, res) => {
   const row = getSession(uid, sessionId);
   if (!row) return res.status(404).json({ error: 'Session not found' });
   const payload = JSON.parse(row.payload);
-  const scenario = ARENA_SCENARIOS.find((s) => s.id === payload.scenarioId);
+  const scenario = ARENA_ALL.find((s) => s.id === payload.scenarioId);
   const summary = arenaSummary({ scenario, history: payload.history });
   payload.summary = summary;
   const score = Math.round((summary.overall * 0.6) + ((payload.trust || 50) * 0.4));
@@ -314,10 +424,19 @@ const AI_ENV = {
 };
 
 app.get('/api/ai/status', (_req, res) => {
-  res.json({ providers: PROVIDERS, ...AI_ENV, key: undefined, hasKey: !!AI_ENV.key });
+  // never echo the upstream URL or the key — only what the UI needs to render
+  const { provider, model, enabled, baseUrl } = AI_ENV;
+  res.json({
+    providers: PROVIDERS,
+    provider,
+    model,
+    enabled,
+    hasKey: !!AI_ENV.key,
+    customEndpoint: !!baseUrl,
+  });
 });
 
-app.post('/api/ai/chat', async (req, res) => {
+app.post('/api/ai/chat', aiLimit, aiSlot, async (req, res) => {
   const { messages = [], mode = 'general', system = '', temperature, maxTokens } = req.body || {};
   const cleaned = (Array.isArray(messages) ? messages : [])
     .filter((m) => m && typeof m.content === 'string')
@@ -326,11 +445,17 @@ app.post('/api/ai/chat', async (req, res) => {
 
   if (!cleaned.length) return res.status(400).json({ error: 'messages required' });
 
+  // SECURITY: baseUrl is NOT taken from the request body.
+  // It used to be, which turned this endpoint into a server-side request forger:
+  // POST {baseUrl:"http://127.0.0.1:3100/api/user"} made the server call its own
+  // internal routes and relay the body back. The upstream URL may only come from
+  // the environment, and only for the bring-your-own-endpoint provider.
+  const provider = String(req.body.provider || AI_ENV.provider || '').slice(0, 40);
   const config = {
-    provider: req.body.provider || AI_ENV.provider,
-    model: req.body.model || AI_ENV.model,
+    provider,
+    model: String(req.body.model || AI_ENV.model || '').slice(0, 80),
     key: AI_ENV.key,
-    baseUrl: req.body.baseUrl || AI_ENV.baseUrl,
+    baseUrl: provider === 'compatible' ? AI_ENV.baseUrl : '',
     temperature,
   };
 
@@ -359,6 +484,10 @@ app.post('/api/activity', (req, res) => {
 
 app.get('/api/health', (_req, res) => res.json({ ok: true, ai: 'heuristic-local' }));
 
+// Unknown API routes must be a JSON 404 — never the SPA shell, which would
+// return HTML to a fetch() caller and hide typos.
+app.use('/api', (_req, res) => res.status(404).json({ ok: false, error: 'Unknown API route' }));
+
 // ── Static frontend ────────────────────────────────────────
 const distDir = path.join(__dirname, '..', 'dist');
 app.use(express.static(distDir));
@@ -368,6 +497,9 @@ app.get(/^(?!\/api).*/, (_req, res) => {
   });
 });
 
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`Charisma Lab API + UI on http://0.0.0.0:${PORT}`);
+// Bind to loopback by default so the app is not exposed to the local network.
+// Set HOST=0.0.0.0 deliberately if you want other devices to reach it.
+const HOST = process.env.HOST || '127.0.0.1';
+app.listen(PORT, HOST, () => {
+  console.log(`Charisma Lab API + UI on http://${HOST}:${PORT}`);
 });

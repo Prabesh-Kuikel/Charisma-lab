@@ -36,6 +36,7 @@ export const ARENA_SCENARIOS = [
       neutral: ["Okay, that\'s a fair point.", "Huh. Go on.", "That\'s a better question than most tonight."],
       warm: ["Okay, you\'re actually allowed to stay.", "That\'s the first interesting thing anyone\'s said since the keynote.", "See, this is why I came. Sort of."],
     },
+    reads: ['lib-f1', 'lib-st1', 'lib-f3'],
     exits: ["I should go find my jacket before I lose it again.", "I\'m going to get one more drink and then vanish."],
   },
   {
@@ -72,6 +73,7 @@ export const ARENA_SCENARIOS = [
       neutral: ["Fine. That\'s a real answer.", "Okay. Now the harder version.", "Go on, but shorter."],
       warm: ["Now that I believe.", "Good — that\'s the kind of answer I can\'t get in interviews.", "You know what you\'re doing. Keep going."],
     },
+    reads: ['lib-c2', 'lib-pr3', 'lib-st2'],
     exits: ["Right, I\'m out. Good to meet you properly.", "I need to go. That was worth the ten minutes."],
   },
   {
@@ -107,6 +109,7 @@ export const ARENA_SCENARIOS = [
       neutral: ["Okay, that\'s actually funny.", "Unserious. I like it.", "Careful, you\'re becoming interesting."],
       warm: ["See, now I\'m annoyed you\'re charming.", "That\'s such a weird thing to be good at.", "Okay stop, I\'m laughing, that\'s against my policy."],
     },
+    reads: ['lib-wm2', 'lib-hm1', 'lib-wm1'],
     exits: ["My friends are going to think I\'ve been murdered.", "Right, I need to go rescue someone."],
   },
   {
@@ -142,6 +145,7 @@ export const ARENA_SCENARIOS = [
       neutral: ["Oh, that\'s interesting actually.", "Yeah, I get that.", "Mm, I know what you mean."],
       warm: ["You know what, I\'m glad I sat here.", "That\'s the most I\'ve laughed at a match all season.", "Yeah, exactly. Nobody ever says that out loud."],
     },
+    reads: ['lib-st5', 'lib-f3', 'lib-hm2'],
     exits: ["I should go before I get a taxi with a man who\'s obviously asleep.", "Right, mine\'s finishing."],
   },
   {
@@ -177,6 +181,7 @@ export const ARENA_SCENARIOS = [
       neutral: ["Okay. That\'s closer.", "Go on.", "Alright. I\'m listening."],
       warm: ["Thank you. That\'s what I needed to hear.", "Okay. Okay. I can work with that.", "Good. I\'m still annoyed but I\'m listening properly now."],
     },
+    reads: ['lib-dc3', 'lib-ei2', 'lib-dc1'],
     exits: ["Let\'s talk Monday about the system, not tonight.", "Right. I\'m going to eat something and go to bed."],
   },
   {
@@ -212,6 +217,7 @@ export const ARENA_SCENARIOS = [
       neutral: ["Alright. And then what?", "That\'s something, at least.", "I\'m writing this down."],
       warm: ["That\'s the first thing anyone\'s said today that made sense.", "Fine. Okay. I believe you. Mostly.", "Good. Same heat, less noise — I appreciate that."],
     },
+    reads: ['lib-bz4', 'lib-dc2', 'lib-f6'],
     exits: ["I\'m giving you the relationship. Don\'t make me regret it.", "I need to go calm down my CEO. Send me the plan tonight."],
   },
   {
@@ -248,6 +254,7 @@ export const ARENA_SCENARIOS = [
       neutral: ["Better.", "That\'s a real answer.", "Continue."],
       warm: ["That\'s the most interesting sentence I\'ve heard this week.", "I like that you said that slowly.", "Fine. You get one more question."],
     },
+    reads: ['lib-mny3', 'lib-bz2', 'lib-bz3'],
     exits: ["I\'m late for something less interesting. Email me.", "Good. Go do the thing."],
   },
 ];
