@@ -11,12 +11,14 @@
     "preview": "npm run build && node server/index.js",
     "doctor": "node scripts/doctor.mjs",
     "build:static": "VITE_LOCAL=1 vite build",
-    "test": "node test/local.test.mjs && node test/game.test.mjs && node test/ai.test.mjs",
+    "test": "node test/local.test.mjs && node test/game.test.mjs && node test/ai.test.mjs && node test/retention.test.mjs && node test/insights.test.mjs && node test/guard.test.mjs",
     "audit": "node scripts/audit.mjs",
     "audit:api": "node scripts/audit-api.mjs",
-    "test:ui": "node test/render.test.mjs && node test/coach-ai.test.mjs && node test/academy.test.mjs && node test/frameworks.test.mjs && node test/newviews.test.mjs",
+    "test:ui": "node test/render.test.mjs && node test/coach-ai.test.mjs && node test/academy.test.mjs && node test/frameworks.test.mjs && node test/newviews.test.mjs && node test/retention-ui.test.mjs && node test/shell.test.mjs",
     "bundle:test": "esbuild test/entry.jsx --bundle --format=esm --platform=node --jsx=automatic --loader:.js=jsx --loader:.css=empty --outfile=test/app.mjs",
-    "build:pages": "BASE_PATH=./ VITE_LOCAL=1 vite build --outDir docs --emptyOutDir"
+    "build:pages": "BASE_PATH=./ VITE_LOCAL=1 vite build --outDir docs --emptyOutDir",
+    "test:security": "node test/security.test.mjs",
+    "chapters:ids": "node scripts/gen-chapter-ids.mjs"
   },
   "keywords": [],
   "author": "",

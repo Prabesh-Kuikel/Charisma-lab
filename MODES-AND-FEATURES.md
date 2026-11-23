@@ -11,9 +11,25 @@ The app has **two build targets**. Same UI, same content, same engines — diffe
 | Cross-device sync | ✅ same database everywhere | ❌ per-browser |
 | Streak/XP | server-side | per-device |
 
-Both modes contain all 120 written lessons, 41 long-form chapters, 10 games,
-23 frameworks, 40 body-language cards, 6 academy modules, 5 skill tracks,
-30 daily drills, the coach and the creator studio.
+Both modes contain all 120 written lessons, **83 long-form chapters**,
+**16 academy modules**, **31 Conversation Gym playbooks**, 10 games, **31 frameworks**,
+**48 body-language cards**, **8 skill tracks**, **40 daily drills**, 28 wit scenarios,
+**13 Arena personas across 6 scenes**,
+the coach, the creator studio, and the retention layer (spaced review, read-aloud
+on every line, record-and-compare, My Scripts).
+
+Four things sit on top of the content:
+
+- **Search everything** — ⌘K / Ctrl-K (or `/`, or the search field in the top
+  bar) opens one index over **204 records**: every chapter, playbook, module,
+  course lesson, framework, skill track, drill and game. Results open the thing,
+  not the page it lives on.
+- **Start Here** — a twelve-question self-assessment that scores five dimensions
+  and hands back a four-step route. It is a suggestion engine; nothing is locked.
+- **Progress** — rolling score trend, per-skill deltas, honest coverage numbers,
+  what has gone quiet, and one recommendation for today.
+- **Backup & Settings** — download or restore everything as one JSON file, see
+  what is stored, and erase it after an automatic safety copy.
 
 ```bash
 npm start              # server mode → http://localhost:3000   (needs Node 22.13+; 24 LTS recommended)
@@ -55,9 +71,24 @@ If you want static hosting *and* shared progress, that needs a backend service
 
 ---
 
+## What loads when
+
+The app is deliberately split so the first paint is quick:
+
+| Chunk | Size (gzip) | When |
+|---|---|---|
+| `index.js` — shell, views, engines | ~143 KB | first paint |
+| `api.js` — all content except long prose | ~141 KB | first paint |
+| `chapters.js` — 83 long-form chapters | ~79 KB | first chapter you open, or a library search |
+| `lessons.js` — 120 course lessons | ~104 KB | first Courses visit, or the search index |
+
+The initial download dropped from one **~415 KB gzip** bundle to roughly
+**285 KB**, with the two prose halves fetched only when they are used. All of it
+still works offline once cached, and there is no server involved.
+
 ## Frameworks Vault
 
-23 structures used by people who speak for a living, each with the conditions that make it
+31 structures used by people who speak for a living, each with the conditions that make it
 work, its failure modes, a worked example and a practice drill:
 
 **Clarity** PREP · BLUF · Pyramid Principle · What–So What–Now What — **Persuasion** SCQA · PAS ·
@@ -65,6 +96,13 @@ Before–After–Bridge · FAB — **Sales** SPIN · Acknowledge–Reframe–Ask
 **Storytelling** Story Spine · Head–Heart–Hands · Past–Present–Future — **Feedback** SBI —
 **Conflict** NVC · LARA · Bridge & Redirect — **Negotiation** BATNA & Anchors · If–Then Trades ·
 Three-Option Close — **Performance** Bookend Talk · 3–2–1
+
+**Care** Hold, Don't Fix · The Specific Help Offer — **Family** The Three-Beat Boundary ·
+State, Not Charge — **Money** The Number and the Silence · Blame Yourself First —
+**Self** The Evidence Ladder · The Warm Exit
+
+The care, family, money and self categories are new: the vault previously had nothing
+for the conversations that are not about work.
 
 Searchable, filterable by category, cross-linked to the library chapters that explain them.
 
@@ -152,10 +190,12 @@ coaching notes, then optionally lets the model write the partner's reply
 (the `AI persona` chip next to Send). Same scenario, same scoring, better
 improvisation. Turn it off and the scripted persona returns.
 
-## Academy
+## Academy — sixteen modules
 
-Six modules of genuinely written material, each with **6 principles, 2–3
-mechanics, 4–5 scripted exchanges, 4 drills and 4 cross-linked chapters**:
+Each module is genuinely written: **6 principles, 2–3 mechanics with worked
+examples, 4–5 scripted exchanges, 4 drills and 4 cross-linked chapters.**
+
+**Wing one — social fundamentals**
 
 | Module | Thesis |
 |---|---|
@@ -166,10 +206,101 @@ mechanics, 4–5 scripted exchanges, 4 drills and 4 cross-linked chapters**:
 | Body Language & Cues | Read the cluster, never the single cue |
 | Human Psychology | What people are defending, and why |
 
-Every drill logs **12 XP** by kind `academy-<module>`, and every chapter chip
-opens that exact entry in the Resource Library. Flirting and psychology content
-is consent-first and non-manipulative by construction: the cautions tab is
-mandatory, not decorative.
+**Wing two — every field of life**
+
+| Module | Thesis |
+|---|---|
+| Small Talk Mastery | Small talk is the door every real conversation comes through |
+| Talking to Women | Calm, specific, safe enough to be chosen — consent-first throughout |
+| Difficult Conversations | The conversation you are avoiding costs more than the conversation |
+| Emotional Depth | Being the person people tell the true thing to is rare |
+| Professional Communication | Being heard is a separate, learnable skill |
+| Business & Sales Talk | Nobody buys a pitch; they buy the removal of a cost they named |
+| Storytelling & Wit | Three sentences and a stop beats fifteen and a moral |
+| Confidence From Zero | Confidence is evidence collected slowly, not a mindset trick |
+
+**Wing three — the rooms you cannot leave, and craft**
+
+| Module | Thesis |
+|---|---|
+| Family & The Rooms You Cannot Leave | Every other room lets you leave; this one you have to be good in. Skill here is changing a pattern, not winning the argument |
+| Humour As A Discipline | Funny is not a personality, it is a set of small mechanical decisions — target, timing, specificity, recovery |
+
+Every drill logs **12 XP** as `academy-<module>`; every chapter chip opens that
+exact entry in the library. Flirting and psychology modules carry mandatory
+cautions: consent-first, non-manipulative, and explicitly anti-coercion.
+
+## Conversation Gym
+
+**Thirty-one situation playbooks** across ten categories — Starting, Everyday,
+Dating, Difficult, Depth, Professional, Business, **Family, Money, Care**. Not
+theory: each one is the script people were never given.
+
+Wing two covers the fields people actually lose sleep over: marriage pressure at
+the family table, a defensive parent, dividing care with a sibling, moving back
+home, a relative's drinking, a friend who owes money, asking for a raise, saying
+your price, the group dinner nobody settled, a terminal diagnosis, a colleague's
+bad news, an apology that is not landing, and the neighbour whose music goes
+until two.
+
+Every playbook has the same six parts:
+
+1. **The situation**, described honestly (the party where you know nobody, the
+   café approach, the boss you have to tell bad news to)
+2. **Your goal** — one achievable outcome, not "be charming"
+3. **Step by step** — five steps in the order you would actually do them
+4. **Say this** — the literal lines, with what each one is doing
+5. **Where it goes wrong** — the specific failure modes
+6. **Your rep** — one drill, plus links into the Academy and library
+
+Completing a playbook logs **15 XP** — or **10 XP** if you log it as a stumble.
+
+### Retention: the queue, the read-aloud line, the recording
+
+Skills decay on a schedule, so the Gym now schedules them.
+
+- **Spaced repetition.** Every playbook you log enters a queue and comes back at
+  **3 → 7 → 21 → 60 days**. A clean rep promotes one step; "I stumbled" resets to
+  3 days and records a lapse. The Gym shows a *Due for review* banner with the
+  count, a **Due today** filter that lists your queue oldest-first, and a per-card
+  `due now` / `in 9d` chip. Stored in `localStorage` under `charisma-lab.srs.v1`.
+- **Read aloud on every line.** Every scripted line anywhere in the app — Gym,
+  Academy, Library chapters, Skill Tracks — is tappable and keyboard-focusable
+  and is read by the browser's speech engine (`▶` on hover, `Enter` or `Space`
+  to hear it). No audio files, no network, no key.
+- **Record and compare.** Each playbook opens a *Rehearse it out loud* panel:
+  hear the line at 0.7× / 0.85× / 1×, record your own take with `MediaRecorder`,
+  play both back, and get your words-per-minute against a 110–160 target. The
+  previous take is kept so you can hear the improvement. Logging the rep from
+  the panel counts toward the queue.
+- **Weak spots.** Items that have lapsed and are due surface first, because a
+  stumble you have forgotten is the one that costs you in the room.
+
+## My Scripts — the lines that are actually yours
+
+A new view (`My Scripts` in the Practice group) for your own lines rather than
+the ones we wrote. Write a version of any playbook line you would really say, tag
+it (`Small talk`, `Dating`, `Work`, `Difficult`, `Business`, `Family`,
+`Strangers`), and rehearse it with the same read-aloud and record-and-compare
+panel. It suggests the least-rehearsed line, counts reps per line, and every
+playbook has a **write my own version** link that pre-fills the entry.
+Stored in `localStorage` under `charisma-lab.scripts.v1`.
+
+## Library — 83 entries, 83 full chapters
+
+**Wing two** adds 30 entries with 30 long-form chapters in six categories: Small
+Talk, Talking to Women, Difficult Conversations, Emotional Depth, Professional,
+Business.
+
+**Wing three** adds **12 entries with 12 long-form chapters (~9,800 words)** in
+three more: **Family** (warm boundary/hard rule, state not charge, divide tasks
+not blame, the unrescuable thing, terms before patterns), **Money** (blame
+yourself first, numbers in the group never in private, the number and the
+silence) and **Humour** (the safe target is you, the callback ledger, the
+pressure valve, tease the situation not the person).
+
+Each chapter has a thesis, 4 deep paragraphs, a scripted exchange, failure modes,
+drills and related-reading edges that all resolve.
 
 ## Creator Studio
 

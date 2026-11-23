@@ -78,6 +78,19 @@ document.querySelector('script[type=module]').src
 
 ---
 
+## 4b. What is in the site now
+
+| Section | Count |
+|---|---|
+| Academy modules | **14** (small talk, talking to women, difficult conversations, emotional depth, professional, business, storytelling, confidence + the original six) |
+| Conversation Gym | **18** situation playbooks with literal scripts |
+| Library | **71** entries, **71** full chapters |
+| Course lessons | 120 |
+| Games / frameworks / body cards | 10 / 23 / 40 |
+
+Every course, day and module is open at any time. Nothing is gated, nothing
+depends on your streak, and everything runs in the browser with no backend.
+
 ## 5. When you change content later
 
 The `docs/` build must be refreshed, or the live site keeps showing the old version:
