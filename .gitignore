@@ -1,0 +1,11 @@
+node_modules
+dist
+data
+*.log
+.DS_Store
+test/app.mjs
+
+# docs/ is NOT ignored: it holds the pre-built site GitHub Pages serves.
+
+# scratch: playwright probes, screenshots, one-off verification scripts
+.tools/
