@@ -1,12 +1,15 @@
 name: Checks
 
 # The deploy workflow publishes the pre-built docs/ and deliberately runs no
-# npm commands, so nothing has ever verified a push. This job is the gate:
-# content audits, the test suite, the security suite, a fresh build that must
-# match what is committed, and `npm audit` on the lockfile.
+# npm commands, so nothing else verifies a push. This job is the gate: content
+# audits, the test suite, the security suite, a fresh build that must match what
+# is committed, and npm audit on the lockfile.
 #
-# It runs on the same code the deploy does, before the deploy, and failing
-# here does not block Pages (the site keeps serving the last good docs/).
+# It runs alongside the deploy, not before it. Failing here does NOT block Pages:
+# the site keeps serving the last good docs/, which is the behaviour you want on
+# a content site — a red check should not take the app offline.
+#
+# Action majors verified current on 2026-11: checkout v7, setup-node v7.
 
 on:
   push:
@@ -21,14 +24,14 @@ jobs:
   checks:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: '22'
           cache: npm
 
-      # npm ci, not install: the lockfile is the contract, and a drift between
+      # npm ci, not install: the lockfile is the contract, and drift between
       # package.json and package-lock.json should fail loudly here.
       - name: Install from the lockfile
         run: npm ci
@@ -57,6 +60,10 @@ jobs:
       # The committed docs/ is what actually ships. Rebuilding and diffing it
       # catches the "forgot to run build:pages" round, which is otherwise
       # invisible until the live site is stale.
+      #
+      # git status, not git diff: a new hashed bundle is an UNTRACKED file, and
+      # `git diff` does not see untracked files. The old version of this check
+      # could pass while docs/ was stale by a whole bundle.
       - name: Rebuild the static site
         run: npm run build:pages
 
@@ -67,3 +74,5 @@ jobs:
             git status --porcelain docs
             exit 1
           fi
+
+          
