@@ -29,14 +29,26 @@ await import('./app.mjs');
 await wait(1600);
 
 // 1 ── landing
-const modChips = () => [...document.querySelectorAll('.card .chip.clickable')].filter((c) => !/principles|mechanics|scripts|drills|cautions/i.test(txt(c)));
+// The chip row now holds level filters ("3 · Hard and specific 5") next to the
+// modules, so the module matcher is the module's own "…12m" duration label.
+const LEVEL_CHIP = /^(all \d+|\d · .+ \d+)$/i;
+const allChips = () => [...document.querySelectorAll('.card .chip.clickable')].filter((c) => !/principles|mechanics|scripts|drills|cautions/i.test(txt(c)));
+const modChips = () => allChips().filter((c) => /\d+m$/.test(txt(c)) && !LEVEL_CHIP.test(txt(c)));
 const names = modChips().map(txt);
+const levelChips = allChips().filter((c) => LEVEL_CHIP.test(txt(c))).map(txt);
+console.log('LEVEL CHIPS:', levelChips.join(' · '));
 console.log('MODULE CHIPS:', names.join(' · '));
-check(names.length === 16, `expected 16 module chips, saw ${names.length}: ${names.join(',')}`);
+// a floor, not an equality: adding a module should not require editing a test
+check(names.length >= 18, `expected at least 18 module chips, saw ${names.length}: ${names.join(',')}`);
+check(levelChips.length === 4, `expected 4 level chips (all + 3 levels), saw ${levelChips.length}: ${levelChips.join(',')}`);
+check(new Set(levelChips).size === levelChips.length, 'level chips should be distinct');
+// the level counts must add up to the module count, or a module is unreachable
+const counts = levelChips.slice(1).map((t) => Number((t.match(/(\d+)$/) || [])[1]));
+check(counts.reduce((a, b) => a + b, 0) === names.length, `level counts ${counts.join('+')} should sum to ${names.length}`);
 const head = txt(document.querySelector('.content'));
 check(/charismatic/i.test(head), 'academy landing should describe the first module');
 
-// 2 ── every tab renders real content for every module (14 modules × 5 tabs)
+// 2 ── every tab renders real content for every module (16 modules × 5 tabs)
 const TABS = ['Principles', 'Mechanics', 'Scripts', 'Drills', 'Cautions'];
 for (const name of names) {
   click(modChips().find((c) => txt(c) === name));
@@ -55,6 +67,22 @@ for (const name of names) {
   console.log(`${name.padEnd(24)} ${rows.join('  ')}`);
 }
 check(errors.length === 0, `console errors: ${errors.slice(0, 2).join(' | ')}`);
+
+// 2b ── the pacing card: level, minutes, and a prerequisite that is a link
+{
+  const target = modChips().find((c) => /Difficult Conversations/.test(txt(c)));
+  click(target);
+  await wait(250);
+  const panel = txt(document.querySelector('.content'));
+  check(/level 3 · 14 min/.test(panel), `pacing card should show level and minutes, saw: ${panel.slice(0, 120)}`);
+  const afterBtn = [...document.querySelectorAll('button')].find((b) => /read after/i.test(txt(b)));
+  check(!!afterBtn, 'a paced module with a prerequisite should offer a "read after" jump');
+  if (afterBtn) {
+    click(afterBtn);
+    await wait(250);
+    check(/emotional depth/i.test(txt(document.querySelector('.content'))), 'the prerequisite jump should open Emotional Depth');
+  }
+}
 
 // 3 ── a drill logs XP and locks in as done
 click(modChips().find((c) => txt(c) === 'Developing Humour') || modChips()[1]);

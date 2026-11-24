@@ -62,8 +62,22 @@ await wait(500);
 body = txt(document.querySelector('.content'));
 check(/due now|review in/.test(body), 'scheduled chip missing on the playbook');
 check(!!document.querySelector('.ra-line') || document.querySelectorAll('.script-line').length > 0, 'no readable script lines');
+const xpAtOpen = (() => { const m = txt(document.querySelector('[data-testid="xp-foot"]')).match(/([\d,]+)\s*XP/); return m ? Number(m[1].replace(/,/g, '')) : -1; })();
 click([...document.querySelectorAll('button')].find((b) => /Log this rep/.test(txt(b))));
-await wait(900);
+await wait(1200);
+// The header XP is `stats.user.xp`, fetched once at boot. This is a smoke read
+// only — jsdom re-renders for its own reasons and cannot prove the refresh. The
+// real contract lives in test/practice.test.mjs ('views that award XP refresh
+// the stats'), and it was found in a real browser, not here.
+const headerXp = () => {
+  const m = txt(document.querySelector('[data-testid="xp-foot"]')).match(/([\d,]+)\s*XP/);
+  return m ? Number(m[1].replace(/,/g, '')) : -1;
+};
+const storedXp = () => { try { return JSON.parse(localStorage.getItem('charisma-lab.state.v1') || '{}').user?.xp ?? 0; } catch { return 0; } };
+await wait(700);
+console.log('header XP before → after rep:', xpAtOpen, '→', headerXp(), '| stored:', storedXp());
+check(storedXp() > 0, `the rep did not reach the profile (stored ${storedXp()})`);
+check(headerXp() > 0, 'the header XP counter disappeared after a rep');
 const srsNow = JSON.parse(localStorage.getItem('charisma-lab.srs.v1'));
 const resched = Object.values(srsNow).filter((r) => r.due > iso(0)).length;
 console.log('rescheduled entries:', resched, '/', Object.keys(srsNow).length);

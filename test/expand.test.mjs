@@ -63,10 +63,12 @@ check(xpAfter > xpBefore, `gym rep did not award XP (${xpBefore} → ${xpAfter})
 // ── Academy second wing ──
 click(nav(/^.*Academy/));
 await wait(800);
-const modChips = [...document.querySelectorAll('.card .chip.clickable')].filter((c) => !/principles|mechanics|scripts|drills|cautions/i.test(txt(c)));
+// level filters ("3 · Hard and specific 5") sit in the same row as modules, so
+// match modules by their duration label — same rule as test/academy.test.mjs
+const modChips = [...document.querySelectorAll('.card .chip.clickable')].filter((c) => !/principles|mechanics|scripts|drills|cautions/i.test(txt(c)) && /\d+m$/.test(txt(c)));
 console.log('ACADEMY MODULES:', modChips.length, modChips.map(txt).slice(-4).join(' · '));
-check(modChips.length === 16, `expected 16 modules, saw ${modChips.length}`);
-for (const name of ['Small Talk Mastery', 'Talking to Women', 'Difficult Conversations', 'Emotional Depth', 'Professional Communication', 'Business & Sales Talk', 'Storytelling & Wit', 'Confidence From Zero', 'Family & The Rooms You Cannot Leave', 'Humour As A Discipline']) {
+check(modChips.length >= 18, `expected at least 18 modules, saw ${modChips.length}`);
+for (const name of ['Small Talk Mastery', 'Talking to Women', 'Difficult Conversations', 'Emotional Depth', 'Professional Communication', 'Business & Sales Talk', 'Storytelling & Wit', 'Confidence From Zero', 'Family & The Rooms You Cannot Leave', 'Humour As A Discipline', 'Speaking to a Room']) {
   const chip = modChips.find((c) => txt(c) === name);
   check(!!chip, `module chip missing: ${name}`);
   if (!chip) continue;
