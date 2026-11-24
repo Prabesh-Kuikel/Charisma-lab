@@ -1,0 +1,69 @@
+name: Checks
+
+# The deploy workflow publishes the pre-built docs/ and deliberately runs no
+# npm commands, so nothing has ever verified a push. This job is the gate:
+# content audits, the test suite, the security suite, a fresh build that must
+# match what is committed, and `npm audit` on the lockfile.
+#
+# It runs on the same code the deploy does, before the deploy, and failing
+# here does not block Pages (the site keeps serving the last good docs/).
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      # npm ci, not install: the lockfile is the contract, and a drift between
+      # package.json and package-lock.json should fail loudly here.
+      - name: Install from the lockfile
+        run: npm ci
+
+      - name: No known advisories
+        run: npm audit --audit-level=high
+
+      - name: Unit + content tests
+        run: npm test
+
+      - name: Content audits
+        run: npm run audit
+
+      - name: Endpoint audit
+        run: npm run audit:api
+
+      - name: Duplicate-rep audit
+        run: npm run audit:reps
+
+      - name: Security suite
+        run: npm run test:security
+
+      - name: UI suite
+        run: npm run test:ui
+
+      # The committed docs/ is what actually ships. Rebuilding and diffing it
+      # catches the "forgot to run build:pages" round, which is otherwise
+      # invisible until the live site is stale.
+      - name: Rebuild the static site
+        run: npm run build:pages
+
+      - name: docs/ is up to date
+        run: |
+          if [ -n "$(git status --porcelain docs)" ]; then
+            echo "::error::docs/ is stale — run 'npm run build:pages' and commit it"
+            git status --porcelain docs
+            exit 1
+          fi
