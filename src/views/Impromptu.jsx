@@ -16,10 +16,28 @@ export default function Impromptu({ content, go, notify, boot }) {
   const audioRef = useRef(null);
 
   const cats = useMemo(() => ['All', ...new Set(content.prompts.map((p) => p.category))], [content.prompts]);
-  const pool = useMemo(() => (cat === 'All' ? content.prompts : content.prompts.filter((p) => p.category === cat)), [cat, content.prompts]);
+  // 100 prompts were sortable by topic only, so a nervous beginner rolled a
+  // level-3 provocation and a veteran kept getting warm-ups. The tier is
+  // derived from the existing difficulty field — no new content needed.
+  // difficulty runs 1–5 in the content, so the tiers are ranges; a tier
+  // that only matched exact integers left eight prompts unreachable
+  const TIERS = [
+    ['All', () => true],
+    ['Warm-up', (d) => d <= 2],
+    ['Working', (d) => d === 3],
+    ['Hard', (d) => d >= 4],
+  ];
+  const [tier, setTier] = useState('All');
+  const tierTest = useMemo(() => (TIERS.find(([t]) => t === tier) || TIERS[0])[1], [tier]);
+  const inCat = useMemo(() => content.prompts.filter((p) => cat === 'All' || p.category === cat), [cat, content.prompts]);
+  const pool = useMemo(() => inCat.filter((p) => tierTest(p.difficulty || 3)), [inCat, tierTest]);
+  const poolCounts = useMemo(() => TIERS.reduce((m, [name, test]) => {
+    m[name] = inCat.filter((p) => test(p.difficulty || 3)).length;
+    return m;
+  }, {}), [inCat]);
 
   const roll = (p) => {
-    const next = p || pool[Math.floor(Math.random() * pool.length)];
+    const next = p || pool[Math.floor(Math.random() * pool.length)] || content.prompts[0];
     setPrompt(next);
     setPhase('idle');
     setResult(null);
@@ -30,6 +48,10 @@ export default function Impromptu({ content, go, notify, boot }) {
   };
 
   useEffect(() => {
+    if (boot?.openId) {
+      const hit = (content.prompts || []).find((p) => p.id === boot.openId);
+      if (hit) { setPrompt(hit); setPhase('idle'); return; }
+    }
     if (boot?.drillPrompt) {
       setPrompt({ id: 'course', text: boot.drillPrompt, category: boot.dayTitle || 'Course drill', difficulty: 2, prep: 10, speak: 120 });
       prepTimer.set('down', 10);
@@ -37,7 +59,7 @@ export default function Impromptu({ content, go, notify, boot }) {
       roll();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [boot?.drillPrompt]);
+  }, [boot?.drillPrompt, boot?.openId]);
 
   const startPrep = () => { setPhase('prep'); prepTimer.start('down', prompt.prep); prepTimer._onDone = true; };
   const skipPrep = () => { prepTimer.pause(); startLive(); };
@@ -79,6 +101,13 @@ export default function Impromptu({ content, go, notify, boot }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [phase, prepTimer.seconds, prepTimer.running]);
 
+  // narrowing the filter should immediately show a prompt from the new pool
+  useEffect(() => {
+    if (!prompt || phase !== 'idle') return;
+    const inPool = pool.some((p) => p.id === prompt.id);
+    if (!inPool && pool.length) setPrompt(pool[Math.floor(Math.random() * pool.length)]);
+  }, [pool]);
+
   const live = phase === 'live';
   const over = prompt && timer.seconds > prompt.speak + 30;
 
@@ -86,9 +115,16 @@ export default function Impromptu({ content, go, notify, boot }) {
     <div className="grid split">
       <div className="stack">
         <div className="prompt-box">
-          <div className="row" style={{ marginBottom: 12 }}>
+          {/* wrap: five chips plus a reroll button is wider than a 390px phone,
+              and nowrap pushed the Reroll button off-screen */}
+          <div className="row wrap" style={{ marginBottom: 12, rowGap: 6 }}>
             <span className="chip violet"><Ico name="spark" size={11} /> Impromptu prompt</span>
             {prompt && <span className="chip">{prompt.category}</span>}
+            {prompt && prompt.difficulty && (
+              <span className={`chip ${prompt.difficulty >= 3 ? 'rose' : prompt.difficulty === 1 ? 'mint' : ''}`} style={{ fontSize: 10 }}>
+                level {prompt.difficulty}
+              </span>
+            )}
             {prompt && <span className="chip">target {fmtTime(prompt.speak)}</span>}
             <span className="spacer" />
             <button className="btn sm" onClick={() => roll()}><Ico name="refresh" size={13} /> Reroll</button>
@@ -96,9 +132,19 @@ export default function Impromptu({ content, go, notify, boot }) {
           <div className="prompt-text">{prompt?.text || 'Rolling a prompt…'}</div>
           <div className="row wrap tiny dim" style={{ marginTop: 12, gap: 6 }}>
             {cats.slice(1).map((c) => (
-              <button key={c} className={`chip clickable ${cat === c ? 'active' : ''}`} onClick={() => { setCat(c); }}>{c}</button>
+              <button key={c} className={`chip clickable ${cat === c ? 'active' : ''}`} aria-pressed={cat === c} onClick={() => { setCat(c); }}>{c}</button>
             ))}
             {cat !== 'All' && <button className="chip clickable" onClick={() => setCat('All')}>Clear filter</button>}
+          </div>
+          <div className="row wrap tiny dim" style={{ marginTop: 8, gap: 6 }}>
+            <span style={{ marginRight: 2 }}>Difficulty</span>
+            {TIERS.map(([name]) => (
+              <button key={name} className={`chip clickable ${tier === name ? 'active' : ''}`} aria-pressed={tier === name} style={{ fontSize: 10 }}
+                onClick={() => setTier(name)} title={name === 'Warm-up' ? 'Warm-up: one idea, no stakes' : name === 'Working' ? 'Working: two beats and a point' : 'Hard: contested, abstract, or hostile'}>
+                {name} <span className="dim">{poolCounts[name]}</span>
+              </button>
+            ))}
+            {pool.length === 0 && <span className="chip rose" style={{ fontSize: 10 }}>no prompts at this level — try All</span>}
           </div>
         </div>
 

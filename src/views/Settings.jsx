@@ -79,12 +79,13 @@ export default function Settings({ stats, notify, refresh, go, onWipe }) {
             ref={fileRef}
             type="file"
             accept="application/json,.json"
+            aria-label="Choose a backup file to restore"
             style={{ display: 'none' }}
             onChange={(e) => { const f = e.target.files?.[0]; if (f) doImport(f); e.target.value = ''; }}
           />
           <div className="row" style={{ gap: 4 }}>
-            <button className={`chip clickable ${importMode === 'merge' ? 'active' : ''}`} style={{ fontSize: 10 }} onClick={() => setImportMode('merge')}>merge</button>
-            <button className={`chip clickable ${importMode === 'replace' ? 'active' : ''}`} style={{ fontSize: 10 }} onClick={() => setImportMode('replace')}>replace</button>
+            <button className={`chip clickable ${importMode === 'merge' ? 'active' : ''}`} aria-pressed={importMode === 'merge'} style={{ fontSize: 10 }} onClick={() => setImportMode('merge')}>merge</button>
+            <button className={`chip clickable ${importMode === 'replace' ? 'active' : ''}`} aria-pressed={importMode === 'replace'} style={{ fontSize: 10 }} onClick={() => setImportMode('replace')}>replace</button>
           </div>
         </div>
         <div className="tiny dim" style={{ marginTop: 10 }}>
@@ -133,7 +134,7 @@ export default function Settings({ stats, notify, refresh, go, onWipe }) {
           {AI_PROVIDERS.map((p) => (
             <button
               key={p.id}
-              className={`chip clickable ${ai.provider === p.id ? 'active' : ''}`}
+              className={`chip clickable ${ai.provider === p.id ? 'active' : ''}`} aria-pressed={ai.provider === p.id}
               style={{ fontSize: 10 }}
               onClick={() => setAi({ ...ai, provider: p.id })}
             >
@@ -149,8 +150,7 @@ export default function Settings({ stats, notify, refresh, go, onWipe }) {
             value={ai.key || ''}
             onChange={(e) => setAi({ ...ai, key: e.target.value })}
             style={{ width: '100%', marginTop: 10 }}
-            aria-label="API key"
-          />
+            aria-label="API key" />
         )}
         <div className="row wrap" style={{ gap: 8, marginTop: 12 }}>
           <button className="btn sm primary" onClick={saveAi}><Ico name="check" size={12} /> Save AI settings</button>
@@ -198,8 +198,7 @@ export default function Settings({ stats, notify, refresh, go, onWipe }) {
             value={confirmWipe}
             onChange={(e) => setConfirmWipe(e.target.value)}
             style={{ width: 160 }}
-            aria-label="Type DELETE to confirm"
-          />
+            aria-label="Type DELETE to confirm" />
           <button className="btn sm" onClick={wipe} disabled={confirmWipe !== 'DELETE'}>
             <Ico name="trash" size={12} /> Erase everything
           </button>
@@ -209,9 +208,9 @@ export default function Settings({ stats, notify, refresh, go, onWipe }) {
       <div className="card">
         <div className="card-title" style={{ marginBottom: 10 }}>Not built yet — honestly</div>
         <ul className="lesson-list">
-          <li><strong>Offline install.</strong> The app needs one page load from the network; after that the browser cache usually covers you, but there is no service worker yet, so a hard reload offline will fail.</li>
+          <li><strong>Offline install.</strong> There is a service worker: open the app once online and it installs; after that a hard reload works with the network off. On a very first visit offline, nothing can load — the shell has not been stored yet.</li>
           <li><strong>Cross-device sync.</strong> A file backup is the only bridge between machines. No accounts, no sync server.</li>
-          <li><strong>Smaller first load.</strong> The library and courses are one bundle for now; splitting them is the next structural job.</li>
+          <li><strong>Smaller first load.</strong> Courses and the chapter reader load on demand, and the search index builds when you first open search, not at boot. The core app is still ~160 kB gzipped in one chunk — breaking it up further is the next structural job.</li>
         </ul>
         <button className="chip clickable" style={{ fontSize: 10, marginTop: 12 }} onClick={() => go('start')}>
           <Ico name="compass" size={10} /> take the assessment instead

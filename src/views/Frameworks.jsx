@@ -8,7 +8,7 @@ const TONE = {
   Care: 'rose', Family: 'amber', Money: 'mint', Self: 'cyan',
 };
 
-export default function Frameworks({ content, notify, go, boot }) {
+export default function Frameworks({ content, notify, go, boot, refresh }) {
   const all = content.frameworks || [];
   const cats = content.frameworkCategories || [];
   const [q, setQ] = useState('');
@@ -30,7 +30,7 @@ export default function Frameworks({ content, notify, go, boot }) {
   const mark = async (f) => {
     if (practised.includes(f.id)) return;
     setPractised((p) => [...p, f.id]);
-    try { await api.logXp({ kind: 'framework', xp: 10 }); notify(`Practised · ${f.name}`); }
+    try { await api.logXp({ kind: 'framework', xp: 10 }); notify(`Practised · ${f.name}`); refresh?.(); }
     catch (e) { notify(e.message); }
   };
 
@@ -46,17 +46,17 @@ export default function Frameworks({ content, notify, go, boot }) {
         <div className="row wrap" style={{ gap: 10 }}>
           <div style={{ position: 'relative', flex: '1 1 260px' }}>
             <span style={{ position: 'absolute', left: 13, top: 12, color: '#6b6b85' }}><Ico name="search" size={15} /></span>
-            <input className="input" style={{ paddingLeft: 38 }} placeholder="Search frameworks, steps, examples…"
+            <input className="input" style={{ paddingLeft: 38 }} placeholder="Search frameworks, steps, examples…" aria-label="Search frameworks" 
               value={q} onChange={(e) => setQ(e.target.value)} />
           </div>
           <span className="chip mint" style={{ fontSize: 10 }}>{all.length} frameworks</span>
         </div>
         <div className="row wrap" style={{ gap: 6, marginTop: 12 }}>
-          <button className={`chip clickable ${cat === 'All' ? 'active' : ''}`} onClick={() => setCat('All')}>
+          <button className={`chip clickable ${cat === 'All' ? 'active' : ''}`} aria-pressed={cat === 'All'} onClick={() => setCat('All')}>
             All <span className="dim">{all.length}</span>
           </button>
           {cats.map((c) => (
-            <button key={c} className={`chip clickable ${cat === c ? 'active' : ''}`} onClick={() => setCat(c)}>
+            <button key={c} className={`chip clickable ${cat === c ? 'active' : ''}`} aria-pressed={cat === c} onClick={() => setCat(c)}>
               {c} <span className="dim">{all.filter((f) => f.category === c).length}</span>
             </button>
           ))}
@@ -124,11 +124,16 @@ export default function Frameworks({ content, notify, go, boot }) {
 
                   {!!(f.pairs || []).length && (
                     <div className="row wrap" style={{ gap: 6, marginTop: 12 }}>
-                      {f.pairs.filter((p) => !p.startsWith('cf-')).map((p) => (
-                        <button key={p} className="chip clickable" style={{ fontSize: 10 }} onClick={() => go('library', { openId: p })}>
-                          <Ico name="library" size={10} /> reading
-                        </button>
-                      ))}
+                      {f.pairs.filter((p) => !p.startsWith('cf-')).map((p) => {
+                        // "reading" told you nothing; name the chapter you will land in
+                        const entry = (content.library || []).find((l) => l.id === p);
+                        return (
+                          <button key={p} className="chip clickable" style={{ fontSize: 10 }} onClick={() => go('library', { openId: p })}
+                            title={entry ? `Open the chapter: ${entry.title}` : 'Open in the library'}>
+                            <Ico name="library" size={10} /> {entry ? entry.title : p}
+                          </button>
+                        );
+                      })}
                       {f.pairs.filter((p) => p.startsWith('cf-')).map((p) => {
                         const other = all.find((x) => x.id === p.replace('cf-', ''));
                         return other ? (

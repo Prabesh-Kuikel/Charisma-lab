@@ -7,7 +7,7 @@ import { dueItems, allSrs, recordRep } from '../local/srs';
 
 const TONE = { violet: 'violet', amber: 'amber', rose: 'rose', mint: 'mint', cyan: 'cyan', orange: 'orange' };
 
-export default function Gym({ content, notify, go, boot }) {
+export default function Gym({ content, notify, go, boot, refresh }) {
   const scenarios = content.gym || [];
   const categories = content.gymCategories || [];
   const [cat, setCat] = useState('All');
@@ -43,6 +43,7 @@ export default function Gym({ content, notify, go, boot }) {
     try {
       await api.logXp({ kind: 'gym', xp: result === 'stumble' ? 10 : 15 });
       notify(result === 'stumble' ? 'Noted — back in 3 days' : 'Rep logged');
+      refresh?.(); // the header XP is stats, not state — without this it reads stale
     } catch (e) { notify(e.message); }
   };
 
@@ -93,19 +94,23 @@ export default function Gym({ content, notify, go, boot }) {
           </div>
           <div className="stack" style={{ marginTop: 4 }}>
             {active.lines.map((l, i) => (
+              /* the fifth line is the outcome, not a script: it gets its own
+                 treatment so it reads as the test, not another thing to say */
               <div key={i} className="script" style={{ marginBottom: 0 }}>
-                <div className="script-line you">
+                <div className={`script-line ${/^what good/i.test(l.label) ? 'outcome' : 'you'}`}>
                   <span className="script-who">{l.label}</span>
-                  <span style={{ flex: 1 }}>{l.text}</span>
-                  <button
-                    className="icon-btn"
-                    title="Hear this line"
-                    aria-label={`Read this line aloud: ${l.text}`}
-                    onClick={() => speech.speak(l.text, 0.9)}
-                    style={{ background: 'none', border: 0, cursor: 'pointer', color: 'inherit', opacity: 0.55, padding: 2 }}
-                  >
-                    <Ico name="play" size={11} />
-                  </button>
+                  <span style={{ flex: 1 }}>{/^what good/i.test(l.label) ? <em>{l.text}</em> : l.text}</span>
+                  {!/^what good/i.test(l.label) && (
+                    <button
+                      className="icon-btn"
+                      title="Hear this line"
+                      aria-label={`Read this line aloud: ${l.text}`}
+                      onClick={() => speech.speak(l.text, 0.9)}
+                      style={{ background: 'none', border: 0, cursor: 'pointer', color: 'inherit', opacity: 0.55, padding: 2 }}
+                    >
+                      <Ico name="play" size={11} />
+                    </button>
+                  )}
                 </div>
               </div>
             ))}
@@ -179,16 +184,16 @@ export default function Gym({ content, notify, go, boot }) {
 
       <div className="card">
         <div className="row wrap" style={{ gap: 6 }}>
-          <button className={`chip clickable ${cat === 'All' ? 'active' : ''}`} onClick={() => setCat('All')}>
+          <button className={`chip clickable ${cat === 'All' ? 'active' : ''}`} aria-pressed={cat === 'All'} onClick={() => setCat('All')}>
             All {scenarios.length}
           </button>
           {due.length > 0 && (
-            <button className={`chip clickable ${cat === '__due' ? 'active' : ''}`} onClick={() => setCat('__due')}>
+            <button className={`chip clickable ${cat === '__due' ? 'active' : ''}`} aria-pressed={cat === '__due'} onClick={() => setCat('__due')}>
               Due today {due.length}
             </button>
           )}
           {categories.map((c) => (
-            <button key={c} className={`chip clickable ${cat === c ? 'active' : ''}`} onClick={() => setCat(c)}>
+            <button key={c} className={`chip clickable ${cat === c ? 'active' : ''}`} aria-pressed={cat === c} onClick={() => setCat(c)}>
               {c} {counts[c] || 0}
             </button>
           ))}

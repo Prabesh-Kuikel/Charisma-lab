@@ -4,9 +4,13 @@ import { Ico, Bar, Spinner } from '../components/ui';
 
 const KEYS = ['A', 'B', 'C', 'D'];
 
-export default function BodyDecoder({ content, notify }) {
+export default function BodyDecoder({ content, notify, go, boot }) {
   const [cluster, setCluster] = useState('All');
-  const [idx, setIdx] = useState(0);
+  const [idx, setIdx] = useState(() => {
+    if (!boot?.openId) return 0;
+    const i = (content.body || []).findIndex((c) => c.id === boot.openId);
+    return i > 0 ? i : 0;
+  });
   const [choice, setChoice] = useState(null);
   const [feedback, setFeedback] = useState(null);
   const [busy, setBusy] = useState(false);
@@ -48,7 +52,7 @@ export default function BodyDecoder({ content, notify }) {
       <div className="stack">
         <div className="row wrap" style={{ gap: 6 }}>
           {clusters.map((c) => (
-            <button key={c} className={`chip clickable ${cluster === c ? 'active' : ''}`} onClick={() => switchCluster(c)}>{c}</button>
+            <button key={c} className={`chip clickable ${cluster === c ? 'active' : ''}`} aria-pressed={cluster === c} onClick={() => switchCluster(c)}>{c}</button>
           ))}
         </div>
 

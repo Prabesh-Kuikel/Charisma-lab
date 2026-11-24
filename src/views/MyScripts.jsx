@@ -2,6 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { Ico } from '../components/ui';
 import Rehearse from '../components/Rehearse';
 import { allScripts, addScript, removeScript, markUsed, nextToRehearse, SCRIPT_TAGS } from '../local/my-scripts';
+import { logRep } from '../local/reps';
 import { useSpeech } from '../hooks';
 
 export default function MyScripts({ go, notify, params }) {
@@ -33,7 +34,9 @@ export default function MyScripts({ go, notify, params }) {
   };
 
   const used = (id) => {
+    const line = list.find((s) => s.id === id);
     markUsed(id);
+    logRep({ kind: 'scripts', ref: id, label: line?.text?.slice(0, 90) || 'Script rehearsal', seconds: 45, repeat: true });
     setList(allScripts());
     notify('Rep counted');
   };
@@ -109,11 +112,10 @@ export default function MyScripts({ go, notify, params }) {
           value={text}
           onChange={(e) => setText(e.target.value)}
           style={{ width: '100%', marginTop: 10, resize: 'vertical' }}
-          aria-label="Your script line"
-        />
+          aria-label="Your script line" />
         <div className="row wrap" style={{ gap: 6, marginTop: 10 }}>
           {SCRIPT_TAGS.map((t) => (
-            <button key={t} className={`chip clickable ${newTag === t ? 'active' : ''}`} style={{ fontSize: 10 }} onClick={() => setNewTag(t)}>
+            <button key={t} className={`chip clickable ${newTag === t ? 'active' : ''}`} aria-pressed={newTag === t} style={{ fontSize: 10 }} onClick={() => setNewTag(t)}>
               {t}
             </button>
           ))}
@@ -126,13 +128,13 @@ export default function MyScripts({ go, notify, params }) {
 
       <div className="card">
         <div className="row wrap" style={{ gap: 6 }}>
-          <button className={`chip clickable ${tag === 'All' ? 'active' : ''}`} onClick={() => setTag('All')}>
+          <button className={`chip clickable ${tag === 'All' ? 'active' : ''}`} aria-pressed={tag === 'All'} onClick={() => setTag('All')}>
             All {list.length}
           </button>
           {SCRIPT_TAGS.map((t) => {
             const n = list.filter((s) => s.tag === t).length;
             return n > 0 ? (
-              <button key={t} className={`chip clickable ${tag === t ? 'active' : ''}`} onClick={() => setTag(t)}>
+              <button key={t} className={`chip clickable ${tag === t ? 'active' : ''}`} aria-pressed={tag === t} onClick={() => setTag(t)}>
                 {t} {n}
               </button>
             ) : null;

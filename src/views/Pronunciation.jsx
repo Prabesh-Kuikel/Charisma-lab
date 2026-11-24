@@ -126,7 +126,7 @@ export default function Pronunciation({ content, notify }) {
             </div>
           )}
           {!rec.srSupported && (
-            <textarea className="textarea" style={{ marginTop: 10, minHeight: 64 }} placeholder="Type the words you actually said…"
+            <textarea className="textarea" style={{ marginTop: 10, minHeight: 64 }} placeholder="Type the words you actually said…" aria-label="What you actually said" 
               onChange={(e) => rec.setTyped(e.target.value)} value={rec.transcript} />
           )}
         </div>

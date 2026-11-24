@@ -251,8 +251,8 @@ export default function Courses({ content, progress, refresh, notify, go, boot }
                 </div>
               )}
 
-              <label className="label" style={{ marginTop: 16 }}>Reflection notes</label>
-              <textarea className="textarea" style={{ minHeight: 66, marginBottom: 12 }} value={notes}
+              <label className="label" htmlFor="course-reflection" style={{ marginTop: 16 }}>Reflection notes</label>
+              <textarea id="course-reflection" className="textarea" style={{ minHeight: 66, marginBottom: 12 }} value={notes}
                 onChange={(e) => setNotes(e.target.value)} placeholder="What did you notice about your voice, structure or nerves?" />
 
               {!done[day.day] ? (

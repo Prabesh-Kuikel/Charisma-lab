@@ -67,6 +67,16 @@ export function buildIndex(content, lessons = { fast: {}, deep: {} }) {
     }
   }
 
+  // round 9: a story is searched for by situation ("interview", "apology",
+  // "funny"), which is exactly what the keywords are for
+  for (const s of content.stories || []) {
+    push({
+      id: `story:${s.id}`, kind: 'story', type: `Story · ${s.type}`, route: 'stories', payload: { openId: s.id },
+      title: s.title, blurb: s.oneLiner, tags: [...(s.keywords || []), s.type, s.teller], category: s.type,
+      body: [s.title, s.oneLiner, s.opening, s.detail, s.turn, s.why, s.whenNot, ...(s.keywords || []), ...(s.beats || []), ...(s.practise || [])].join(' '),
+    });
+  }
+
   for (const t of content.skills || []) {
     push({
       id: `skill:${t.id}`, kind: 'skill', type: 'Skill track', route: 'skills', payload: { trackId: t.id },
@@ -93,6 +103,61 @@ export function buildIndex(content, lessons = { fast: {}, deep: {} }) {
     });
   }
 
+  // ── round 5: the practice surfaces were never in the index ──
+  // searching "grief" or "hard conversation" found nothing, because Arena,
+  // Wit, Impromptu, Body and Skill exercises never made it into the index.
+  for (const a of content.arena || []) {
+    push({
+      id: `arena:${a.id}`, kind: 'arena', type: `Arena · ${a.scene}`, route: 'arena', payload: null,
+      title: a.name, blurb: a.brief, tags: a.likes || [], category: a.scene,
+      body: [a.role, a.goal, ...(a.traits || []), ...(a.likes || []), ...(a.dislikes || [])].join(' '),
+    });
+  }
+
+  for (const w of content.wit || []) {
+    push({
+      id: `wit:${w.id}`, kind: 'wit', type: `Wit · ${w.category}`, route: 'wit', payload: { openId: w.id },
+      title: w.title, blurb: w.theySay, tags: w.strategies || [], category: w.category,
+      body: [w.setup, w.context, w.coach, ...(w.modelLines || [])].join(' '),
+    });
+  }
+
+  for (const p of content.prompts || []) {
+    push({
+      id: `prompt:${p.id}`, kind: 'prompt', type: `Impromptu · ${p.category}`, route: 'impromptu', payload: { openId: p.id },
+      title: p.text, blurb: `${p.category} · ${p.speak}s to speak`, tags: [], category: p.category,
+      body: p.text,
+    });
+  }
+
+  for (const b of content.body || []) {
+    push({
+      id: `body:${b.id}`, kind: 'body', type: `Cue · ${b.cluster}`, route: 'body', payload: { openId: b.id },
+      title: b.cue || b.question, blurb: b.question, tags: [b.cluster], category: b.cluster,
+      body: [b.scene, b.explain, ...(b.options || [])].join(' '),
+    });
+  }
+
+  // round 8: the psychology wing was invisible to search, which is where a
+  // mechanism like "anchoring" or "halo" would first be looked for
+  for (const e of content.psychology || []) {
+    push({
+      id: `psy:${e.id}`, kind: 'psychology', type: `Psychology · ${e.category}`, route: 'psychology', payload: { openId: e.id },
+      title: e.title, blurb: e.oneLiner, tags: [...(e.keywords || []), e.field, e.strength], category: e.category,
+      body: [e.title, e.oneLiner, ...(e.keywords || []), e.effect, e.mechanism, e.use, e.defence, e.limit, e.practise, e.evidence].flat().filter(Boolean).join(' '),
+    });
+  }
+
+  for (const t of content.skills || []) {
+    for (const e of t.exercises || []) {
+      push({
+        id: `skillex:${t.id}:${e.id}`, kind: 'skill', type: `Skill exercise · ${t.name}`, route: 'skills', payload: { trackId: t.id, exerciseId: e.id },
+        title: e.title, blurb: e.why || e.success, tags: [], category: t.name,
+        body: [e.success, ...(e.steps || [])].join(' '),
+      });
+    }
+  }
+
   for (const g of content.games || []) {
     push({
       id: `game:${g.id}`, kind: 'game', type: 'Game', route: 'games', payload: { gameId: g.id },
@@ -109,7 +174,7 @@ export function buildIndex(content, lessons = { fast: {}, deep: {} }) {
   }));
 }
 
-const KIND_WEIGHT = { library: 3, gym: 3, academy: 2, lesson: 2, framework: 1, skill: 1, drill: 1, game: 1 };
+const KIND_WEIGHT = { library: 3, gym: 3, academy: 2, lesson: 2, arena: 2, psychology: 2, story: 2, framework: 1, skill: 1, drill: 1, game: 1, wit: 1, prompt: 1, body: 1 };
 
 /** Score one record against the query tokens. Title hits are worth far more. */
 function score(rec, qTokens, raw) {
@@ -149,12 +214,13 @@ export function search(index, query, limit = 24) {
 
 /** Suggestions for an empty palette: the things worth opening cold. */
 export function suggestions(index, n = 6) {
-  const pick = ['gym:gym-party', 'lib:lib-st1', 'acad:family-systems', 'lib:lib-mny3', 'acad:humour-craft', 'lib:lib-dc3'];
+  const pick = ['gym:gym-party', 'lib:lib-cr2', 'arena:marcus-grief', 'lib:lib-mny3', 'acad:humour-craft', 'gym:gym-pro-salary'];
   const found = pick.map((id) => index.find((r) => r.id === id)).filter(Boolean);
   return found.length ? found.slice(0, n) : index.slice(0, n);
 }
 
 export const KIND_LABEL = {
   library: 'Library', gym: 'Playbook', academy: 'Academy', lesson: 'Course',
-  framework: 'Framework', skill: 'Skill track', drill: 'Drill', game: 'Game',
+  framework: 'Framework', skill: 'Skill', drill: 'Drill', game: 'Game',
+  arena: 'Arena persona', wit: 'Wit scenario', prompt: 'Impromptu prompt', body: 'Body cue', psychology: 'Psychology', story: 'Story',
 };

@@ -12,7 +12,7 @@ const TABS = [
   { id: 'skills', label: 'Skills ladder' },
 ];
 
-export default function Creator({ content, notify, go }) {
+export default function Creator({ content, notify, go, refresh }) {
   const c = content.creator || {};
   const [tab, setTab] = useState('start');
   const [topic, setTopic] = useState((c.topics || [])[0] || 'my job');
@@ -23,7 +23,7 @@ export default function Creator({ content, notify, go }) {
   const ideas = useMemo(() => generateIdeas(topic, angle, 6), [topic, angle]);
 
   const logIdea = async (text) => {
-    try { await api.logXp({ kind: 'creator-idea', xp: 5 }); } catch { /* offline ok */ }
+    try { await api.logXp({ kind: 'creator-idea', xp: 5 }); refresh?.(); } catch { /* offline ok */ }
     try { await navigator.clipboard.writeText(text); notify('Copied — go make it'); }
     catch { notify('Idea logged'); }
   };
@@ -33,7 +33,7 @@ export default function Creator({ content, notify, go }) {
       <div className="card">
         <div className="row wrap" style={{ gap: 6 }}>
           {TABS.map((t) => (
-            <button key={t.id} className={`chip clickable ${tab === t.id ? 'active' : ''}`} onClick={() => setTab(t.id)}>{t.label}</button>
+            <button key={t.id} className={`chip clickable ${tab === t.id ? 'active' : ''}`} aria-pressed={tab === t.id} onClick={() => setTab(t.id)}>{t.label}</button>
           ))}
         </div>
       </div>
@@ -138,7 +138,7 @@ export default function Creator({ content, notify, go }) {
             <p className="card-desc">One pattern at a time. Write your own version, then compare with the example.</p>
             <div className="row wrap" style={{ gap: 6, margin: '12px 0' }}>
               {(c.hooks || []).map((h, i) => (
-                <button key={h.pattern} className={`chip clickable ${hookIdx === i ? 'active' : ''}`} onClick={() => setHookIdx(i)}>
+                <button key={h.pattern} className={`chip clickable ${hookIdx === i ? 'active' : ''}`} aria-pressed={hookIdx === i} onClick={() => setHookIdx(i)}>
                   {h.pattern}
                 </button>
               ))}

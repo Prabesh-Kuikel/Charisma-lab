@@ -6,7 +6,7 @@ import { getDaily, markDaily } from '../local/progress-log.js';
 
 const SKILL_TONE = { presence: 'mint', storytelling: 'cyan', sales: 'rose', humour: 'amber', persuasion: 'violet', negotiation: 'cyan', flirting: 'amber', creator: 'orange' };
 
-export default function Daily({ content, notify, go, stats }) {
+export default function Daily({ content, notify, go, stats, refresh }) {
   const daily = content.daily || { drills: [], themes: [] };
   const [dateKey, setDateKey] = useState(() => new Date().toISOString().slice(0, 10));
   const [dateKeyState, setDateKeyState] = useState(null);
@@ -27,8 +27,12 @@ export default function Daily({ content, notify, go, stats }) {
     if (done.includes(drill.id)) return;
     setDone(markDaily(drill.id, dateKey));
     try {
-      await api.logXp({ kind: `daily-${drill.skill}`, xp: 10 });
+      await api.logXp({
+        kind: `daily-${drill.skill}`, xp: 10,
+        rep: { kind: 'daily', ref: drill.id, label: drill.title, seconds: (drill.time || 5) * 60 },
+      });
       notify(`Logged · ${drill.title}`);
+      refresh?.();
     } catch (e) { notify(e.message); }
   };
 
@@ -83,7 +87,7 @@ export default function Daily({ content, notify, go, stats }) {
       <div className="card">
         <div className="row wrap" style={{ gap: 6, marginBottom: 12 }}>
           {skills.map((s) => (
-            <button key={s} className={`chip clickable ${filter === s ? 'active' : ''}`} onClick={() => setFilter(s)}>
+            <button key={s} className={`chip clickable ${filter === s ? 'active' : ''}`} aria-pressed={filter === s} onClick={() => setFilter(s)}>
               {s} <span className="dim">{s === 'All' ? daily.drills.length : daily.drills.filter((d) => d.skill === s).length}</span>
             </button>
           ))}

@@ -102,7 +102,13 @@ export const TONE = {
   rose: '#fb7185', orange: '#fb923c', text: '#f2f2f7',
 };
 
-export const Toast = ({ msg }) => (msg ? <div className="toast"><Ico name="check" size={15} />{msg}</div> : null);
+// role=status + aria-live means a screen reader hears every save, cancellation
+// and error. Before this the toast was purely visual and silently lost.
+export const Toast = ({ msg }) => (
+  <div className="toast-wrap" role="status" aria-live="polite" aria-atomic="true">
+    {msg ? <div className="toast"><Ico name="check" size={15} />{msg}</div> : null}
+  </div>
+);
 
 export const ScoreRow = ({ name, value, tone }) => (
   <div className="score-row">

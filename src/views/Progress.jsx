@@ -3,6 +3,8 @@ import { Ico, Bar } from '../components/ui';
 import { scoreTrend, improvements, coverage, neglected, recommend, sparkPath, KIND_NAME } from '../local/insights';
 import { loadSrs, dueItems } from '../local/srs';
 import { allScripts } from '../local/my-scripts';
+import { summary as repSummary } from '../local/reps';
+import { verdictStats } from '../local/notes';
 
 const fmt = (d) => new Date(d).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
 
@@ -20,6 +22,8 @@ export default function Progress({ content, stats, go }) {
     return { trend, imps, cov, neg, rec, due };
   }, [sessions, content, stats]);
 
+  const reps = useMemo(() => repSummary(), [stats]);
+  const verdicts = useMemo(() => verdictStats(), [stats]);
   const values = data.trend.map((t) => t.avg);
   const delta = data.trend.length >= 2
     ? Math.round(data.trend[data.trend.length - 1].avg - data.trend[0].avg)
@@ -97,11 +101,53 @@ export default function Progress({ content, stats, go }) {
       </div>
 
       <div className="card">
+        <div className="row wrap" style={{ justifyContent: 'space-between', marginBottom: 10 }}>
+          <div className="card-title" style={{ margin: 0 }}>Practice log — what you actually did</div>
+          <span className="tiny dim">{reps.total} reps · {reps.minutes} min · streak {reps.streak.current} (best {reps.streak.best})</span>
+        </div>
+        {reps.total === 0 ? (
+          <p className="card-desc" style={{ margin: 0 }}>
+            Nothing logged yet. Every scored rep, drill, chapter note and Arena run lands here with the time it took — so “did I practise?” has one answer instead of five.
+          </p>
+        ) : (
+          <>
+            <div className="row" style={{ gap: 3, alignItems: 'flex-end', height: 56, marginBottom: 10 }}>
+              {reps.days.map((d) => {
+                const max = Math.max(1, ...reps.days.map((x) => x.minutes));
+                return (
+                  <div key={d.day} title={`${d.day}: ${d.reps} rep${d.reps === 1 ? '' : 's'}, ${d.minutes} min`}
+                    style={{ flex: 1, height: `${Math.max(4, (d.minutes / max) * 100)}%`, background: d.minutes ? 'linear-gradient(180deg,#8b5cf6,#22d3ee)' : 'rgba(255,255,255,0.07)', borderRadius: 3 }} />
+                );
+              })}
+            </div>
+            <div className="tiny dim" style={{ marginBottom: 12 }}>Minutes practised, last 14 days.</div>
+            <div className="stack sm">
+              {reps.kinds.slice(0, 8).map((k) => (
+                <div key={k.kind} className="row" style={{ justifyContent: 'space-between', gap: 8 }}>
+                  <span className="tiny" style={{ fontWeight: 600, flex: 1 }}>{k.label}</span>
+                  <span className="tiny dim">{k.n} rep{k.n === 1 ? '' : 's'} · {k.minutes} min</span>
+                  {k.avg != null && <span className="chip" style={{ fontSize: 10 }}>avg {k.avg}</span>}
+                </div>
+              ))}
+            </div>
+          </>
+        )}
+      </div>
+
+      <div className="card">
         <div className="card-title" style={{ marginBottom: 4 }}>Coverage — how much of this you have actually used</div>
         <p className="card-desc" style={{ marginBottom: 12 }}>
           Not a scoreboard. It is the honest map of where you have been, and it is usually much smaller than people
-          expect when there are 83 chapters.
+          expect when there are {content.library?.length || 83} chapters.
         </p>
+        {verdicts.total > 0 && (
+          <div className="row wrap" style={{ gap: 6, marginBottom: 12 }}>
+            <span className="chip mint" style={{ fontSize: 10 }}>{verdicts.used} used</span>
+            <span className="chip violet" style={{ fontSize: 10 }}>{verdicts.will} will use</span>
+            <span className="chip rose" style={{ fontSize: 10 }}>{verdicts.no} not for me</span>
+            <span className="tiny dim">{verdicts.ratio}% of what you marked, you actually used.</span>
+          </div>
+        )}
         <div className="stack sm">
           {data.cov.map((c) => (
             <div key={c.key}>

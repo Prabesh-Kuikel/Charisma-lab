@@ -45,7 +45,7 @@ export default function Rehearse({ line, label, onUsed, compact = false }) {
           <Ico name="play" size={12} /> Hear it
         </button>
         {[0.7, 0.85, 1].map((r) => (
-          <button key={r} className={`chip clickable ${rate === r ? 'active' : ''}`} style={{ fontSize: 10 }} onClick={() => setRate(r)}>
+          <button key={r} className={`chip clickable ${rate === r ? 'active' : ''}`} aria-pressed={rate === r} style={{ fontSize: 10 }} onClick={() => setRate(r)}>
             {r}×
           </button>
         ))}

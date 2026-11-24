@@ -5,9 +5,13 @@ import { askAI, getAIConfig, setAIConfig, AI_PROVIDERS, cooldownLeft, aiEnabled 
 
 const MODE_LABEL = { general: 'General', sales: 'Sales', persuasion: 'Persuasion', flirting: 'Flirting', negotiation: 'Negotiation', creator: 'Creator' };
 
-export default function Coach({ content, notify, go }) {
+export default function Coach({ content, notify, go, boot }) {
   const modes = content.coachModes || [{ id: 'general', label: 'General' }];
-  const [mode, setMode] = useState('general');
+  // Deep links carry a mode (`go('coach', { mode: 'storytelling' })`), and it
+  // used to be dropped: every wing that offered "take it to the coach" landed
+  // the user in General and they had to re-pick the focus by hand.
+  const bootMode = boot?.mode && modes.some((m) => m.id === boot.mode) ? boot.mode : null;
+  const [mode, setMode] = useState(bootMode || 'general');
   const [input, setInput] = useState('');
   const [busy, setBusy] = useState(false);
   const [thread, setThread] = useState([]);
@@ -103,14 +107,14 @@ export default function Coach({ content, notify, go }) {
         <div className="card">
           <div className="row wrap" style={{ gap: 6, marginBottom: 10 }}>
             {modes.map((m) => (
-              <button key={m.id} className={`chip clickable ${mode === m.id ? 'active' : ''}`} onClick={() => setMode(m.id)}>
+              <button key={m.id} className={`chip clickable ${mode === m.id ? 'active' : ''}`} aria-pressed={mode === m.id} onClick={() => setMode(m.id)}>
                 {m.label}
               </button>
             ))}
           </div>
           <div className="card-desc">{modes.find((m) => m.id === mode)?.hint || 'Ask about any conversation.'}</div>
           <div className="row wrap" style={{ gap: 8, marginTop: 10 }}>
-            <button className={`chip clickable ${useAI ? 'active' : ''}`} onClick={() => { setUseAI((v) => !v); notify(useAI ? 'Local coach only' : 'AI coach on'); }}>
+            <button className={`chip clickable ${useAI ? 'active' : ''}`} aria-pressed={useAI} onClick={() => { setUseAI((v) => !v); notify(useAI ? 'Local coach only' : 'AI coach on'); }}>
               <Ico name="spark" size={11} /> {useAI ? 'AI coach on' : 'AI coach off'}
             </button>
             <button className="chip clickable" onClick={() => setShowSettings((v) => !v)}>
@@ -129,7 +133,7 @@ export default function Coach({ content, notify, go }) {
             </p>
             <div className="row wrap" style={{ gap: 8, marginBottom: 10 }}>
               {AI_PROVIDERS.map((p) => (
-                <button key={p.id} className={`chip clickable ${aiCfg.provider === p.id ? 'active' : ''}`}
+                <button key={p.id} className={`chip clickable ${aiCfg.provider === p.id ? 'active' : ''}`} aria-pressed={aiCfg.provider === p.id}
                   onClick={() => setAiCfg(setAIConfig({ provider: p.id }))}>{p.name}</button>
               ))}
             </div>
@@ -137,10 +141,10 @@ export default function Coach({ content, notify, go }) {
               {AI_PROVIDERS.find((p) => p.id === aiCfg.provider)?.note}
             </div>
             <div className="row wrap" style={{ gap: 8 }}>
-              <input className="input" style={{ flex: '1 1 200px' }} placeholder="model (optional)"
+              <input className="input" style={{ flex: '1 1 200px' }} placeholder="model (optional)" aria-label="Model override" 
                 value={aiCfg.model} onChange={(e) => setAiCfg(setAIConfig({ model: e.target.value }))} />
               {aiCfg.provider !== 'pollinations' && (
-                <input className="input" style={{ flex: '2 1 260px' }} placeholder="API key (stored only in this browser)"
+                <input className="input" style={{ flex: '2 1 260px' }} placeholder="API key (stored only in this browser)" aria-label="API key" 
                   type="password" value={aiCfg.key} onChange={(e) => setAiCfg(setAIConfig({ key: e.target.value }))} />
               )}
             </div>
@@ -207,7 +211,7 @@ export default function Coach({ content, notify, go }) {
 
         <div className="card">
           <textarea className="textarea" style={{ minHeight: 76 }} value={input}
-            placeholder="Describe the situation, or paste the draft you are about to send…"
+            placeholder="Describe the situation, or paste the draft you are about to send…" aria-label="Message to the coach" 
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => { if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) send(); }} />
           <div className="row wrap" style={{ gap: 8, marginTop: 10, justifyContent: 'space-between' }}>

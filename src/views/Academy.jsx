@@ -1,40 +1,95 @@
 import React, { useMemo, useState } from 'react';
 import { api } from '../api';
 import { Ico } from '../components/ui';
+import { academyPath, ACADEMY_PACING, ACADEMY_START } from '../../server/content/academy-pacing.js';
 
 const TONE = { violet: 'violet', amber: 'amber', rose: 'rose', mint: 'mint', cyan: 'cyan', orange: 'orange' };
 
-export default function Academy({ content, notify, go, boot }) {
+export default function Academy({ content, notify, go, boot, refresh }) {
   const modules = content.academy || [];
   const [activeId, setActiveId] = useState(boot?.moduleId || modules[0]?.id || null);
   const [tab, setTab] = useState('principles');
+  // the academy used to be sixteen flat chips with no order, so a beginner could
+  // open the family module in week one. Levels are derived from academy-pacing.js.
+  const [level, setLevel] = useState('all');
   const [done, setDone] = useState([]);
 
-  const mod = useMemo(() => modules.find((m) => m.id === activeId) || modules[0], [modules, activeId]);
+  // pace the modules once here: the chip list gets pacing from academyPath(),
+  // but the detail panel reads `mod` from the raw array, so it needs it attached
+  // too or the whole pacing card silently never renders.
+  const paced = useMemo(() => modules.map((m) => ({ ...m, pacing: ACADEMY_PACING[m.id] })), [modules]);
+  const mod = useMemo(() => paced.find((m) => m.id === activeId) || paced[0], [paced, activeId]);
   if (!mod) return <div className="empty">No modules loaded.</div>;
 
   const mark = async (title) => {
     const key = `${mod.id}:${title}`;
     if (done.includes(key)) return;
     setDone((d) => [...d, key]);
-    try { await api.logXp({ kind: `academy-${mod.id}`, xp: 12 }); notify(`Logged · ${title}`); }
+    try { await api.logXp({ kind: `academy-${mod.id}`, xp: 12 }); notify(`Logged · ${title}`); refresh?.(); }
     catch (e) { notify(e.message); }
   };
 
   const tone = TONE[mod.tone] || 'violet';
+  const levels = content.academyLevels || [];
+  const grouped = academyPath(paced);
 
   return (
     <div className="stack">
       <div className="card">
-        <div className="row wrap" style={{ gap: 6 }}>
-          {modules.map((m) => (
-            <button key={m.id} className={`chip clickable ${m.id === mod.id ? 'active' : ''}`}
-              onClick={() => { setActiveId(m.id); setTab('principles'); }}>
-              {m.name}
+        <div className="row wrap" style={{ gap: 6, marginBottom: 12 }}>
+          <button className={`chip clickable ${level === 'all' ? 'active' : ''}`} aria-pressed={level === 'all'}
+            onClick={() => setLevel('all')}>All <span className="dim">{modules.length}</span></button>
+          {activeId !== ACADEMY_START && (
+            <button className="chip clickable" title="Modules are levelled now, so there is a first one"
+              onClick={() => { setActiveId(ACADEMY_START); setTab('principles'); }}>start here</button>
+          )}
+          {levels.map((l) => (
+            <button key={l.id} className={`chip clickable ${level === l.id ? 'active' : ''}`} aria-pressed={level === l.id}
+              onClick={() => setLevel(l.id)} title={l.note}>
+              {l.id} · {l.name} <span className="dim">{grouped.find((g) => g.level === l.id)?.modules.length || 0}</span>
             </button>
           ))}
         </div>
+        {level !== 'all' && (
+          <p className="tiny dim" style={{ margin: '0 0 12px' }}>
+            {(levels.find((l) => l.id === level) || {}).note}
+          </p>
+        )}
+        <div className="stack sm">
+          {grouped.filter((g) => level === 'all' || g.level === level).map((g) => (
+            <div key={g.level}>
+              <div className="nav-label" style={{ marginBottom: 6 }}>Level {g.level} · {g.name}</div>
+              <div className="row wrap" style={{ gap: 6 }}>
+                {g.modules.map((m) => (
+                  <button key={m.id} className={`chip clickable ${m.id === mod.id ? 'active' : ''}`} aria-pressed={m.id === mod.id}
+                    onClick={() => { setActiveId(m.id); setTab('principles'); }}
+                    title={m.pacing?.why}>
+                    {m.name}
+                    <span className="dim" style={{ marginLeft: 5 }}>{m.pacing?.minutes}m</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
+
+      {/* where this module sits, and what it assumes you already read */}
+      {mod.pacing && (
+        <div className="card" style={{ borderColor: 'rgba(139,92,246,0.28)' }}>
+          <div className="row wrap" style={{ gap: 8, marginBottom: 8 }}>
+            <span className="chip violet" style={{ fontSize: 10 }}>level {mod.pacing.level} · {mod.pacing.minutes} min</span>
+            {mod.pacing.after && (
+              <button className="chip clickable" style={{ fontSize: 10 }}
+                onClick={() => { setActiveId(mod.pacing.after); setTab('principles'); }}>
+                <Ico name="arrow" size={10} /> read after {modules.find((m) => m.id === mod.pacing.after)?.name || mod.pacing.after}
+              </button>
+            )}
+            {!mod.pacing.after && <span className="chip mint" style={{ fontSize: 10 }}>nothing required first</span>}
+          </div>
+          <p className="card-desc" style={{ margin: 0 }}>{mod.pacing.why}</p>
+        </div>
+      )}
 
       <div className="card">
         <span className={`chip ${tone}`} style={{ fontSize: 10 }}>{mod.name}</span>
@@ -45,7 +100,7 @@ export default function Academy({ content, notify, go, boot }) {
       <div className="card">
         <div className="row wrap" style={{ gap: 6 }}>
           {[['principles', 'Principles'], ['mechanics', 'Mechanics'], ['scripts', 'Scripts'], ['drills', 'Drills'], ['cautions', 'Cautions']].map(([id, label]) => (
-            <button key={id} className={`chip clickable ${tab === id ? 'active' : ''}`} onClick={() => setTab(id)}>{label}</button>
+            <button key={id} className={`chip clickable ${tab === id ? 'active' : ''}`} aria-pressed={tab === id} onClick={() => setTab(id)}>{label}</button>
           ))}
         </div>
       </div>

@@ -3,7 +3,7 @@ import { api } from '../api';
 import { Ico } from '../components/ui';
 import { getSkills, markSkill } from '../local/progress-log.js';
 
-export default function Skills({ content, notify, go }) {
+export default function Skills({ content, notify, go, boot, refresh }) {
   const tracks = content.skills || [];
   const chapterTitle = useMemo(() => {
     const map = {};
@@ -11,9 +11,9 @@ export default function Skills({ content, notify, go }) {
     return map;
   }, [content.library]);
   const persona = (id) => (content.arena || []).find((a) => a.id === id);
-  const [activeId, setActiveId] = useState(tracks[0]?.id || null);
+  const [activeId, setActiveId] = useState(boot?.trackId || tracks[0]?.id || null);
   const [done, setDone] = useState(() => Object.keys(getSkills()));
-  const [openEx, setOpenEx] = useState(null);
+  const [openEx, setOpenEx] = useState(boot?.exerciseId ? `${boot.trackId}:${boot.exerciseId}` : null);
 
   const track = useMemo(() => tracks.find((t) => t.id === activeId) || tracks[0], [tracks, activeId]);
 
@@ -22,7 +22,14 @@ export default function Skills({ content, notify, go }) {
     if (done.includes(key)) return;
     markSkill(key);
     setDone((d) => [...d, key]);
-    try { await api.logXp({ kind: `skill-${track.id}`, xp: 12 }); notify(`Logged · ${ex.title}`); }
+    try {
+      const r = await api.logXp({
+        kind: `skill-${track.id}`, xp: 12,
+        rep: { kind: 'skill', ref: `${track.id}:${ex.id}`, label: `${track.name} · ${ex.title}`, seconds: (ex.time || 5) * 60 },
+      });
+      notify(`Logged · ${ex.title}${r?.rep ? ` · ${r.rep.xp} XP` : ''}`);
+      refresh?.();
+    }
     catch (e) { notify(e.message); }
   };
 
@@ -33,7 +40,7 @@ export default function Skills({ content, notify, go }) {
       <div className="card">
         <div className="row wrap" style={{ gap: 8 }}>
           {tracks.map((t) => (
-            <button key={t.id} className={`chip clickable ${t.id === track.id ? 'active' : ''}`}
+            <button key={t.id} className={`chip clickable ${t.id === track.id ? 'active' : ''}`} aria-pressed={t.id === track.id}
               onClick={() => { setActiveId(t.id); setOpenEx(null); }}>
               {t.name} <span className="dim">{t.exercises.length}</span>
             </button>
@@ -87,7 +94,9 @@ export default function Skills({ content, notify, go }) {
                   </div>
                   <div className="row" style={{ gap: 6 }}>
                     <span className="chip" style={{ fontSize: 10 }}>{ex.time} min</span>
-                    <button className="btn ghost sm" onClick={() => setOpenEx(isOpen ? null : key)}>
+                    <button className="btn ghost sm" onClick={() => setOpenEx(isOpen ? null : key)}
+                      aria-label={`${isOpen ? 'Hide' : 'Show'} the steps for ${ex.title}`}
+                      aria-expanded={isOpen}>
                       <Ico name="chevron" size={13} />
                     </button>
                   </div>
@@ -134,7 +143,9 @@ export default function Skills({ content, notify, go }) {
                     const a = persona(id);
                     if (!a) return null;
                     return (
-                      <button key={id} className="chip clickable" onClick={() => go('arena')}>
+                      <button key={id} className="chip clickable" onClick={() => go('arena')}
+                        title={`Open ${a.name} in the Conversation Arena`}
+                        aria-label={`Practise with ${a.name}, ${a.scene}`}>
                         {a.emoji} {a.name} <span className="dim">{a.scene}</span>
                       </button>
                     );
@@ -143,8 +154,8 @@ export default function Skills({ content, notify, go }) {
               </div>
             )}
             <div className="row wrap" style={{ gap: 6 }}>
-              <button className="chip clickable" onClick={() => go('arena')}>Conversation Arena</button>
-              <button className="chip clickable" onClick={() => go('gym')}>Conversation Gym{(track.gym || []).length ? ` · ${track.gym.join(', ')}` : ''}</button>
+              <button className="chip clickable" onClick={() => go('arena')} aria-label="Open the Conversation Arena">Conversation Arena</button>
+              <button className="chip clickable" onClick={() => go('gym')} aria-label={`Open the ${(track.gym || []).length ? `${(track.gym || []).length} playbooks` : ''} in the Conversation Gym`.replace('  ', ' ')}>Conversation Gym{(track.gym || []).length ? ` · ${track.gym.join(', ')}` : ''}</button>
               <button className="chip clickable" onClick={() => go('games')}>Games</button>
               <button className="chip clickable" onClick={() => go('coach')}>Ask the coach</button>
               <button className="chip clickable" onClick={() => go('library')}>Library</button>

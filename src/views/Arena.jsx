@@ -234,7 +234,7 @@ export default function Arena({ content, notify, go }) {
                 </button>
                 <button className="btn" onClick={end}>End & review</button>
                 <div className="spacer" />
-                <button className={`chip clickable ${aiPersona ? 'active' : ''}`} style={{ fontSize: 10 }}
+                <button className={`chip clickable ${aiPersona ? 'active' : ''}`} aria-pressed={aiPersona} style={{ fontSize: 10 }}
                   onClick={() => { setAiPersona((v) => !v); notify(aiPersona ? 'Scripted persona' : 'AI persona on'); }}>
                   <Ico name="spark" size={10} /> {aiPersona ? 'AI persona' : 'scripted'}
                 </button>

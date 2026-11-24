@@ -3,11 +3,12 @@ import { Ico, Ring, Bar, Stat } from '../components/ui';
 import { dueItems } from '../local/srs';
 
 const LAUNCHERS = [
+  { key: 'today', icon: 'flame', tone: '#f472b6', name: 'Today', desc: 'One decision, one drill, one line', view: 'today' },
   { key: 'impromptu', icon: 'mic', tone: '#8b5cf6', name: 'Impromptu Sprint', desc: 'Random prompt, 60–150s timer, instant analysis', view: 'impromptu' },
   { key: 'pronunciation', icon: 'wave', tone: '#22d3ee', name: 'Twister Speed Run', desc: 'Articulation drill with accuracy scoring', view: 'pronunciation' },
-  { key: 'wit', icon: 'spark', tone: '#fb923c', name: 'Banter Reps', desc: '20 live scenarios, scored in under a minute', view: 'wit' },
+  { key: 'wit', icon: 'spark', tone: '#fb923c', name: 'Banter Reps', desc: 'Live scenarios in every register, scored in a minute', view: 'wit' },
   { key: 'arena', icon: 'chat', tone: '#34d399', name: 'Arena Run', desc: 'Roleplay with a persona that reacts to you', view: 'arena' },
-  { key: 'body', icon: 'eye', tone: '#fbbf24', name: 'Cue Spotting', desc: '16 decoder cards, psychology breakdowns', view: 'body' },
+  { key: 'body', icon: 'eye', tone: '#fbbf24', name: 'Cue Spotting', desc: '48 decoder cards, psychology breakdowns', view: 'body' },
   { key: 'library', icon: 'library', tone: '#a78bfa', name: 'Pattern Library', desc: 'Fallbacks, frameworks, power laws, rules', view: 'library' },
 ];
 

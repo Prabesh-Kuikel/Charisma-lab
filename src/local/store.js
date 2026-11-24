@@ -20,21 +20,61 @@ const blank = () => ({
 let state = null;
 
 function load() {
-  if (state) return state;
+  if (state) { hydrate(); return state; }
   try {
     const raw = localStorage.getItem(KEY);
     state = raw ? { ...blank(), ...JSON.parse(raw) } : blank();
   } catch {
     state = blank();
   }
+  hydrated = true;
   return state;
 }
 
-function save() {
-  try { localStorage.setItem(KEY, JSON.stringify(state)); } catch { /* quota: keep going in memory */ }
+// ── cross-tab guard ──────────────────────────────────────────
+// Two tabs used to clobber each other: each held its own copy of the blob in
+// memory and wrote the whole thing back on every rep, so the tab that saved last
+// erased whatever the other had earned. Reads now re-hydrate from disk first, and
+// a `storage` event drops the in-memory copy when another tab writes.
+let hydrated = false;
+
+let lastRaw = null;
+function readDisk() {
+  try {
+    const raw = localStorage.getItem(KEY);
+    // parsing a 50 kB blob on every read would make stats() hot; identical text
+    // means identical state, so only parse when another tab actually wrote
+    if (raw === lastRaw) return null;
+    lastRaw = raw;
+    return raw ? { ...blank(), ...JSON.parse(raw) } : null;
+  } catch {
+    return null;
+  }
 }
 
-export function snapshot() { return load(); }
+function save() {
+  try {
+    const raw = JSON.stringify(state);
+    localStorage.setItem(KEY, raw);
+    lastRaw = raw;
+  } catch { /* quota: keep going in memory */ }
+}
+
+/** Re-hydrate from disk so another tab's XP is never overwritten by ours. */
+function hydrate() {
+  if (!hydrated) return;
+  const disk = readDisk();
+  // disk wins on scalars and on the shared arrays: it may hold reps we never saw
+  if (disk) state = { ...state, ...disk };
+}
+
+if (typeof window !== 'undefined' && typeof window.addEventListener === 'function') {
+  window.addEventListener('storage', (e) => {
+    if (e.key && e.key !== KEY) return;
+    state = null;
+    hydrated = false;
+  });
+}
 
 export function getUser() { return { ...load().user }; }
 
@@ -44,6 +84,23 @@ export function patchUser(patch = {}) {
   if (typeof patch.goal === 'string') s.user.goal = patch.goal.slice(0, 60);
   save();
   return getUser();
+}
+
+// Called by the rep log for every rep and every undo, so one practise action
+// counts once. xp stays with whoever scored it; this only keeps the day.
+export function touchDay(day, delta = 1) {
+  if (!day) return;
+  const s = load();
+  if (delta > 0) {
+    if (!s.activity.some((a) => a.day === day && a.kind === 'rep')) s.activity.push({ day, kind: 'rep', xp: 0 });
+  } else if (delta < 0) {
+    const stillHasReps = (() => {
+      try { return JSON.parse(localStorage.getItem('charisma-lab.reps.v1') || '[]').some((r) => r.day === day); }
+      catch { return true; }
+    })();
+    if (!stillHasReps) s.activity = s.activity.filter((a) => !(a.day === day && a.kind === 'rep'));
+  }
+  save();
 }
 
 export function addXp(kind, xp = 0) {

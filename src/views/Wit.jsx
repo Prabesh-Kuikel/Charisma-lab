@@ -5,9 +5,9 @@ import { useTimer } from '../hooks';
 
 const CATS = ['All', 'Retort', 'Callback', 'Self-Deprecation', 'Charm Flip', 'Banter'];
 
-export default function Wit({ content, notify }) {
+export default function Wit({ content, go, notify, boot }) {
   const [cat, setCat] = useState('All');
-  const [activeId, setActiveId] = useState(null);
+  const [activeId, setActiveId] = useState(boot?.openId || null);
   const [response, setResponse] = useState('');
   const [result, setResult] = useState(null);
   const [busy, setBusy] = useState(false);
@@ -91,8 +91,8 @@ export default function Wit({ content, notify }) {
                 <Ico name="eye" size={12} /><span>{active.context}</span>
               </div>
 
-              <label className="label">Your line — out loud, then typed</label>
-              <textarea className="textarea" value={response} onChange={(e) => setResponse(e.target.value)}
+              <label className="label" htmlFor="wit-line">Your line — out loud, then typed</label>
+              <textarea id="wit-line" className="textarea" value={response} onChange={(e) => setResponse(e.target.value)}
                 placeholder="Speak it aloud first. Then write exactly what you said…" style={{ minHeight: 92 }} />
 
               <div className="row wrap" style={{ marginTop: 12, gap: 9 }}>

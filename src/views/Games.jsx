@@ -16,7 +16,7 @@ const speak = (text) => {
   } catch { /* no TTS */ }
 };
 
-export default function Games({ content, notify, go }) {
+export default function Games({ content, notify, go, refresh }) {
   const games = content.games || [];
   const [activeId, setActiveId] = useState(games[0]?.id || null);
   const [seed, setSeed] = useState(() => Math.floor(Date.now() / 1000));
@@ -59,8 +59,12 @@ export default function Games({ content, notify, go }) {
       setResult(r);
       const entry = { id: Date.now(), game: game.name, gameId: game.id, score: r.score, at: new Date().toISOString() };
       setLog(logGame(entry).slice(0, 30));
-      await api.logXp({ kind: `game-${game.id}`, xp: Math.max(6, Math.round(r.score * 0.25)) });
+      await api.logXp({
+        kind: `game-${game.id}`, xp: Math.max(6, Math.round(r.score * 0.25)),
+        rep: { kind: 'game', ref: game.id, label: game.name, seconds: 60, score: r.score },
+      });
       notify(`Scored ${r.score}/100`);
+      refresh?.();
     } catch (e) { notify(e.message); }
     setBusy(false);
   };
@@ -75,7 +79,7 @@ export default function Games({ content, notify, go }) {
       <div className="card">
         <div className="row wrap" style={{ gap: 8, marginBottom: 12 }}>
           {games.map((g) => (
-            <button key={g.id} className={`chip clickable ${g.id === game.id ? 'active' : ''}`}
+            <button key={g.id} className={`chip clickable ${g.id === game.id ? 'active' : ''}`} aria-pressed={g.id === game.id}
               onClick={() => { setActiveId(g.id); reset(); }}>
               {g.name}
             </button>
@@ -107,7 +111,7 @@ export default function Games({ content, notify, go }) {
           <div className="card">
             <div className="lesson-label">Your answer</div>
             <textarea className="textarea" style={{ minHeight: 120 }} value={answer}
-              placeholder="Type it exactly as you would say it. Paste a transcript if you spoke it."
+              placeholder="Type it exactly as you would say it. Paste a transcript if you spoke it." aria-label="Your answer" 
               onChange={(e) => setAnswer(e.target.value)} />
             <div className="row wrap" style={{ gap: 8, marginTop: 12 }}>
               <button className="btn primary" onClick={submit} disabled={busy}>

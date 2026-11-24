@@ -53,6 +53,8 @@ function summarise(data) {
     sessions: Array.isArray(state?.sessions) ? state.sessions.length : 0,
     playbooksInRotation: Object.keys(srs).length,
     myScripts: Array.isArray(scripts) ? scripts.length : 0,
+    notes: (() => { const x = n(`${PREFIX}notes.v1`); return Array.isArray(x) ? x.length : 0; })(),
+    verdicts: (() => { const x = n(`${PREFIX}verdicts.v1`); return x && typeof x === 'object' ? Object.keys(x).length : 0; })(),
   };
 }
 
@@ -61,6 +63,7 @@ export const exportJSON = () => JSON.stringify(snapshotData(), null, 2);
 const EXTRA_KEYS = [
   'charisma-lab.srs.v1', 'charisma-lab.scripts.v1', 'charisma-lab.progress.v1',
   'charisma-lab.daily.v1', 'charisma-lab.games.v1', 'charisma-lab.notes.v1',
+  'charisma-lab.verdicts.v1', 'charisma-lab.reps.v1',
 ];
 
 /**
@@ -68,9 +71,51 @@ const EXTRA_KEYS = [
  * mode 'merge' keeps the newer XP/streak and unions the repeated stores;
  * 'replace' overwrites everything.
  */
+// ── import hardening ──────────────────────────────────────────
+// A backup file is untrusted input: it arrives from a file the user picked,
+// possibly one someone else sent them. It used to be validated only on KEYS,
+// so a crafted file could write arbitrary strings into a known store, blow up
+// the app with a 200k-element array, or smuggle __proto__ through the merge.
+const MAX_BYTES = 8 * 1024 * 1024;      // a real backup is ~50 KB
+const MAX_ARRAY = 20000;                 // no store legitimately holds more
+const DANGEROUS = new Set(['__proto__', 'constructor', 'prototype']);
+
+/** Deep-copy-safe parse: drops prototype-polluting keys at every depth. */
+function safeParse(raw) {
+  return JSON.parse(raw, function reviver(k, v) {
+    if (DANGEROUS.has(k)) return undefined;
+    return v;
+  });
+}
+
+/** A store must be an array or a plain object, and must not be absurd. */
+function validShape(v) {
+  if (Array.isArray(v)) return v.length <= MAX_ARRAY;
+  return !!v && typeof v === 'object' && Object.keys(v).length <= MAX_ARRAY;
+}
+
+/** Every id-bearing record keeps the same keys, so a view cannot be broken by
+ *  a missing field. This strips unexpected huge strings rather than rejecting. */
+function clampStrings(v, depth = 0) {
+  if (depth > 8) return null;
+  if (typeof v === 'string') return v.slice(0, 4000);
+  if (Array.isArray(v)) return v.slice(0, MAX_ARRAY).map((x) => clampStrings(x, depth + 1));
+  if (v && typeof v === 'object') {
+    const out = {};
+    for (const [k, val] of Object.entries(v)) {
+      if (DANGEROUS.has(k)) continue;
+      out[k] = clampStrings(val, depth + 1);
+    }
+    return out;
+  }
+  return v;
+}
+
 export function importJSON(text, mode = 'merge') {
+  if (typeof text !== 'string') throw new Error('That file is not valid JSON.');
+  if (text.length > MAX_BYTES) throw new Error('That backup is far too large to be one of ours.');
   let doc;
-  try { doc = JSON.parse(text); } catch { throw new Error('That file is not valid JSON.'); }
+  try { doc = safeParse(text); } catch { throw new Error('That file is not valid JSON.'); }
   if (!doc || doc.app !== 'charisma-lab' || !doc.data || typeof doc.data !== 'object') {
     throw new Error('That is not a Charisma Lab backup file.');
   }
@@ -82,15 +127,28 @@ export function importJSON(text, mode = 'merge') {
   if (!incoming.length) throw new Error('The backup contains no data.');
 
   let written = 0;
+  let skipped = 0;
+  let quotaHit = false;
   const merged = mode === 'merge';
 
   for (const [k, raw] of incoming) {
-    if (typeof raw !== 'string') continue;
-    if (!(k.startsWith(PREFIX) || ALSO.includes(k))) continue; // never import foreign keys
-    const next = merged ? mergeValue(k, raw) : raw;
-    try { localStorage.setItem(k, next); written++; } catch { /* quota */ }
+    if (typeof raw !== 'string') { skipped += 1; continue; }
+    if (!(k.startsWith(PREFIX) || ALSO.includes(k))) { skipped += 1; continue; } // never import foreign keys
+    if (raw.length > MAX_BYTES) { skipped += 1; continue; }
+
+    // every store must parse, and must be the shape the app expects
+    let parsed;
+    try { parsed = safeParse(raw); } catch { skipped += 1; continue; }
+    if (!validShape(parsed)) { skipped += 1; continue; }
+    const clean = JSON.stringify(clampStrings(parsed));
+
+    const next = merged ? mergeValue(k, clean) : clean;
+    try { localStorage.setItem(k, next); written += 1; } catch { quotaHit = true; }
   }
-  return { written, counts: doc.counts || {}, exportedAt: doc.exportedAt };
+  // A silent quota failure used to look like a successful restore: the UI said
+  // "imported" while nothing was written. Say so instead.
+  if (quotaHit && written === 0) throw new Error('This browser refused to store the backup (it is full). Clear some space, or export first and import after clearing.');
+  return { written, skipped, partial: quotaHit, counts: doc.counts || {}, exportedAt: doc.exportedAt };
 }
 
 function mergeValue(key, raw) {

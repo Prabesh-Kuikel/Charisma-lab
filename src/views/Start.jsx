@@ -98,7 +98,7 @@ export default function Start({ content, go, notify }) {
               {[['Not yet', 0], ['Sometimes', 1], ['Often', 2]].map(([label, v]) => (
                 <button
                   key={label}
-                  className={`chip clickable ${answers[q.id] === v ? 'active' : ''}`}
+                  className={`chip clickable ${answers[q.id] === v ? 'active' : ''}`} aria-pressed={answers[q.id] === v}
                   style={{ fontSize: 11 }}
                   onClick={() => setAnswers((a) => ({ ...a, [q.id]: v }))}
                 >
@@ -115,7 +115,7 @@ export default function Start({ content, go, notify }) {
             {ASSESS_SITUATIONS.map((s) => (
               <button
                 key={s.id}
-                className={`chip clickable ${situation === s.id ? 'active' : ''}`}
+                className={`chip clickable ${situation === s.id ? 'active' : ''}`} aria-pressed={situation === s.id}
                 onClick={() => setSituation(s.id)}
               >
                 {s.label}
@@ -218,7 +218,7 @@ export default function Start({ content, go, notify }) {
             ) : null;
           })}
           <button className="chip clickable" style={{ fontSize: 10 }} onClick={() => go('gym')}>
-            <Ico name="target" size={10} /> all 31 playbooks
+            <Ico name="target" size={10} /> all {content.gym?.length || 41} playbooks
           </button>
           <button className="chip clickable" style={{ fontSize: 10 }} onClick={() => go('daily')}>
             <Ico name="spark" size={10} /> today&rsquo;s dojo
