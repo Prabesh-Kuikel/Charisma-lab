@@ -17,7 +17,7 @@ export const WIT_SCENARIOS = [
   },
   {
     id: 'w2', category: 'Charm Flip', level: 2,
-    title: 'The Backhanded Compliment',
+    title: 'The Hobby Belittler',
     setup: 'A networking event. Someone smiles sweetly while sizing you up.',
     theySay: "Oh, you\'re the one who does the little side project? How cute that you have hobbies.",
     context: 'They are protecting status. A room of three others is listening.',

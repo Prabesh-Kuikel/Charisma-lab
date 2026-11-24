@@ -370,6 +370,23 @@ const PERSONA_KEYS = {
   'priya-interview': { likes: [/\d|percent|weeks|cost|i got wrong|i do not know|specifically/i], dislikes: [/passionate|team player|culture fit|great opportunity|i am a people person/i] },
   'group-three': { likes: [/aisha|you two|both of you|what were you saying|sorry to interrupt/i], dislikes: [/actually i|i have seen it too|let me tell you|better than/i] },
   'marcus-grief': { likes: [/how was today|i am not going to|thursday|i will take|no reason/i], dislikes: [/let me know if you need|everything happens|at least|time heals|i know how you feel/i] },
+  // round 10: the twelve personas added to balance Group, Care and Interview.
+  // Which words count as warmth differs by room — a bereaved aunt and a hostile
+  // interviewer do not reward the same sentence — so each carries its own pair.
+  'group-four': { likes: [/the long story|what actually happened|you two|priya|in-joke|six years/i, /\?$/], dislikes: [/i don'?t get it|inside joke|anyway|excuse me|are you all/i] },
+  'group-hostile': { likes: [/sunil|what do you think|your turn|let them finish|fair point/i], dislikes: [/you are wrong|calm down|stop talking|let me finish|shouting/i] },
+  'group-newcomer': { likes: [/how has it|first week|monday|what do you need|i'?ll introduce/i], dislikes: [/you should meet|networking|you'?ll be fine|don'?t be nervous|anyway/i] },
+  'grief-father': { likes: [/him|his name|what do you miss|radio|tell me about/i], dislikes: [/be strong|better place|time heals|at least|you need to|move on/i] },
+  'friend-crisis': { likes: [/i have got nowhere to be|what is going on|come over|i'?m not going anywhere|you don'?t have to joke/i], dislikes: [/are you okay|cheer up|everything happens for|at least|calm down/i] },
+  'parent-decline': { likes: [/what would make|your call|what do you need|rail|light|you'?re the expert/i], dislikes: [/we need to talk|care home|for your own good|we have decided|you can'?t keep/i] },
+  'colleague-burnout': { likes: [/hand over|what is hardest|tuesday|confidential|between us|what would help/i], dislikes: [/performance|eap|workload management|i have noticed|resilience/i] },
+  'interview-hostile': { likes: [/\b\d+\b|percent|cost|i got that wrong|i do not know|the number was/i], dislikes: [/fast learner|passionate|team player|culture fit|trust me|amazing/i] },
+  'interview-salary': { likes: [/\b\d{2,3}\b|band|range|reason|start date|i can start/i], dislikes: [/hoping for more|my friend|market rate|i need|or i will/i] },
+  'interview-panel-three': { likes: [/specific|for example|the second one|i would stop|what i read/i], dislikes: [/as i said|like i mentioned|process was|hard to say|i'?m flexible/i] },
+  'networking-senior': { likes: [/monday|one question|what do you want|i will do|the thing|disagree/i], dislikes: [/pick your brain|can we connect|linkedin|so impressed|you are inspiring/i] },
+  'date-second': { likes: [/honest|i noticed|i am not|bad week|changed my mind|true/i], dislikes: [/my ex|anyway|whatever|so what do you do|haha yeah/i] },
+  'date-ex-return': { likes: [/what do you want|i am sorry|one clear|what would need|could be/i], dislikes: [/get over|you always|i knew it|calm down|over it/i] },
+
 };
 
 export function arenaReply({ scenario, history = [], message = '', turn = 0 }) {

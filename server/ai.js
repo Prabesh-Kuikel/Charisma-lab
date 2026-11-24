@@ -83,10 +83,17 @@ const MODE_FOCUS = {
   humour: 'Humour: setup and punchline order, deadpan delivery, self-deprecation, callbacks. Teach editing, not joke theft. Keep it kind — no humour at the expense of people in the room.',
   conflict: 'Difficult conversations: de-escalation, acknowledgement, boundaries, repair.',
   psychology: 'Human psychology applied socially: attention, reciprocity, cognitive biases, status. Always pair an insight with its ethical use and its defensive counter.',
+  storytelling: 'Tellable stories: find the turn, choose the one detail that proves it, cut the setup, land the last line and stop. Coach the beats out loud, never write the story for them.',
 };
 
+// the only modes the server will accept: an unknown string used to fall back
+// silently, which meant a caller could pass arbitrary text as a "mode"
+export const COACH_MODES = Object.keys(MODE_FOCUS);
+export const isCoachMode = (m) => COACH_MODES.includes(m);
+
 export function coachSystemPrompt(mode = 'general', extra = '') {
-  return `${COACH_STYLE}\n\nCurrent focus: ${MODE_FOCUS[mode] || MODE_FOCUS.general}${extra ? `\n\n${extra}` : ''}`;
+  const key = isCoachMode(mode) ? mode : 'general';
+  return `${COACH_STYLE}\n\nCurrent focus: ${MODE_FOCUS[key]}${extra ? `\n\n${extra}` : ''}`;
 }
 
 export function arenaSystemPrompt(scenario = {}) {

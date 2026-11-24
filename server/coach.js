@@ -22,6 +22,14 @@ const MODES = [
   { id: 'flirting', label: 'Flirting', hint: 'Interest, warmth, exits' },
   { id: 'negotiation', label: 'Negotiation', hint: 'Numbers, silence, trades' },
   { id: 'creator', label: 'Creator', hint: 'Hooks, ideas, shipping' },
+  // the engine has coached these three since round 4, but the picker never
+  // offered them, so the modes were unreachable from the UI
+  { id: 'humour', label: 'Humour', hint: 'Setups, callbacks, timing' },
+  { id: 'conflict', label: 'Conflict', hint: 'De-escalation, repair, limits' },
+  { id: 'psychology', label: 'Psychology', hint: 'Attention, status, biases' },
+  // the Stories wing coaches through this mode; it was the one wing with no
+  // matching focus, so "polish one with the coach" would have fallen back to general
+  { id: 'storytelling', label: 'Storytelling', hint: 'Beats, turns, endings' },
 ];
 export const COACH_MODES = MODES;
 
@@ -233,6 +241,10 @@ export function coachStarters(mode = 'general') {
     flirting: ['I never know how to end a conversation well.', 'How do I show interest without being too much?'],
     negotiation: ['I have a salary conversation coming up.', 'How do I stop filling silences with concessions?'],
     creator: ['I have no idea what to post about.', 'How do I write a hook that works?'],
+    humour: ['Someone said something funny and I thought of the perfect line ten minutes later.', 'How do I tease someone without it landing badly?'],
+    conflict: ['A colleague keeps talking over me in meetings and I let it happen.', 'I said something I regret in an argument. How do I repair it?'],
+    psychology: ['Why do I feel smaller around this one person?', 'How do I read whether someone wants to keep talking?'],
+    storytelling: ['I have an anecdote I want to tell at an interview and it keeps coming out shapeless.', 'How do I end a story without explaining the point?'],
     general: [],
   };
   return [...(byMode[mode] || []), ...common].slice(0, 5);

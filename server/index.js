@@ -1,4 +1,5 @@
 import express from 'express';
+import { GLOSSARY, GLOSSARY_CATEGORIES } from './content/glossary.js';
 import cors from 'cors';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -6,8 +7,11 @@ import { MENTORS } from './content/mentors.js';
 import { TRACKS, TRACK_MAP } from './content/courses.js';
 import { IMPROMPTU_PROMPTS, TWISTERS, PANGERAMS } from './content/lab.js';
 import { WIT_SCENARIOS, WIT_META } from './content/wit.js';
+import { WIT_EXTRA_5 } from './content/wit-extra-5.js';
+import { WIT_EXTRA_10 } from './content/wit-extra-10.js';
 import { ARENA_SCENARIOS } from './content/arena.js';
 import { ARENA_EXTRA } from './content/arena-extra.js';
+import { ARENA_EXTRA_10 } from './content/arena-extra-10.js';
 import { BODY_CARDS, BODY_CLUSTERS } from './content/body.js';
 import { LIBRARY } from './content/library.js';
 import { FAST_LESSONS } from './content/lessons-fast.js';
@@ -25,13 +29,26 @@ import { LIBRARY_EXTRA } from './content/library-extra.js';
 import { LIBRARY_EXTRA_DEEP } from './content/library-extra-deep.js';
 import { GYM_SCENARIOS, GYM_CATEGORIES } from './content/gym.js';
 import { GYM_EXTRA, GYM_EXTRA_CATEGORIES } from './content/gym-extra.js';
+import { GYM_EXTRA_5 } from './content/gym-extra-5.js';
+import { GYM_OUTCOMES } from './content/gym-outcomes.js';
+import { PSY_ENTRIES, PSY_ALL, PSY_CATEGORIES, PSY_MANIFESTO } from './content/psychology.js';
 import { LIBRARY_EXTRA_3 } from './content/library-extra-3.js';
+import { LIBRARY_EXTRA_5 } from './content/library-extra-5.js';
+import { LIBRARY_EXTRA_5_DEEP } from './content/library-extra-5-deep.js';
 import { LIBRARY_EXTRA_3_DEEP } from './content/library-extra-3-deep.js';
 import { ACADEMY_EXTRA_3 } from './content/academy-extra-3.js';
 import { EXTRA_FRAMEWORKS, EXTRA_FRAMEWORK_CATEGORIES, EXTRA_WIT, EXTRA_BODY_V4, EXTRA_DAILY } from './content/content-v4.js';
+import { EXTRA_FRAMEWORKS_5, EXTRA_DAILY_5, EXTRA_DAILY_10, EXTRA_DAILY_10B } from './content/content-5.js';
 import { EXTRA_BODY_CARDS, BODY_CLUSTER_NOTES } from './content/body-extra.js';
 import { FRAMEWORKS, FRAMEWORK_CATEGORIES } from './content/frameworks.js';
+import { STORIES, STORY_TYPES, STORY_RULES, STORY_NOTES } from './content/stories.js';
+import { WRITTEN_ENTRIES, WRITTEN_GYM, WRITTEN_CATEGORY } from './content/written.js';
+import { WRITTEN_DEEP } from './content/written-deep.js';
+import { ACADEMY_EXTRA_4 } from './content/academy-extra-4.js';
+import { ACADEMY_EXTRA_5 } from './content/academy-extra-5.js';
+import { ACADEMY_LEVELS, ACADEMY_PACING, ACADEMY_START } from './content/academy-pacing.js';
 import { EXTRA_PROMPTS, EXTRA_TWISTERS, EXTRA_PANGERAMS } from './content/lab-extra.js';
+import { EXTRA_PROMPTS_5 } from './content/lab-extra-5.js';
 import { SKILL_TRACKS } from './content/skills.js';
 import { SKILL_TRACKS_EXTRA } from './content/skills-extra.js';
 import {
@@ -39,16 +56,17 @@ import {
   CREATOR_SKILLS, FOUR_WEEK_PLAN, CREATOR_CHECKLIST, IDEA_TOPICS, IDEA_ANGLES,
 } from './content/creator.js';
 import { WEEKLY_THEMES, DAILY_DRILLS } from './content/daily.js';
-import { COACH_MODES, coachRespond } from './coach.js';
+import { coachRespond } from './coach.js';
+import { COACH_MODES as COACH_MODE_META } from './coach.js';
 import { rateLimit, concurrency, gzipJSON } from './guard.js';
-import { aiChat, aiStatus, PROVIDERS, coachSystemPrompt, arenaSystemPrompt, arenaJudgePrompt } from './ai.js';
+import { aiChat, aiStatus, PROVIDERS, coachSystemPrompt, isCoachMode, COACH_MODES, arenaSystemPrompt, arenaJudgePrompt } from './ai.js';
 import { analyzeSpeech, scoreWit, scorePronunciation, arenaReply, arenaSummary } from './analysis.js';
 import {
   ensureUser, logActivity, statsFor, saveSession, getSession, updateSession,
   recentSessions, db,
 } from './db.js';
 
-const ARENA_ALL = [...ARENA_SCENARIOS, ...ARENA_EXTRA];
+const ARENA_ALL = [...ARENA_SCENARIOS, ...ARENA_EXTRA, ...ARENA_EXTRA_10];
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
@@ -57,11 +75,28 @@ const PORT = process.env.PORT || 3000;
 // do not advertise the framework in every response
 app.disable('x-powered-by');
 
+// ── Input validation ───────────────────────────────────────
+// Express's JSON parser accepts any JSON value, so a caller could send
+// {"transcript": {"$ne": null}} or a 200k-element array and the analysers would
+// iterate over it. Every text field is now type-checked and length-capped at
+// the edge, once, rather than trusted by each handler.
+const str = (v, max = 4000) => (typeof v === 'string' ? v.slice(0, max) : '');
+// Only a real number or a numeric string counts: Number([1]) is 1 and
+// Number({}) is NaN, so casting anything else would let `"choice": [1]` —
+// or `{"$gt": ""}` — score as the answer it happens to coerce to.
+const num = (v, min, max, dflt = 0) => {
+  const looksNumeric = typeof v === 'number' || (typeof v === 'string' && v.trim() !== '' && Number.isFinite(Number(v)));
+  if (!looksNumeric) return dflt;
+  const n = Number(v);
+  return Number.isFinite(n) ? Math.min(max, Math.max(min, n)) : dflt;
+};
+const plainObject = (v) => (v && typeof v === 'object' && !Array.isArray(v) ? v : {});
+
 // ── Security headers ───────────────────────────────────────
 // A single-user local app still renders untrusted text (AI replies, pasted drafts),
 // so lock the document down: no inline script, no external script/frame origins.
 // Kept compatible with the Vite build (which emits external hashed assets only).
-app.use((_req, res, next) => {
+app.use((req, res, next) => {
   res.setHeader('X-Content-Type-Options', 'nosniff');
   res.setHeader('X-Frame-Options', 'DENY');
   res.setHeader('Referrer-Policy', 'no-referrer');
@@ -69,6 +104,10 @@ app.use((_req, res, next) => {
   // need it when the app is served from this server, but no iframe should get it
   res.setHeader('Permissions-Policy', 'geolocation=(), camera=(), payment=(), microphone=(self)');
   res.setHeader('Cross-Origin-Opener-Policy', 'same-origin');
+  // HSTS only makes sense over TLS; setting it on plain http is ignored at best
+  if (req.secure || req.get('x-forwarded-proto') === 'https') {
+    res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+  }
   res.setHeader('Cross-Origin-Resource-Policy', 'same-origin');
   // nothing here is worth caching in a proxy, and cached API JSON leaks between users
   res.setHeader('Cache-Control', 'no-store');
@@ -78,11 +117,9 @@ app.use((_req, res, next) => {
       "default-src 'self'",
       // the static bundle has one inline style block and inline style attributes
       "style-src 'self' 'unsafe-inline'",
-      // No inline script, no eval: the bundle is external and inert. The Vite
-      // module-preload polyfill is inlined as text but only runs when it is
-      // attached to a <link> callback, so blocking inline script does not break
-      // the app (verified in Chromium against the built docs/ page).
+      // No inline script, no eval: the bundle is external and inert.
       "script-src 'self'",
+      // img/media: blob for the recorder's local playback, data for the icon
       "img-src 'self' data: blob:",
       "font-src 'self' data:",
       // the AI coach may call a provider directly (CORS-open, keyless)
@@ -91,6 +128,11 @@ app.use((_req, res, next) => {
       "object-src 'none'",
       "manifest-src 'self'",
       "worker-src 'self' blob:",
+      // belt and braces: none of these are used, so deny them explicitly
+      "frame-src 'none'",
+      "child-src 'self' blob:",
+      "script-src-attr 'none'",
+      "style-src-attr 'unsafe-inline'",
       "base-uri 'self'",
       "form-action 'self'",
       "frame-ancestors 'none'",
@@ -129,7 +171,21 @@ app.use(cors({
   maxAge: 600,
 }));
 // cap request bodies: every endpoint here takes a few KB, never megabytes
-app.use(express.json({ limit: '256kb' }));
+// strict:true (the default) means a bare `[1,2,3]`, `"text"`, `null` or `42` body is
+// rejected with a 400 by the parser itself instead of reaching a route handler.
+app.use(express.json({ limit: '256kb', strict: true }));
+
+// A JSON body that is not an object is never legitimate here. express.json's
+// `strict` mode still lets arrays through, so refuse them outright — a 400 with a
+// reason is better than silently analysing an array of undefineds.
+app.use('/api', (req, res, next) => {
+  const b = req.body;
+  if (b !== undefined && b !== null && (typeof b !== 'object' || Array.isArray(b))) {
+    return res.status(400).json({ error: 'request body must be a JSON object' });
+  }
+  next();
+});
+
 
 const user = ensureUser();
 const uid = user.id;
@@ -175,13 +231,18 @@ const libraryItem = (i) => ({
     .slice(0, 6),
 });
 
-const CHAPTERS = { ...LIBRARY_DEEP, ...LIBRARY_DEEP_2, ...LIBRARY_DEEP_3, ...LIBRARY_EXTRA_DEEP, ...LIBRARY_EXTRA_3_DEEP };
+const CHAPTERS = { ...LIBRARY_DEEP, ...LIBRARY_DEEP_2, ...LIBRARY_DEEP_3, ...LIBRARY_EXTRA_DEEP, ...LIBRARY_EXTRA_3_DEEP, ...LIBRARY_EXTRA_5_DEEP, ...WRITTEN_DEEP };
 // the base shelf plus the second wing, in one list the UI already knows how to render
-const ALL_LIBRARY = [...LIBRARY, ...LIBRARY_EXTRA, ...LIBRARY_EXTRA_3];
-const ALL_ACADEMY = [...ACADEMY, ...ACADEMY_EXTRA, ...ACADEMY_EXTRA_3];
+const ALL_LIBRARY = [...LIBRARY, ...LIBRARY_EXTRA, ...LIBRARY_EXTRA_3, ...LIBRARY_EXTRA_5];
+const ALL_ACADEMY = [...ACADEMY, ...ACADEMY_EXTRA, ...ACADEMY_EXTRA_3, ...ACADEMY_EXTRA_4, ...ACADEMY_EXTRA_5];
 
-const GYM_ALL = [...GYM_SCENARIOS, ...GYM_EXTRA];
-const LIBRARY_FULL = ALL_LIBRARY.map(libraryItem);
+// the nineteen original playbooks stopped at four scripts with no way to tell
+// a good attempt from a bad one; gym-outcomes.js adds the missing fifth
+const withOutcome = (g) => (GYM_OUTCOMES[g.id] && g.lines.length < 5
+  ? { ...g, lines: [...g.lines, GYM_OUTCOMES[g.id]] }
+  : g);
+const GYM_ALL = [...GYM_SCENARIOS, ...GYM_EXTRA, ...GYM_EXTRA_5, ...WRITTEN_GYM].map(withOutcome);
+const LIBRARY_FULL = [...ALL_LIBRARY, ...WRITTEN_ENTRIES].map(libraryItem);
 
 // ── Rate limiting ─────────────────────────────────────────────
 // Nothing guarded these before: a loop could hammer /api/ai/chat (up to 45 s of
@@ -205,22 +266,32 @@ const CONTENT_PAYLOAD = () => ({
       blocks: t.blocks || null, dayCount: t.days.length,
       lessonsWritten: (LESSONS[t.id] ? Object.keys(LESSONS[t.id]).length : 0),
     })),
-    prompts: [...IMPROMPTU_PROMPTS, ...EXTRA_PROMPTS],
+    prompts: [...IMPROMPTU_PROMPTS, ...EXTRA_PROMPTS, ...EXTRA_PROMPTS_5],
     twisters: [...TWISTERS, ...EXTRA_TWISTERS],
     pangerams: [...PANGERAMS, ...EXTRA_PANGERAMS],
-    wit: [...WIT_SCENARIOS, ...EXTRA_WIT],
+    wit: [...WIT_SCENARIOS, ...EXTRA_WIT, ...WIT_EXTRA_5, ...WIT_EXTRA_10],
     witMeta: WIT_META,
     arena: ARENA_ALL.map(({ facts, probes, reactions, ...rest }) => rest),
     body: [...BODY_CARDS, ...EXTRA_BODY_CARDS, ...EXTRA_BODY_V4],
+    psychology: PSY_ALL,
+    stories: STORIES,
+    storyTypes: STORY_TYPES,
+    storyRules: STORY_RULES,
+    storyNotes: STORY_NOTES,
+    psyCategories: PSY_CATEGORIES,
+    psyManifesto: PSY_MANIFESTO,
     bodyClusters: BODY_CLUSTERS,
     bodyNotes: BODY_CLUSTER_NOTES,
     library: LIBRARY_FULL,
     chaptersWritten: Object.keys(CHAPTERS).length,
     games: GAMES,
     academy: ALL_ACADEMY,
+    academyLevels: ACADEMY_LEVELS,
+    academyPacing: ACADEMY_PACING,
+    academyStart: ACADEMY_START,
     gym: GYM_ALL,
-    gymCategories: [...GYM_CATEGORIES, ...GYM_EXTRA_CATEGORIES],
-    frameworks: [...FRAMEWORKS, ...EXTRA_FRAMEWORKS],
+    gymCategories: [...GYM_CATEGORIES, ...GYM_EXTRA_CATEGORIES, WRITTEN_CATEGORY.name],
+    frameworks: [...FRAMEWORKS, ...EXTRA_FRAMEWORKS, ...EXTRA_FRAMEWORKS_5],
     frameworkCategories: [...FRAMEWORK_CATEGORIES, ...EXTRA_FRAMEWORK_CATEGORIES],
     skills: [...SKILL_TRACKS, ...SKILL_TRACKS_EXTRA],
     creator: {
@@ -228,8 +299,10 @@ const CONTENT_PAYLOAD = () => ({
       platforms: PLATFORM_NOTES, ladder: CREATOR_SKILLS, plan: FOUR_WEEK_PLAN,
       checklist: CREATOR_CHECKLIST, topics: IDEA_TOPICS, angles: IDEA_ANGLES,
     },
-    daily: { themes: WEEKLY_THEMES, drills: [...DAILY_DRILLS, ...EXTRA_DAILY] },
-  coachModes: COACH_MODES,
+    daily: { themes: WEEKLY_THEMES, drills: [...DAILY_DRILLS, ...EXTRA_DAILY, ...EXTRA_DAILY_5, ...EXTRA_DAILY_10, ...EXTRA_DAILY_10B] },
+  glossary: GLOSSARY,
+  glossaryCategories: GLOSSARY_CATEGORIES,
+  coachModes: COACH_MODE_META,
 });
 
 // ~640 KB of JSON → ~150 KB on the wire, compressed once at boot.
@@ -239,6 +312,12 @@ app.get('/api/track/:id', (req, res) => {
   const track = TRACK_MAP[req.params.id];
   if (!track) return res.status(404).json({ error: 'Track not found' });
   res.json(withLessons(track));
+});
+
+// NOTE: this must stay below /api/library/categories, or Express matches
+// "categories" as an :id and the route 404s with "Entry not found".
+app.get('/api/library/categories', (_req, res) => {
+  res.json([...new Set(LIBRARY.map((i) => i.category))]);
 });
 
 app.get('/api/library/:id', (req, res) => {
@@ -257,7 +336,7 @@ app.get('/api/user', (_req, res) => {
 });
 
 app.patch('/api/user', (req, res) => {
-  const { name, goal } = req.body || {};
+  const { name, goal } = plainObject(req.body);
   if (typeof name === 'string' && name.trim()) {
     db.prepare('UPDATE users SET name = ? WHERE id = ?').run(name.trim().slice(0, 40), uid);
   }
@@ -267,7 +346,11 @@ app.patch('/api/user', (req, res) => {
 
 // ── Course progress ────────────────────────────────────────
 app.post('/api/progress/complete', (req, res) => {
-  const { track, day, score = null, notes = '' } = req.body || {};
+  const body = plainObject(req.body);
+  const track = str(body.track, 20);
+  const day = num(body.day, 1, 400, 0);
+  const score = body.score == null ? null : num(body.score, 0, 100, null);
+  const notes = str(body.notes, 2000);
   const t = TRACK_MAP[track];
   if (!t) return res.status(400).json({ error: 'Unknown track' });
   const d = t.days.find((x) => x.day === Number(day));
@@ -287,14 +370,27 @@ app.post('/api/progress/complete', (req, res) => {
 });
 
 app.post('/api/progress/uncomplete', (req, res) => {
-  const { track, day } = req.body || {};
+  const body = plainObject(req.body);
+  const track = str(body.track, 20);
+  const day = num(body.day, 1, 400, 0);
   db.prepare('DELETE FROM progress WHERE user_id = ? AND track = ? AND day = ?').run(uid, track, Number(day));
   res.json({ ok: true, stats: statsFor(uid) });
 });
 
 // ── Speech analysis (Impromptu Lab) ────────────────────────
 app.post('/api/analyze/speech', (req, res) => {
-  const { transcript = '', mode = 'impromptu', metrics = {}, promptText = '', ref = null } = req.body || {};
+  const body = plainObject(req.body);
+  // The cap used to be silent: a 15 000-character transcript was truncated to
+  // 12 000 and scored as if it were the whole speech, so the score described a
+  // different answer than the one submitted. Reject it instead.
+  if (typeof body.transcript === 'string' && body.transcript.length > 12000) {
+    return res.status(413).json({ error: 'Transcript too long — the limit is 12 000 characters.' });
+  }
+  const transcript = str(body.transcript, 12000);
+  const mode = str(body.mode, 40) || 'impromptu';
+  const metrics = plainObject(body.metrics);
+  const promptText = str(body.promptText, 2000);
+  const ref = body.ref == null ? null : str(body.ref, 80);
   const result = analyzeSpeech({ transcript, mode, metrics, promptText });
   const id = saveSession(uid, mode, ref, result.overall, { transcript, metrics, promptText, result });
   logActivity(uid, mode, Math.max(10, Math.round(result.overall * 0.6)));
@@ -303,7 +399,9 @@ app.post('/api/analyze/speech', (req, res) => {
 
 // ── Wit simulator ──────────────────────────────────────────
 app.post('/api/analyze/wit', (req, res) => {
-  const { scenarioId, response = '' } = req.body || {};
+  const body = plainObject(req.body);
+  const scenarioId = str(body.scenarioId, 80);
+  const response = str(body.response, 4000);
   const scenario = WIT_SCENARIOS.find((s) => s.id === scenarioId);
   if (!scenario) return res.status(404).json({ error: 'Scenario not found' });
   const result = scoreWit({ scenario, response });
@@ -314,7 +412,11 @@ app.post('/api/analyze/wit', (req, res) => {
 
 // ── Pronunciation lab ──────────────────────────────────────
 app.post('/api/analyze/pronunciation', (req, res) => {
-  const { target = '', heard = '', durationSec = 0, attempt = 1 } = req.body || {};
+  const body = plainObject(req.body);
+  const target = str(body.target, 600);
+  const heard = str(body.heard, 600);
+  const durationSec = num(body.durationSec, 0, 600, 0);
+  const attempt = num(body.attempt, 1, 50, 1);
   const result = scorePronunciation({ target, heard, durationSec, attempts: attempt });
   const id = saveSession(uid, 'pronunciation', target.slice(0, 40), result.accuracy, { target, heard, durationSec, result });
   if (result.accuracy > 0) logActivity(uid, 'pronunciation', Math.max(6, Math.round(result.accuracy * 0.3)));
@@ -323,7 +425,9 @@ app.post('/api/analyze/pronunciation', (req, res) => {
 
 // ── Body language ──────────────────────────────────────────
 app.post('/api/body/answer', (req, res) => {
-  const { cardId, choice } = req.body || {};
+  const body = plainObject(req.body);
+  const cardId = str(body.cardId, 80);
+  const choice = num(body.choice, 0, 10, -1);
   const card = [...BODY_CARDS, ...EXTRA_BODY_CARDS].find((c) => c.id === cardId);
   if (!card) return res.status(404).json({ error: 'Card not found' });
   const correct = Number(choice) === card.answer;
@@ -334,7 +438,7 @@ app.post('/api/body/answer', (req, res) => {
 
 // ── Conversation Arena ─────────────────────────────────────
 app.post('/api/arena/start', (req, res) => {
-  const { scenarioId } = req.body || {};
+  const scenarioId = str(plainObject(req.body).scenarioId, 80);
   const scenario = ARENA_ALL.find((s) => s.id === scenarioId);
   if (!scenario) return res.status(404).json({ error: 'Scenario not found' });
   const history = [{ role: 'persona', text: scenario.opener, kind: 'opener' }];
@@ -345,10 +449,13 @@ app.post('/api/arena/start', (req, res) => {
 });
 
 app.post('/api/arena/message', (req, res) => {
-  const { sessionId, message = '' } = req.body || {};
+  const body = plainObject(req.body);
+  const sessionId = num(body.sessionId, 1, Number.MAX_SAFE_INTEGER, 0);
+  const message = str(body.message, 2000);
   const row = getSession(uid, sessionId);
   if (!row) return res.status(404).json({ error: 'Session not found' });
-  const payload = JSON.parse(row.payload);
+  let payload;
+  try { payload = JSON.parse(row.payload); } catch { return res.status(500).json({ error: 'Session is corrupt' }); }
   const scenario = ARENA_ALL.find((s) => s.id === payload.scenarioId);
   if (!scenario) return res.status(404).json({ error: 'Scenario not found' });
 
@@ -363,10 +470,11 @@ app.post('/api/arena/message', (req, res) => {
 });
 
 app.post('/api/arena/end', (req, res) => {
-  const { sessionId } = req.body || {};
+  const sessionId = num(plainObject(req.body).sessionId, 1, Number.MAX_SAFE_INTEGER, 0);
   const row = getSession(uid, sessionId);
   if (!row) return res.status(404).json({ error: 'Session not found' });
-  const payload = JSON.parse(row.payload);
+  let payload;
+  try { payload = JSON.parse(row.payload); } catch { return res.status(500).json({ error: 'Session is corrupt' }); }
   const scenario = ARENA_ALL.find((s) => s.id === payload.scenarioId);
   const summary = arenaSummary({ scenario, history: payload.history });
   payload.summary = summary;
@@ -393,10 +501,6 @@ app.get('/api/library', (req, res) => {
     });
   }
   res.json({ items, total: items.length });
-});
-
-app.get('/api/library/categories', (_req, res) => {
-  res.json([...new Set(LIBRARY.map((i) => i.category))]);
 });
 
 // ── Sessions / stats ───────────────────────────────────────
@@ -437,7 +541,17 @@ app.get('/api/ai/status', (_req, res) => {
 });
 
 app.post('/api/ai/chat', aiLimit, aiSlot, async (req, res) => {
-  const { messages = [], mode = 'general', system = '', temperature, maxTokens } = req.body || {};
+  const payload = plainObject(req.body);
+  const messages = Array.isArray(payload.messages) ? payload.messages : [];
+  const mode = str(payload.mode, 40) || 'general';
+  const temperature = payload.temperature == null ? undefined : num(payload.temperature, 0, 2, 0.7);
+  const maxTokens = payload.maxTokens == null ? undefined : num(payload.maxTokens, 16, 1200, 500);
+
+  // SECURITY: mode was interpolated into the system prompt with no allowlist,
+  // so a caller could slip instructions through the field that looks like an
+  // enum. It is now a closed set, and the client may not override the system
+  // prompt at all — it can only pick a mode.
+  if (!isCoachMode(mode)) return res.status(400).json({ error: `unknown mode; expected one of ${COACH_MODES.join(', ')}` });
   const cleaned = (Array.isArray(messages) ? messages : [])
     .filter((m) => m && typeof m.content === 'string')
     .slice(-12)
@@ -463,7 +577,9 @@ app.post('/api/ai/chat', aiLimit, aiSlot, async (req, res) => {
     const out = await aiChat({
       messages: cleaned,
       config,
-      system: system ? String(system).slice(0, 4000) : coachSystemPrompt(mode),
+      // a custom system prompt is a privilege, not a parameter: only honoured
+      // from the server's own environment, never from the request body
+      system: coachSystemPrompt(mode),
       temperature,
       maxTokens,
     });
@@ -475,7 +591,9 @@ app.post('/api/ai/chat', aiLimit, aiSlot, async (req, res) => {
 
 // ── Generic XP logging (games, drills, coach) ──────────────
 app.post('/api/activity', (req, res) => {
-  const { kind = 'drill', xp = 0 } = req.body || {};
+  const body = plainObject(req.body);
+  const kind = str(body.kind, 40) || 'drill';
+  const xp = num(body.xp, 0, 500, 0);
   if (typeof kind !== 'string' || !kind.trim()) return res.status(400).json({ error: 'kind required' });
   const amount = Math.max(0, Math.min(200, Math.round(Number(xp) || 0)));
   logActivity(uid, kind.trim().slice(0, 40), amount);
@@ -497,9 +615,31 @@ app.get(/^(?!\/api).*/, (_req, res) => {
   });
 });
 
-// Bind to loopback by default so the app is not exposed to the local network.
-// Set HOST=0.0.0.0 deliberately if you want other devices to reach it.
+// ── Bind address ───────────────────────────────────────────
+// Loopback by default, so the app is not exposed to the local network. Setting
+// HOST=0.0.0.0 used to be enough on its own to put a single-user database with
+// no authentication on every interface — including café and hotel Wi-Fi. It now
+// takes a second, explicit opt-in, and the startup banner says so out loud.
 const HOST = process.env.HOST || '127.0.0.1';
+const LOOPBACK = new Set(['127.0.0.1', 'localhost', '::1']);
+const isLoopback = LOOPBACK.has(HOST) || HOST.startsWith('127.');
+const ALLOW_PUBLIC = process.env.ALLOW_PUBLIC_BIND === '1';
+
+if (!isLoopback && !ALLOW_PUBLIC) {
+  console.error(
+    `\n✗ Refusing to bind to ${HOST}.\n` +
+    '  This app has no login and stores your whole practice history in one SQLite\n' +
+    '  file: on a shared network, anyone who can reach the port can read and erase\n' +
+    '  it. It is meant for this machine only.\n\n' +
+    '  If you genuinely want other devices to reach it, set both:\n' +
+    '    HOST=0.0.0.0 ALLOW_PUBLIC_BIND=1 npm start\n',
+  );
+  process.exit(1);
+}
+
 app.listen(PORT, HOST, () => {
-  console.log(`Charisma Lab API + UI on http://${HOST}:${PORT}`);
+  console.log(`Charisma Lab API + UI on http://${isLoopback ? '127.0.0.1' : HOST}:${PORT}`);
+  if (!isLoopback) {
+    console.warn(`⚠ Listening on ${HOST} with no authentication. Anyone who can reach port ${PORT} can read and erase this database.`);
+  }
 });

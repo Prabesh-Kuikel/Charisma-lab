@@ -1,0 +1,1021 @@
+// ─────────────────────────────────────────────────────────────
+//  Human Psychology — a first-class wing
+//
+//  The app has had a `psychology` coach mode and one academy module
+//  since round 4, but no *section*: nowhere to read the actual
+//  mechanisms, in order, with their counter-evidence.
+//
+//  The editorial rule for every entry, and the reason this is not a
+//  manipulation manual:
+//    1. THE EFFECT — what the research actually shows.
+//    2. HOW IT HELPS YOU — the honest social use.
+//    3. HOW IT IS USED ON YOU — the same mechanism as a lever someone
+//       else pulls, and how to notice it.
+//    4. THE LIMIT — where the finding fails, is weaker than reported,
+//       or has a replication problem.
+//    5. PRACTISE — one thing to do in real life today.
+//
+//  Every claim is written to survive being checked: where a famous
+//  study failed to replicate (ego depletion, power posing, the
+//  Stanford Prison Experiment) it says so, in the entry.
+// ─────────────────────────────────────────────────────────────
+
+export const PSY_CATEGORIES = [
+  { id: 'perception', name: 'First perception', note: 'How someone forms a judgement of you in under a second, and what they can and cannot read.' },
+  { id: 'warmth', name: 'Warmth & trust', note: 'The mechanisms behind feeling safe with someone — and the fastest ways to break it.' },
+  { id: 'status', name: 'Status & hierarchy', note: 'How rank is signalled, negotiated, and lost in a room, without anyone saying a word.' },
+  { id: 'persuasion', name: 'Persuasion', note: 'The small number of effects that reliably change minds, and their honest limits.' },
+  { id: 'judgement', name: 'Biases in judgement', note: 'The errors everyone makes, including about their own reasoning.' },
+  { id: 'emotion', name: 'Emotion & regulation', note: 'What is actually happening in a nervous system, and what helps.' },
+  { id: 'memory', name: 'Memory & attention', note: 'How much anyone remembers of what you said — it is far less than you think.' },
+  { id: 'defence', name: 'Persuasion defence', note: 'How to notice when a mechanism is being used on you.' },
+  { id: 'minefield', name: 'Why psychology is a minefield', note: 'Famous studies that failed to replicate, and what to do when the internet has not caught up.' },
+];
+
+export const PSY_ENTRIES = [
+  // ── perception ───────────────────────────────────────────────
+  {
+    id: 'psy-thin-slice',
+    category: 'perception',
+    title: 'The half-second judgement',
+    oneLiner: 'People decide two things about you almost instantly — and then spend the rest of the conversation quietly confirming them.',
+    field: 'Social perception',
+    evidence: 'Ambady & Rosenthal, 1993; Willis & Todorov, 2006',
+    strength: 'Strong',
+    keywords: ['thin slicing', 'first impression', 'snap judgement', '100 milliseconds', 'todorov'],
+    effect: [
+      'Judgements made from very thin slices of behaviour — seconds of silent video, or a photograph — predict later ratings of a person with surprising consistency. In Willis and Todorov\u2019s experiments, exposure of just 100 milliseconds produced trait judgements that barely changed when people were given unlimited time.',
+      'What is being judged is not accuracy about your personality. It is a rapid, mostly automatic answer to two questions, and those two answers then colour everything that follows.',
+    ],
+    mechanism: 'The brain is answering a survival question ("friend or threat?") before the deliberate mind has anything to work with, so it uses whatever is available: face, posture, pace, whether you look at people or past them.',
+    use: [
+      'You cannot control the judgement, but you can control the first five seconds of input: arrival pace, whether you acknowledge the room, and whether your first sentence is about the other person or about you.',
+      'Arriving slower than you want to is the single highest-leverage adjustment. Hurried arrival reads as either lateness or anxiety, and both start the conversation behind.',
+    ],
+    defence: [
+      'Your own first impressions of other people are just as fast and just as unfalsifiable. If you notice a strong reaction to someone in the first minute, treat it as a hypothesis with a one-conversation expiry date.',
+    ],
+    limit: 'Thin-slice studies show that judgements are *consistent* and *consequential*. They do not show that they are *correct*. The correlation with actual personality is modest, which is precisely why the effect is worth managing rather than trusting.',
+    practise: 'In your next three conversations, count how many seconds pass before you ask the other person something. Aim to be under sixty, and to have said nothing about yourself first.',
+    reads: ['lib-v1', 'lib-pr3'],
+    pairs: ['psy-warmth-competence', 'psy-halo'],
+  },
+  {
+    id: 'psy-warmth-competence',
+    category: 'perception',
+    title: 'Warmth before competence',
+    oneLiner: 'Everyone is read on two axes at once, and the order matters: warm-but-unsure is forgiven, capable-but-cold is not.',
+    field: 'Social cognition',
+    evidence: 'Fiske, Cuddy & Glick, 2007 (stereotype content model)',
+    strength: 'Strong',
+    keywords: ['warmth', 'competence', 'fiske', 'stereotype content model', 'trustworthiness', 'cold'],
+    effect: [
+      'Social perception reliably resolves into two dimensions: warmth (are your intentions good?) and competence (can you act on them?). Almost every impression you make is a position on that plane.',
+      'The asymmetry is the useful part. A person read as warm but unimpressive gets help, patience and the benefit of the doubt. A person read as competent but cold gets compliance, scrutiny and quiet resentment. Warmth is judged first and weighs more when the two conflict.',
+    ],
+    mechanism: 'Intent has to be assessed before ability, because a capable enemy is more dangerous than an incapable friend. So the warmth question gets answered first and anchors the rest.',
+    use: [
+      'Signal warmth deliberately in the first exchange, then let competence accumulate. The reverse order — leading with credentials, precision or correction — is how competent people get frozen out of rooms.',
+      'Warmth is not smiling. The reliable signals are: using the other person\u2019s name, referring to something they said earlier, and conceding one small point in your own argument.',
+    ],
+    defence: [
+      'When you feel instant respect for someone polished, ask what you actually know about their intentions. When you feel instant irritation at someone awkward, ask the same question. Both reactions are the same heuristic running in opposite directions.',
+    ],
+    limit: 'The model describes perception, not truth. Plenty of warm-seeming people are unreliable and plenty of cold-seeming people are generous. Also, in a genuine emergency competence dominates — nobody wants a warm surgeon who cannot operate.',
+    practise: 'In one meeting this week, make your first contribution an acknowledgement of someone else\u2019s point before your own. Note whether the room\u2019s tone changes.',
+    reads: ['lib-pr1', 'lib-ei1'],
+    pairs: ['psy-thin-slice', 'psy-halo', 'psy-trust-build'],
+  },
+  {
+    id: 'psy-halo',
+    category: 'perception',
+    title: 'The halo effect',
+    oneLiner: 'One good trait makes every other judgement about a person drift upward — including judgements it has nothing to do with.',
+    field: 'Cognitive bias',
+    evidence: 'Thorndike, 1920; Nisbett & Wilson, 1977',
+    strength: 'Strong',
+    keywords: ['halo effect', 'halo', 'thorndike', 'attractiveness', 'first impression'],
+    effect: [
+      'Rate someone as attractive, articulate or well-dressed and you will also rate them as more intelligent, kinder and more trustworthy, without noticing you have done it. Nisbett and Wilson\u2019s classic study found that people denied being influenced by a lecturer\u2019s accent and manner while their ratings tracked it precisely.',
+      'The halo runs on anything salient: a good suit, a confident voice, a famous employer, one impressive answer early in an interview.',
+    ],
+    mechanism: 'The mind prefers coherent impressions to mixed ones, so it fills gaps in one direction rather than holding "good at this, unknown at that".',
+    use: [
+      'You are always building a halo, so build it on something real and repeatable: one domain where you are visibly excellent makes people assume competence elsewhere. Choose that domain deliberately rather than letting it be accidental.',
+      'For yourself, engineer a strong first artefact — the document, the question, the introduction — because it will be used as evidence for traits you have not demonstrated.',
+    ],
+    defence: [
+      'Halo is the bias most likely to cost you money: it inflates your read of charismatic candidates, cheap-looking but excellent work, and people who agree with you fluently.',
+      'The counter-procedure is to score each attribute separately, in writing, before discussing the person with anyone else.',
+    ],
+    limit: 'Halo is real and robust, but its size varies by domain. In tasks with objective feedback (a code review, a sales number) it fades quickly; in unstructured judgement (interviews, first meetings) it dominates.',
+    practise: 'Take one person you like and one you dislike, and write three separate lines about each: what they have actually done, what you believe about their intent, and what you feel around them. Notice how much of the second and third you invented.',
+    reads: ['lib-pr3', 'lib-c2'],
+    pairs: ['psy-warmth-competence', 'psy-confirmation', 'psy-fundamental-attribution'],
+  },
+
+  // ── warmth & trust ───────────────────────────────────────────
+  {
+    id: 'psy-trust-build',
+    category: 'warmth',
+    title: 'Trust is built in small bets, not big gestures',
+    oneLiner: 'Trust compounds through repeated low-stakes reliability. One grand gesture buys suspicion, not trust.',
+    field: 'Behavioural economics',
+    evidence: 'Berg, Dickhaut & McCabe, 1995 (trust game); Axelrod, 1984 (iterated reciprocity)',
+    strength: 'Strong',
+    keywords: ['trust', 'trust game', 'reliability', 'repair', 'broken trust'],
+    effect: [
+      'In iterated trust games, cooperation builds when each side makes a small exposure and the other side proves reliable, then slightly increases the exposure. The size of the first move matters less than whether it is repeated and matched.',
+      'Trust also decays asymmetrically: one defection resets the relationship much further back than one act of reliability advances it. This is why "he was always reliable until that one time" does not survive as a defence.',
+    ],
+    mechanism: 'Trust is a prediction about future behaviour built from evidence of past behaviour. Vague promises provide no evidence, which is why warmth without reliability reads as performance.',
+    use: [
+      'Make one small, specific, checkable commitment early — "I will send you the two names by Thursday" — and then be exactly on time. That is worth more than an hour of enthusiastic talk.',
+      'Repair is a form of trust-building, not its opposite: naming your own failure before they raise it is evidence of reliability in a way that never failing cannot be.',
+    ],
+    defence: [
+      'People who ask for a large commitment before any small one has been tested are asking you to skip the mechanism. That pattern is the same in sales, hiring and romance.',
+    ],
+    limit: 'Trust games are simplified; real relationships carry history, power differences and third parties. The general shape holds, but the timings are much longer in real life — months, not rounds.',
+    practise: 'Pick one person you want to trust you more. Make one small promise this week that costs you something to keep, and keep it exactly.',
+    reads: ['lib-cr1', 'lib-ei2'],
+    pairs: ['psy-reciprocity', 'psy-warmth-competence'],
+  },
+  {
+    id: 'psy-reciprocity',
+    category: 'warmth',
+    title: 'Reciprocity, and its dark edge',
+    oneLiner: 'An unexpected favour creates a real sense of obligation — which is why it is also the oldest manipulation in the book.',
+    field: 'Social influence',
+    evidence: 'Cialdini, 1984; Regan, 1971',
+    strength: 'Strong (the effect); mixed (its ethics)',
+    keywords: ['reciprocity', 'favours', 'obligation', 'regan', 'giving first'],
+    effect: [
+      'People return favours at a rate far above what the favour was worth, and the effect is strongest when the favour is unexpected, personal and given first. Regan\u2019s experiment found that a small unsolicited drink produced significantly more compliance with a later request.',
+      'Reciprocity also works in the negative: an insult, a withheld introduction or a public correction creates a debt that people will pay back, often at a time of their choosing.',
+    ],
+    mechanism: 'A favour creates an unresolved social imbalance, and unresolved imbalances are uncomfortable. Discharging the discomfort is the motive — not gratitude.',
+    use: [
+      'Give first, specifically, and without an invoice: a useful introduction, a name, a number someone asked for, a correction given privately. The value is in it being useful, not in it being noticed.',
+      'For the receiving side, the honest move is to reciprocate something of similar size. Over-returning creates a debt in the other direction and turns a gift into a transaction.',
+    ],
+    defence: [
+      'The manipulation pattern is: unrequested gift, then a request much larger than the gift, delivered while the imbalance is fresh. Notice the sequence rather than the gift.',
+      'You are allowed to accept a favour and decline the request. Saying so out loud — "thank you, and I am still going to say no" — breaks the loop cleanly.',
+    ],
+    limit: 'Effect sizes in real settings are far smaller than lab demos suggest, and obligation decays quickly. A favour given six months ago buys essentially nothing.',
+    practise: 'Give one thing this week that nobody asked for and that you do not mention again. Notice how hard it is not to mention it.',
+    reads: ['lib-c5', 'lib-cr2'],
+    pairs: ['psy-trust-build', 'psy-commitment', 'psy-defence-playbook'],
+  },
+  {
+    id: 'psy-vulnerability',
+    category: 'warmth',
+    title: 'Disclosure has to be earned and matched',
+    oneLiner: 'Revealing something real builds closeness — but only when it is calibrated to what the other person has already offered.',
+    field: 'Relationship science',
+    evidence: 'Aron et al., 1997 (36 questions); Collins & Miller, 1994',
+    strength: 'Moderate to strong',
+    keywords: ['self-disclosure', 'vulnerability', '36 questions', 'aron', 'oversharing', 'intimacy'],
+    effect: [
+      'Gradual, reciprocal self-disclosure reliably increases liking and closeness. The Aron "36 questions" study found that escalating mutual disclosure produced more closeness than small talk in a single sitting.',
+      'The critical word is *mutual*. Disclosure that runs ahead of the other person\u2019s produces discomfort, not intimacy — the listener is left holding something they did not ask for and cannot match.',
+    ],
+    mechanism: 'Being trusted with something private signals that you are considered safe, and the feeling is reciprocal. But the signal only works if both are exposed at a similar level.',
+    use: [
+      'Match plus one: respond at roughly the depth they offered, then go one small step further and stop. A question is often better than a disclosure — it lets them set the pace.',
+      'Disclose the specific, not the dramatic. "I find these things genuinely hard to say out loud" lands; a full account of a recent crisis lands as a burden.',
+    ],
+    defence: [
+      'Rapid, unprompted over-disclosure is a common way to manufacture intimacy fast — in sales, in cults and in dating. The information is real; the speed is the tell.',
+    ],
+    limit: 'The 36-questions result is real but often overstated online: the study measured closeness in a lab with strangers, and the effect is weaker for people with a history of being punished for disclosure. Consent and context matter.',
+    practise: 'In one conversation this week, answer at the depth you were asked and then ask a question one rung deeper instead of volleying your own story back.',
+    reads: ['lib-ei1', 'lib-cr2'],
+    pairs: ['psy-reciprocity', 'psy-emotion-regulation'],
+  },
+
+  // ── status ───────────────────────────────────────────────────
+  {
+    id: 'psy-status-signals',
+    category: 'status',
+    title: 'Status is negotiated, not announced',
+    oneLiner: 'Rank in a room is set by who defers to whom — which means it is being decided continuously, usually without words.',
+    field: 'Group dynamics',
+    evidence: 'Anderson et al., 2001, 2012 (status conferral); Ridgeway, 1982 (expectation states)',
+    strength: 'Strong',
+    keywords: ['status', 'rank', 'hierarchy', 'conferred status', 'dominance', 'respect'],
+    effect: [
+      'Status in a group is largely conferred by other people, based on two things: perceived competence at the group\u2019s task, and perceived generosity toward the group. People who signal dominance without either are liked less and, over time, given less influence.',
+      'The behaviours that reliably raise conferred status are speaking up early with something useful, giving credit, and asking good questions. The behaviours that reliably lower it are over-explaining, competing for airtime, and needing the last word.',
+    ],
+    mechanism: 'Groups need a way to allocate influence cheaply, so they use visible cues of value to the group. Dominance is a shortcut that works briefly and then costs you, because it makes you a rival rather than a resource.',
+    use: [
+      'If you want influence in a room, be the first person to make someone else look good. It reads as both competence and generosity, the exact combination that earns conferred status.',
+      'Lowering your own status deliberately is a tool, not a loss: self-deprecation, admitting you do not know, and asking for help all make people comfortable and tend to increase their warmth toward you.',
+    ],
+    defence: [
+      'Watch who is being interrupted and who is allowed to finish. That pattern is a live map of the room\u2019s status hierarchy, and it is usually more accurate than titles.',
+    ],
+    limit: 'Status dynamics differ sharply by culture and by group type: in some contexts dominance genuinely works and warmth is read as weakness. The finding is about groups with a shared task, not every room.',
+    practise: 'In your next group conversation, let one person finish a thought you could have improved, and give them the credit for it out loud.',
+    reads: ['lib-g4', 'lib-pr1'],
+    pairs: ['psy-warmth-competence', 'psy-dominance-vs-prestige'],
+  },
+  {
+    id: 'psy-dominance-vs-prestige',
+    category: 'status',
+    title: 'Dominance or prestige: two roads, different costs',
+    oneLiner: 'There are two ways to get people to follow you. One is fear and it is fast. The other is respect and it compounds.',
+    field: 'Evolutionary psychology',
+    evidence: 'Cheng et al., 2013 (dual-strategy theory of social rank)',
+    strength: 'Strong',
+    keywords: ['dominance', 'prestige', 'rank', 'cheng', 'fear', 'respect'],
+    effect: [
+      'Across species and human groups, two distinct routes to rank exist. Dominance works through intimidation and control of resources; it produces compliance and resentment. Prestige works through valued skill and knowledge; people freely defer because association is useful to them.',
+      'The two produce different psychological signatures in followers. Dominance produces fear-based monitoring and reduced creativity. Prestige produces willing imitation and more honest feedback.',
+    ],
+    mechanism: 'Dominance is cheap to signal and expensive to maintain; it requires constant testing. Prestige is expensive to acquire and cheap to maintain, because followers have their own reason to defer.',
+    use: [
+      'Invest in prestige signals: visible competence at something specific, teaching, and giving away what you know. Dominance signals — interruption, volume, refusing to concede anything — buy short-term control and long-term isolation.',
+      'In conflict, the prestige move is to concede the small, real point and hold the important one. It demonstrates both generosity and judgement.',
+    ],
+    defence: [
+      'When someone is trying to establish dominance in a conversation — interrupting, correcting trivia, taking the floor — the reliable counter is to be unbothered and to keep asking questions. Dominance needs a reaction to work.',
+    ],
+    limit: 'Pure prestige is slow and can be unavailable to people in genuinely hostile environments; short-term dominance sometimes is the rational choice. The theory describes the trade-off, not a moral ranking.',
+    practise: 'Find one thing you know that someone else in your circle is struggling with, and teach it to them without being asked twice.',
+    reads: ['lib-g1', 'lib-g4'],
+    pairs: ['psy-status-signals', 'psy-costly-signalling'],
+  },
+  {
+    id: 'psy-costly-signalling',
+    category: 'status',
+    title: 'Costly signals, and why confidence is so persuasive',
+    oneLiner: 'People believe signals in proportion to what they cost the sender — which is why cheap confidence works on everyone, including you.',
+    field: 'Evolutionary signalling',
+    evidence: 'Spence, 1973; Antonakis et al., 2011, 2016; Anderson et al., 2012',
+    strength: 'Strong (theory), moderate (charisma specifics)',
+    keywords: ['confidence', 'signalling', 'costly signal', 'antonakis', 'charisma', 'competence inference'],
+    effect: [
+      'A signal is credible only if it is hard to fake. Confidence, certainty and fluent speech are cheap signals that are nonetheless read by observers as evidence of competence — Antonakis and colleagues found that charismatic speakers are rated as more competent and trustworthy, and later work links the charisma signal to intelligence as a costly one.',
+      'In Anderson\u2019s studies of dominance, people who spoke first, spoke loudly and used confident language early in a group were rated higher in dominance by observers — even though dominance ratings were not related to actual task ability.',
+    ],
+    mechanism: 'Cheap signals are easy to produce, so receivers discount them — but only partly, and much less than they should. The tendency to infer competence from confidence is one of the most replicable findings in social psychology and one of the most exploited.',
+    use: [
+      'Speak in fewer, more definite sentences. Cut "I think maybe it might be" in front of a claim you actually hold. That is not dishonesty; it is letting the content carry the weight it earned.',
+      'Pair confidence with one visible cost: a specific number you are willing to be held to, a deadline, an admission. Cost makes the confidence believable.',
+    ],
+    defence: [
+      'Confidence and competence are only weakly correlated, and you will consistently overestimate the first as evidence of the second. The counter-move is boring and reliable: ask for specifics, follow up on past claims, and trust the track record over the delivery.',
+      'In hiring, groups and purchases: if the presentation is much better than the detail, be more suspicious, not less.',
+    ],
+    limit: 'This is exactly where training and truth part company: training studies (Antonakis 2011) show charisma *signals* can be taught and do change ratings in hours. That says nothing about whether the underlying competence improved, which is the whole point of the defence.',
+    practise: 'Find one sentence you have been saying with a hedge and say it once without the hedge this week, in a room where you are willing to be wrong.',
+    reads: ['lib-g6', 'lib-g3'],
+    pairs: ['psy-status-signals', 'psy-halo', 'psy-defence-playbook'],
+  },
+
+  // ── persuasion ───────────────────────────────────────────────
+  {
+    id: 'psy-reciprocity-concession',
+    category: 'persuasion',
+    title: 'The concession staircase',
+    oneLiner: 'Ask for more than you want, be refused, then ask for what you wanted. The refusal makes the second ask feel like a favour.',
+    field: 'Social influence',
+    evidence: 'Cialdini, 1975 (door-in-the-face)',
+    strength: 'Moderate',
+    keywords: ['door in the face', 'concession', 'negotiation', 'cialdini', 'rejection then retreat'],
+    effect: [
+      'Sequential requests work: a large request that is declined, followed by a smaller one, produces materially higher compliance than the smaller request alone. It also works in reverse (foot-in-the-door: a small yes, then a larger request).',
+      'The mechanism is reciprocity of concession — you gave ground, so the other person feels obliged to give ground too.',
+    ],
+    mechanism: 'Two concessions in a row feel like a fair exchange, and refusing a second concession after refusing the first makes people feel ungenerous.',
+    use: [
+      'In negotiation, your first ask sets the range and your first concession sets the pace. Make your concessions smaller than theirs and slower than theirs, and name what you want in exchange for each one.',
+      'For an honest version: state your initial position as genuinely ambitious rather than fake, and be transparent that your second position is your real one.',
+    ],
+    defence: [
+      'When you find yourself feeling obliged to accept a second, smaller ask, check whether the first was ever real. If the "concession" cost the asker nothing, you were played.',
+      'One clean response: "That is a better number. Let me think about whether I want it at all." Taking the urgency out removes the mechanism.',
+    ],
+    limit: 'Effect sizes for door-in-the-face have shrunk considerably in replication work and are context-dependent — it works best with a short gap and a same-asker request, and not at all when the first request is implausible.',
+    practise: 'In your next negotiation, decide your three positions in advance — opening, target, walk-away — and make exactly one concession, in exchange for something specific.',
+    reads: ['lib-cr4', 'lib-g5'],
+    pairs: ['psy-anchoring', 'psy-reciprocity'],
+  },
+  {
+    id: 'psy-anchoring',
+    category: 'persuasion',
+    title: 'The first number does most of the work',
+    oneLiner: 'Whatever number is mentioned first drags every later number toward it — even when everyone knows it was arbitrary.',
+    field: 'Judgement & decision',
+    evidence: 'Tversky & Kahneman, 1974; Galinsky & Mussweiler, 2001',
+    strength: 'Strong',
+    keywords: ['anchoring', 'anchor', 'first number', 'negotiation', 'salary', 'kahneman', 'tversky'],
+    effect: [
+      'Estimates and negotiated outcomes shift toward an initially presented value. The effect survives even when the anchor is random, implausible, or explicitly identified as irrelevant.',
+      'In negotiation research the anchor effect is large and reliable: whoever names the first number captures a meaningful share of the final outcome, provided they can justify it.',
+    ],
+    mechanism: 'Adjustment from an anchor is insufficient because adjustment is effortful and stops when the answer becomes plausible. Plausible is not the same as correct.',
+    use: [
+      'Name your number first when you have any justification for it, and attach a reason (comparables, a range, a market rate) rather than defending the number alone.',
+      'When you are anchored low, do not counter with a number near theirs. Re-anchor explicitly: state a different frame — a per-unit price, a different scope, a different comparison — and then name a number.',
+    ],
+    defence: [
+      'Before any negotiation, write your own number down and, separately, your walk-away. Then treat their first number as information about them, not about value.',
+      'Distance the anchor physically: restate the deal in your own terms on your own page before responding to theirs.',
+    ],
+    limit: 'Anchors matter far more when the good is ambiguous (salary, a used car, a project fee) and far less when there is a clear market price. Do not over-apply this to commodities.',
+    practise: 'Before your next money conversation, write down three numbers: what you will ask for, what you expect, and what you will accept. Do not write them during the conversation.',
+    reads: ['lib-cr4', 'lib-mny2'],
+    pairs: ['psy-reciprocity-concession', 'psy-loss-aversion'],
+  },
+  {
+    id: 'psy-framing',
+    category: 'persuasion',
+    title: 'Framing: the same fact, two arguments',
+    oneLiner: 'Identical information produces different decisions depending on whether it is framed as a gain or a loss.',
+    field: 'Judgement & decision',
+    evidence: 'Tversky & Kahneman, 1981 (Asian disease problem)',
+    strength: 'Strong',
+    keywords: ['framing', 'gain', 'loss frame', 'asian disease', 'reframe'],
+    effect: [
+      'The classic experiment: two logically identical programmes, one described in lives saved and one in lives lost, produced opposite majority preferences. The framing, not the facts, drove the choice.',
+      'Framing effects are strongest for uncertain outcomes and for people under time pressure.',
+    ],
+    mechanism: 'Losses loom larger than equivalent gains, so a decision framed as avoiding a loss feels more urgent than the same decision framed as achieving a gain.',
+    use: [
+      'For a decision that should happen, frame what is lost by not acting — specifically, concretely, and without overstating it. For a decision that needs care, frame the gain.',
+      'Reframe before you argue: much disagreement is two people using different frames for the same facts. Name the frame out loud — "I think we are both agreeing on the numbers and disagreeing about what they mean".',
+    ],
+    defence: [
+      'Whenever a decision is presented to you in only one frame, generate the other one yourself in a sentence. If your preference flips, the frame was doing the work.',
+    ],
+    limit: 'Framing is robust but not universal: people with strong prior beliefs, high expertise or accountability are considerably less susceptible.',
+    practise: 'Take one recommendation you are about to make and write the opposite frame. If the opposite frame is also persuasive, you have found the real argument you need to have.',
+    reads: ['lib-s2', 'lib-g5'],
+    pairs: ['psy-loss-aversion', 'psy-confirmation'],
+  },
+  {
+    id: 'psy-loss-aversion',
+    category: 'persuasion',
+    title: 'Losses weigh about twice as much as gains',
+    oneLiner: 'Losing something hurts more than gaining the same thing feels good — which distorts every decision you make about change.',
+    field: 'Judgement & decision',
+    evidence: 'Kahneman & Tversky, 1979; Köbberling & Wakker, 2005 (the ~2× estimate)',
+    strength: 'Strong',
+    keywords: ['loss aversion', 'endowment effect', 'status quo bias', 'kahneman', 'prospect theory'],
+    effect: [
+      'People require roughly twice the gain to accept a symmetric risk of loss. This produces status quo bias: the current state is overvalued simply because it is current, and the pain of giving something up is felt more sharply than the pleasure of an equal gain.',
+      'It also produces the endowment effect — a mug you own is worth more to you than the same mug you might buy.',
+    ],
+    mechanism: 'Loss aversion plus diminishing sensitivity predicts a value function that is steeper for losses, which makes change feel like a threat even when the arithmetic is neutral.',
+    use: [
+      'When proposing change, do not argue the gain in isolation. Name explicitly what will not be lost, and what stays the same. Change is only heard once the loss has been addressed.',
+      'For yourself, when stuck on a decision: write what you are giving up as a concrete item, not a vague sense. Naming it defuses part of the sting.',
+    ],
+    defence: [
+      'If you are resisting a change and cannot say what you would lose in a single sentence, you are probably loss-averse rather than correct.',
+    ],
+    limit: 'The famous 2:1 ratio is an average that varies widely — it is near 1 for small amounts and for experienced traders, and much higher for large, rare losses.',
+    practise: 'Take one change you have been avoiding and write the loss in one sentence. Then write what you would gain. Decide which sentence is doing the deciding.',
+    reads: ['lib-g5', 'lib-mny2'],
+    pairs: ['psy-framing', 'psy-sunk-cost'],
+  },
+
+  // ── judgement ────────────────────────────────────────────────
+  {
+    id: 'psy-confirmation',
+    category: 'judgement',
+    title: 'You look for evidence that you are right',
+    oneLiner: 'The default search is for confirming evidence, not disconfirming evidence — and it happens without any sense of bias.',
+    field: 'Cognitive bias',
+    evidence: 'Wason, 1960 (2-4-6 task); Nickerson, 1998 (review)',
+    strength: 'Strong',
+    keywords: ['confirmation bias', 'wason', 'disconfirming evidence', 'motivated reasoning'],
+    effect: [
+      'Given a belief, people preferentially generate and weight evidence that supports it, and test hypotheses in ways that could only confirm them. In Wason\u2019s selection task, most participants chose cards that could only verify the rule and never the one card that could falsify it.',
+      'The experience is not of bias. It is of being thorough, because the confirming search feels like exactly the right thing to do.',
+    ],
+    mechanism: 'Confirming evidence is cheaper to process and more emotionally comfortable. Disconfirming evidence requires updating, which costs effort and identity.',
+    use: [
+      'Before an important conversation or decision, write down the single observation that would change your mind. If you cannot write one, you are not reasoning yet.',
+      'In disagreement, ask what evidence would move them. It is both a diagnostic and a way to convert a fight into an inquiry.',
+    ],
+    defence: [
+      'Ask people around you for the strongest case against your view, and reward the first person who gives it honestly.',
+    ],
+    limit: 'Confirmation bias is one of the best-supported findings in the field, but its size depends heavily on how personally invested you are in the belief.',
+    practise: 'Pick one opinion you hold with confidence. Write three sentences for the other side, from inside that side, without irony.',
+    reads: ['lib-dc1', 'lib-g3'],
+    pairs: ['psy-halo', 'psy-fundamental-attribution', 'psy-in-group'],
+  },
+  {
+    id: 'psy-fundamental-attribution',
+    category: 'judgement',
+    title: 'Their behaviour is character; your behaviour is circumstance',
+    oneLiner: 'When they are late they are careless. When you are late the traffic was terrible.',
+    field: 'Social psychology',
+    evidence: 'Ross, 1977; Jones & Harris, 1967',
+    strength: 'Strong',
+    keywords: ['fundamental attribution error', 'actor observer', 'blame', 'character', 'ross'],
+    effect: [
+      'People systematically over-attribute other people\u2019s behaviour to stable character and under-attribute it to circumstances, while doing the exact opposite for themselves.',
+      'The actor-observer asymmetry is strongest when the behaviour is negative and when we are under cognitive load — which is to say under stress, which is exactly when it matters most.',
+    ],
+    mechanism: 'You have direct access to your own circumstances and only indirect access to theirs. Attention is on the person, not the situation, so the person gets blamed.',
+    use: [
+      'When someone annoys you, generate one situation-level explanation before one character-level explanation. "They were dismissive" becomes "they were dismissive, and they had just come from a meeting that was clearly bad".',
+      'This single habit is the whole difference between someone people find fair and someone people find harsh.',
+    ],
+    defence: [
+      'Notice when you are being described in character terms — "you always", "you never" — and redirect to a specific event with a specific circumstance. Arguments about character cannot be resolved; arguments about events can.',
+    ],
+    limit: 'The asymmetry is real but not absolute: it shrinks for people you know well and for behaviours you have experienced yourself.',
+    practise: 'Catch one judgement about a stranger this week and write the situational explanation for it. Do not discard the first explanation; add the second.',
+    reads: ['lib-dc1', 'lib-cr5'],
+    pairs: ['psy-confirmation', 'psy-halo'],
+  },
+  {
+    id: 'psy-sunk-cost',
+    category: 'judgement',
+    title: 'The sunk cost trap, and the fastest escape',
+    oneLiner: 'Past spending is not a reason to continue. It feels like one because stopping makes the spending mean something.',
+    field: 'Behavioural economics',
+    evidence: 'Arkes & Blumer, 1985; Thaler, 1980',
+    strength: 'Strong',
+    keywords: ['sunk cost', 'escalation of commitment', 'throwing good money', 'quit'],
+    effect: [
+      'People continue investing in failing projects because of resources already committed, even when the forward-looking case is clearly negative. The escalation of commitment is strongest when the person is responsible for the original decision and when it is public.',
+      'The trap is not stupidity; it is consistency. Stopping means admitting the earlier decision was wrong, and consistency is a costly thing to give up.',
+    ],
+    mechanism: 'Withdrawing commitment makes the earlier cost feel wasted, and people would rather spend more than feel foolish.',
+    use: [
+      'The counter-question, asked honestly: "if I had not already spent this, would I start today?" If no, the past cost is a receipt, not an argument.',
+      'Colour the decision. "I am stopping because the next year of this is worse than the alternatives" is a complete sentence; you do not owe anyone a verdict on the last two.',
+    ],
+    defence: [
+      'When someone defends continuing with "but we have already invested", you have found the actual reason. Ask what the case is looking forward only.',
+    ],
+    limit: 'The effect is strongest for time and money personally committed and publicly announced. In institutions the same phenomenon is often better explained by reputational incentives for the managers involved.',
+    practise: 'Pick one commitment you have kept past its use-by date — a subscription, a project, a group. Write the case for it from today forward only.',
+    reads: ['lib-dc5', 'lib-mny3'],
+    pairs: ['psy-loss-aversion', 'psy-commitment'],
+  },
+  {
+    id: 'psy-in-group',
+    category: 'judgement',
+    title: 'Us and them, at almost no cost',
+    oneLiner: 'It takes a coin toss and a jokey label to make people favour their own group — and the bias is stronger than most people expect.',
+    field: 'Group psychology',
+    evidence: 'Tajfel, 1970 (minimal group paradigm); Sherif et al., 1954 (Robbers Cave)',
+    strength: 'Strong (minimal groups); contested (Robbers Cave reading)',
+    keywords: ['in-group', 'out-group', 'tajfel', 'minimal group', 'tribalism', 'robbers cave'],
+    effect: [
+      'In Tajfel\u2019s studies, arbiters who were told only that they belonged to an arbitrary group allocated more money to their own side than to the other, even when the allocation between themselves and their side was unaffected.',
+      'Group identity produces in-group favouritism, out-group homogenisation ("they are all like that"), and the assumption that disagreement is about character rather than information.',
+    ],
+    mechanism: 'Group membership is a cheap way to predict others, and the mind fills in the rest. The label does the work; the substance is optional.',
+    use: [
+      'Building a we is real leadership: shared vocabulary, shared references, a name. It makes people faster and more generous with each other — and you should be honest that it also makes them less generous with outsiders.',
+      'Cross-cutting identities are the reliable brake: when people share a second, unrelated identity, the first one loses some of its grip.',
+    ],
+    defence: [
+      'When you notice yourself saying "people like that", stop and find one counter-example you personally know. The generalisation cannot survive one.',
+    ],
+    limit: 'A correction to the folk story: the Robbers Cave narrative about automatically hostile groups is much messier than the textbook version, and Sherif deliberately engineered competition. The minimal-group effect itself replicates well.',
+    practise: 'In your next conversation with an out-group person, ask them about one concrete thing they have done this week. Specifics kill generalisations.',
+    reads: ['lib-st1', 'lib-g4'],
+    pairs: ['psy-confirmation', 'psy-defence-playbook'],
+  },
+
+  // ── emotion ──────────────────────────────────────────────────
+  {
+    id: 'psy-emotion-regulation',
+    category: 'emotion',
+    title: 'Name it to tame it — but choose your label carefully',
+    oneLiner: 'Putting a precise word on an emotion reliably reduces its intensity. Regulating it by reloading it does not.',
+    field: 'Affective science',
+    evidence: 'Lieberman et al., 2007 (affect labelling); Kircanski et al., 2012',
+    strength: 'Moderate to strong',
+    keywords: ['emotion regulation', 'affect labelling', 'name it to tame it', 'reappraisal', 'suppression', 'lieberman'],
+    effect: [
+      'Labelling an emotional state in words — especially a precise word rather than a vague one — reduces amygdala response and reported intensity. Vague labels ("I feel bad") or rumination do not have the same effect.',
+      'Reappraisal (changing the interpretation) also works and has better long-term outcomes than suppression, which reduces visible expression but leaves the physiological response elevated.',
+    ],
+    mechanism: 'Language engages deliberate processing, which competes with and downregulates the affective response. The precision matters because it changes the actual appraisal, not just the expression.',
+    use: [
+      'In the ten seconds before a hard conversation, name what you are feeling precisely: not "nervous" but "the specific fear that this will turn into the last fight". The specificity is what makes it usable.',
+      'Use reappraisal rather than suppression under pressure: "this person is not attacking me, they are worried about something" changes your body\u2019s response in a way that "stay calm" does not.',
+    ],
+    defence: [
+      'When someone is deployed to manage *your* emotion — "calm down", "you are being emotional" — that is often a way to invalidate a legitimate point rather than help you regulate it. Regulation is something you do for yourself.',
+    ],
+    limit: 'Affect labelling is useful but not a cure; effects are smaller than the popular account suggests, and it works less well for strong, escalating anger than for moderate states.',
+    practise: 'Before your next difficult conversation, write one precise sentence naming the fear underneath the feeling. Say it to yourself once, then go in.',
+    reads: ['lib-ei2', 'lib-dc3'],
+    pairs: ['psy-vulnerability', 'psy-arousal'],
+  },
+  {
+    id: 'psy-arousal',
+    category: 'emotion',
+    title: 'Arousal explains a lot of what you think is feeling',
+    oneLiner: 'The body\u2019s arousal is nearly undifferentiated. What you call it depends on the story you are in.',
+    field: 'Emotion theory',
+    evidence: 'Schachter & Singer, 1962; Dutton & Aron, 1974 (misattribution); Sinclair et al., 1994 (replication)',
+    strength: 'Moderate; the classic study is weak but the effect replicates',
+    keywords: ['arousal', 'misattribution', 'nerves', 'excitement', 'dutton aron', 'bridge study', 'reappraisal'],
+    effect: [
+      'Arousal can be misattributed to whatever is salient: the Dutton and Aron bridge study found that men on a high, wobbling bridge were more likely to call a woman later than men on a stable one — arousal read as attraction.',
+      'Sinclair\u2019s replication adds the useful part for a training app: in a later study, men who were *made aware* of their arousal (told their heart was racing from the bridge) before seeing the interviewer were no longer more attracted. Naming the source removed the effect.',
+    ],
+    mechanism: 'The body signals intensity first and the mind supplies the label from context. Which means the same racing heart can become fear, excitement or attraction depending on the frame.',
+    use: [
+      'Performance nerves and readiness share almost all their physiology. Reappraising nerves as readiness ("my body is preparing") measurably improves performance in speaking and test tasks compared with trying to calm down.',
+      'Before something high stakes, get the arousal in place early — move, breathe out slowly, and go in warm rather than cold.',
+    ],
+    defence: [
+      'If you feel an unusually strong surge around a person or a pitch, ask what else in the last ten minutes produced it. Telling yourself the source out loud is the debrief that deflates it.',
+    ],
+    limit: 'The original Schachter-Singer study has small samples and replication problems; the modern picture is that arousal contributes to emotion but does not fully determine it, and appraisal does most of the work.',
+    practise: 'Next time you feel nerves, say out loud: "this is my body preparing." Then do the thing. Note whether the first thirty seconds feel different.',
+    reads: ['lib-v4', 'lib-v2'],
+    pairs: ['psy-emotion-regulation', 'psy-thin-slice'],
+  },
+  {
+    id: 'psy-loneliness',
+    category: 'emotion',
+    title: 'Loneliness is a signal, not a problem to hide',
+    oneLiner: 'It evolved as a threat signal like hunger — which is why it makes people withdraw exactly when they need contact.',
+    field: 'Social neuroscience',
+    evidence: 'Cacioppo et al., 2000; Hawkley & Cacioppo, 2010',
+    strength: 'Strong',
+    keywords: ['loneliness', 'cacioppo', 'isolation', 'withdrawal', 'social threat'],
+    effect: [
+      'Loneliness is associated with hypervigilance to social threat: lonely people are more likely to read ambiguous faces as hostile and are more likely to withdraw, which reinforces the loneliness. It is a self-feeding loop rather than a state of not having people.',
+      'Chronic loneliness is associated with measurable health effects — roughly comparable in risk to well-known physical risk factors.', 
+    ],
+    mechanism: 'A signal evolved to motivate reconnection instead produces defensive suspicion, because the same system that says "you are alone" also says "be careful with people".',
+    use: [
+      'The move that works is the one that feels most counterintuitive: increase contact at low stakes, repeated, rather than waiting for a satisfying interaction. Quantity of small contact is what breaks the loop.',
+      'One standing small thing — a weekly call, a regular bench, a group that meets — does more than any single impressive social effort.',
+    ],
+    defence: [
+      'Notice the reasoning "nobody wants to hear from me". It is the loop talking, and it is the exact prediction that loneliness makes and that contact falsifies.',
+    ],
+    limit: 'Loneliness research is correlational in large part, and there are cultural and individual differences in how much contact is needed. The loop is real; the timings are personal.',
+    practise: 'Send one low-stakes message to a person you have not spoken to in a month, with no agenda attached.',
+    reads: ['lib-st1', 'lib-ei4'],
+    pairs: ['psy-emotion-regulation', 'psy-trust-build'],
+  },
+
+  // ── memory ───────────────────────────────────────────────────
+  {
+    id: 'psy-peak-end',
+    category: 'memory',
+    title: 'The peak and the ending decide the memory',
+    oneLiner: 'People do not remember conversations as averages. They remember the most intense moment and how it ended.',
+    field: 'Memory & evaluation',
+    evidence: 'Kahneman et al., 1993 (cold-water, colonoscopy studies)',
+    strength: 'Strong',
+    keywords: ['peak end', 'duration neglect', 'kahneman', 'how it ended', 'memorable'],
+    effect: [
+      'Retrospective evaluations of painful or pleasant episodes are better predicted by the peak intensity and the final moments than by the duration or the average. Duration is largely ignored — the "duration neglect" finding.',
+      'This means a slightly longer unpleasant experience with a gentler ending is remembered as better than a shorter, sharper one. It is why a good meal with a bad bill is remembered as a bad meal.',
+    ],
+    mechanism: 'Memory stores a summary, not a recording, and the summary is anchored at the peak and the end because those are the moments flagged as important.',
+    use: [
+      'You cannot control the peak, but you can almost always control the last thirty seconds. End meetings, dates and calls deliberately: a clear close, one warm specific sentence, and a clean finish rather than a trailing drift.',
+      'If a conversation goes badly, the ending is the highest-leverage remaining move. A bad conversation with a warm, explicit close is remembered very differently from one that fizzles.',
+    ],
+    defence: [
+      'Your memory of a person is a peak-and-end summary, not a record. Before making a lasting judgement, ask what the average was, not just what you remember most.',
+    ],
+    limit: 'Peak-end is robust for short, discrete episodes. For long, ongoing relationships the pattern is much more complex and integrates over time.',
+    practise: 'Choose one conversation this week and end it explicitly — the close, then the good thing, then out. Notice whether it changes how you remember it.',
+    reads: ['lib-v3', 'lib-s3'],
+    pairs: ['psy-thin-slice', 'psy-memory-limits'],
+  },
+  {
+    id: 'psy-memory-limits',
+    category: 'memory',
+    title: 'Nobody remembers your words',
+    oneLiner: 'People retain a shape and a feeling, almost never the sentences — which changes what you should spend effort on.',
+    field: 'Memory',
+    evidence: 'Bartlett, 1932 (reconstructive memory); Loftus, 1975 (misinformation)',
+    strength: 'Strong',
+    keywords: ['memory', 'reconstructive memory', 'loftus', 'gist', 'forgetting'],
+    effect: [
+      'Memory is reconstructive. Recall is rebuilt from fragments and schemas each time, and rebuilds are influenced by what came afterwards. In Loftus\u2019s studies, the wording of a later question changed what people remembered having seen.',
+      'For conversation, this means: the specific phrasing you agonised over is mostly gone in an hour; what persists is the gist, one image, and how the person made them feel.',
+    ],
+    mechanism: 'Memory prioritises gist, emotion and schema over verbatim detail, because gist is cheaper to store and more useful to act on.',
+    use: [
+      'Spend your effort on the one line you want remembered and the image that carries it, not on perfecting sentences. Repeat the key line once, differently.',
+      'Make the memory for them: "the thing I will take away from this is X." It gives them a gist to store, which is the only thing they will keep.',
+    ],
+    defence: [
+      'Because memory is reconstructive, your confidence in a recollection is not evidence of its accuracy. Two people can both be honest and disagree completely.',
+    ],
+    limit: 'Reconstructive memory is well established; the extent of misinformation effects in real settings is debated, and some high-profile memory studies have had replication problems.',
+    practise: 'In one conversation, say the single sentence you want remembered, and then say it once more in different words. Ask them a week later what they took away.',
+    reads: ['lib-v1', 'lib-s3'],
+    pairs: ['psy-peak-end', 'psy-thin-slice'],
+  },
+
+  // ── persuasion defence ───────────────────────────────────────
+  {
+    id: 'psy-defence-playbook',
+    category: 'defence',
+    title: 'The defence playbook',
+    oneLiner: 'Four questions that defuse almost every influence attempt, asked silently, in order.',
+    field: 'Applied influence',
+    evidence: 'Cialdini, 2016 (pre-suasion); Pratkanis, 2007 (social influence analysis)',
+    strength: 'Strong (as a procedure)',
+    keywords: ['defence', 'defense', 'manipulation', 'influence', 'cialdini', 'how to spot'],
+    effect: [
+      'Influence attempts work by shortening the gap between stimulus and response. Naming the mechanism lengthens it again, and a lengthened gap is usually enough because most influence is weak once attended to.',
+      'The four questions that cover nearly all of them: What is the sequence here? What would I decide without the pressure of time? What did I receive before I was asked? What am I being made to feel about myself?',
+    ],
+    mechanism: 'Automatic compliance depends on a shortcut being taken. Deliberate attention to the process — not to the content — interrupts it.',
+    use: [
+      'Run the four questions in a single silent pass. Then, if you still want to, say yes. The point is not scepticism, it is choice.',
+      'The same playbook, used honestly, makes you better at persuading too: if you would be uncomfortable having your own sequence described to you, do not use it.',
+    ],
+    defence: [
+      'The most common influence attempt is not a trick, it is urgency. Almost every hard sell, bad deal and pressured decision is accompanied by a deadline that benefits the other person. Ask what happens if you wait a week; the answer tells you most of what you need.',
+    ],
+    limit: 'This list is a heuristic, not a taxonomy. Some influence is legitimate and welcome — a recommendation from someone who knows you well, a clear ask from a friend — and applying four questions to it will make you unpleasant.',
+    practise: 'In your next purchase or commitment over a certain size, write down the four answers before you decide. Keep the note for a week.',
+    reads: ['lib-g2', 'lib-dc5'],
+    pairs: ['psy-costly-signalling', 'psy-urgency', 'psy-in-group'],
+  },
+  {
+    id: 'psy-urgency',
+    category: 'defence',
+    title: 'Manufactured urgency',
+    oneLiner: 'Time pressure reliably degrades decisions. That is why it is manufactured, and it is the easiest tell to spot.',
+    field: 'Influence & decision',
+    evidence: 'Ariely & Zakay, 2001 (time pressure); Cialdini, 1984 (scarcity)',
+    strength: 'Strong',
+    keywords: ['urgency', 'scarcity', 'time pressure', 'deadline', 'act now'],
+    effect: [
+      'Time pressure narrows attention, increases reliance on heuristics, and raises the weight of emotional and social cues over analysis. Scarcity signalling — limited stock, closing windows, expiring offers — interacts with loss aversion to produce decisions that would not survive a day of reflection.',
+      'In negotiation, putting a deadline on the other side is one of the highest-return moves available, which is precisely why you should treat deadlines as claims to be tested.',
+    ],
+    mechanism: 'The threat of losing an option triggers the loss system, which is fast and overrides deliberation.',
+    use: [
+      'Real deadlines exist. Use them honestly and name whose deadline it is — "the offer closes Friday because the role starts in March" is information; "act now" is a lever.',
+      'If you need to move someone quickly and honestly, use a real constraint and be explicit that you would understand them taking the time. Paradoxically this makes the constraint more credible.',
+    ],
+    defence: [
+      'The universal test: what would I do if I had one more week? If the answer differs, the deadline is doing the deciding.',
+      'Notice the sentence "this is only available until"—and ask what happens on the other side. Most of the time, the answer is "it is available, at a slightly different price".',
+    ],
+    limit: 'Not every deadline is manipulation. Hiring, auctions and perishable goods have genuine time structure, and treating all urgency as a trick will cost you real opportunities.',
+    practise: 'Next time you feel pushed to decide today, say: "I will decide tomorrow." Watch what happens to the offer.',
+    reads: ['lib-g5', 'lib-cr4'],
+    pairs: ['psy-defence-playbook', 'psy-loss-aversion', 'psy-scarcity'],
+  },
+  {
+    id: 'psy-scarcity',
+    category: 'defence',
+    title: 'Scarcity inflates value',
+    oneLiner: 'The same thing is worth more when it is rare or forbidden — including people.',
+    field: 'Social influence',
+    evidence: 'Worchel et al., 1975 (cookie jar); Brehm, 1966 (reactance)',
+    strength: 'Strong',
+    keywords: ['scarcity', 'reactance', 'brehm', 'hard to get', 'forbidden', 'cookie jar'],
+    effect: [
+      'Items in short supply are rated as more valuable, and the effect is strongest when scarcity is recent and when you are competing for the last one. Brehm\u2019s reactance theory adds the other half: when freedom to choose is threatened, people want the restricted option more, not less.',
+      'Applied to people: someone who is hard to reach, mildly unavailable or seemingly in demand is read as more valuable. This is why "playing hard to get" works at all — and why it is a workshop of tiny dishonesties.',
+    ],
+    mechanism: 'Scarcity is a genuine cue of value in many environments, so the mind uses it even where it is artificially created, and reactance makes the restriction itself feel like a threat to autonomy.',
+    use: [
+      'Being genuinely busy is attractive; being strategically unavailable is a game that requires constant upkeep and destroys trust when noticed. Choose the first.',
+      'In negotiation, scarcity you actually have — limited capacity, one slot, a real date — is worth stating plainly and once.',
+    ],
+    defence: [
+      'Ask whether the scarcity is about the thing or about you. Is there another supplier, another role, another person who would value you? If your answer is "no, not really", reactance is doing the deciding.',
+      'In dating specifically: the feeling of "I want them more now they have pulled back" is reactance. It is information about the restriction, not about the person.',
+    ],
+    limit: 'Scarcity effects are real but modest, and they backfire when customers notice manufactured limits — some jurisdictions regulate fake countdown timers for exactly this reason.',
+    practise: 'Notice one thing this week you want more because it is withheld. Write one sentence on what you would want if it were freely available.',
+    reads: ['lib-g5', 'lib-mny1'],
+    pairs: ['psy-urgency', 'psy-defence-playbook'],
+  },
+  {
+    id: 'psy-commitment',
+    category: 'defence',
+    title: 'Small yeses create big moves',
+    oneLiner: 'Getting someone to agree to something small makes the larger follow-up much more likely — and self-consistency does the work.',
+    field: 'Social influence',
+    evidence: 'Freedman & Fraser, 1966 (foot-in-the-door); Cialdini, 1984',
+    strength: 'Moderate',
+    keywords: ['commitment', 'foot in the door', 'consistency', 'freedman fraser', 'small yes'],
+    effect: [
+      'People who agree to a small request are substantially more likely to agree to a related, larger one, because behaviour creates a self-image ("I am the kind of person who helps with this") that the next request fits into.',
+      'The effect is stronger when the first request is voluntary, public and effortful — which is why the small yeses that matter are the ones you said out loud.',
+    ],
+    mechanism: 'People are motivated to act consistently with their self-image, and each action updates that image.',
+    use: [
+      'For honest use: build genuine momentum in your own behaviour. One small honest action makes the next one likelier. That is how practice works, and why the app logs reps at all.',
+      'When asking for something big, start with a small version they can genuinely evaluate, and be clear that the bigger ask is separate.',
+    ],
+    defence: [
+      'Watch the sequence: small favour, then a slightly larger one, then the one that actually mattered. If you would have declined the third request coming first, you have been walked.',
+      '"I said yes to the last thing because I meant that one" is a complete and legitimate sentence.',
+    ],
+    limit: 'Replication work shows foot-in-the-door effects are smaller and more conditional than the classic figure — it depends on the two requests being genuinely related.',
+    practise: 'Look at one commitment you are currently in and ask whether you would have entered it if it had been asked in one step.',
+    reads: ['lib-c6', 'lib-cr3'],
+    pairs: ['psy-reciprocity', 'psy-sunk-cost', 'psy-defence-playbook'],
+  },
+  // ── why psychology is a minefield ────────────────────────────
+  {
+    id: 'psy-replication-crisis',
+    category: 'minefield',
+    title: 'Most famous findings are smaller, and some are not there',
+    oneLiner: 'The effects you have heard of are usually real but smaller than the story — and a handful of the most quoted ones collapsed entirely.',
+    keywords: ['replication crisis', 'reproducibility', 'effect size', 'ego depletion', 'power posing', 'stanford prison experiment', 'pop psychology', 'myth'],
+    field: 'Metascience',
+    evidence: 'Open Science Collaboration, 2015; Camerer et al., 2018; Wagenmakers et al., 2016',
+    strength: 'Strong',
+    effect: [
+      'Large-scale replication projects rerun published psychology findings and find that a minority replicate cleanly. Effect sizes in the replications average roughly half the original. The pattern is not "psychology is fake" — it is that a publication system rewarded surprising, small-sample results, and surprising, small-sample results are usually partly luck.',
+      'This matters practically. Almost every "you can tell if someone is lying by their eyes" claim, every fixed 7%-of-communication figure, and every body-language rule in a YouTube thumbnail is downstream of that incentive.',
+    ],
+    mechanism: 'Statistical noise plus editorial preference for surprising results produces a literature that overstates. The correction is boring: bigger samples, pre-registration, replication, and effect sizes rather than headlines.',
+    use: [
+      'When you read a mechanism here or anywhere else, the useful question is not "is it true?" but "how big, in what conditions, and did it survive a second test?" The strength badge on each entry is that question answered.',
+      'Practical rule: use mechanisms that have two independent lines of evidence and where the effect is large enough to notice in a single conversation. Most of this section clears that bar; the ones that do not are labelled.',
+    ],
+    defence: [
+      'Anyone who tells you a fixed statistic about communication — percentages of body language, the exact number of seconds before someone forms an opinion — is repeating a number whose source does not support it. Ask for the study; the ask is usually the end of the conversation.',
+    ],
+    limit: 'The replication crisis is real, but the overcorrection is too: the strong claims (loss aversion, anchoring, the warmth-competence structure, reconstructive memory) have survived large replication. Dismissing all of psychology is as unscientific as swallowing all of it.',
+    practise: 'Take one "fact" about communication you have repeated. Search for the original study. Notice how far the popular claim is from the abstract.',
+    reads: ['lib-pr5', 'lib-g7'],
+    pairs: ['psy-halo', 'psy-costly-signalling'],
+  },
+  {
+    id: 'psy-power-posing',
+    category: 'minefield',
+    title: 'Power posing: the illusion that will not die',
+    oneLiner: 'Standing like a superhero does not change your hormones or your risk appetite. It might still make you feel slightly braver.',
+    keywords: ['power posing', 'amy cuddy', 'body language', 'posture', 'confidence', 'carney', 'replication failure'],
+    field: 'Embodiment',
+    evidence: 'Carney, Cuddy & Yap, 2010; Ranehill et al., 2015 (failed); Simmons & Simonsohn, 2017; Cuddy et al., 2018',
+    strength: 'Weak (original claims); small and contested (felt-power effect)',
+    effect: [
+      'The 2010 study claimed that two minutes of expansive posture raised testosterone, lowered cortisol and increased risk tolerance. A larger, pre-registered replication found no hormonal or behavioural effect. One of the original authors publicly disavowed the effect.',
+      'What survives is a much smaller claim: adopting an expansive posture can make some people *feel* more powerful, and self-reported feelings of power do respond. The physiological and behavioural claims did not replicate.',
+    ],
+    mechanism: 'If a posture changes how you feel, the plausible route is appraisal and attention, not hormones. That is a much weaker and more ordinary effect than the one in the TED talk.',
+    use: [
+      'Do not reorganise your pre-talk ritual around hormones. Do use the ordinary version: a minute of standing up, shoulders back and breathing out slowly genuinely helps some people, for the same reason any brief physical reset does.',
+      'Better-substantiated pre-performance moves: slow exhale, naming the nerves as readiness, and a rehearsed first sentence — the last one is the only one that reliably survives contact with a real room.',
+    ],
+    defence: [
+      'This is the clearest test case for evaluating any body-language claim: ask whether the outcome measured was physiological, behavioural or self-reported. Claims that survive only on self-report are usually much smaller than their publicity.',
+    ],
+    limit: 'An honest reading: the strong version is dead, the weak version is maybe true and probably too small to build a method on. If power posing helps you personally, keep doing it — just do not cite the hormones.',
+    practise: 'Before your next difficult conversation, use a slow exhale and one rehearsed sentence instead of a posture. Compare it to what you normally do.',
+    reads: ['lib-v5', 'lib-pr5'],
+    pairs: ['psy-arousal', 'psy-replication-crisis'],
+  },
+  {
+    id: 'psy-ego-depletion',
+    category: 'minefield',
+    title: 'Willpower as a battery: probably not',
+    oneLiner: 'The idea that self-control runs down like a fuel tank across the day is one of the most quoted and least reliable claims in the field.',
+    keywords: ['ego depletion', 'willpower', 'self-control', 'battery', 'baumeister', 'replication failure'],
+    field: 'Self-regulation',
+    evidence: 'Baumeister et al., 1998; Hagger et al., 2016 (multi-lab, near-zero); Vohs et al., 2021 (multi-lab)',
+    strength: 'Weak',
+    effect: [
+      'The original claim: exerting self-control depletes a limited resource, so subsequent self-control is worse. It underpinned an enormous literature and a whole genre of advice about morning willpower.',
+      'Two large pre-registered multi-lab replications found effects near zero. What predicts self-control failures better is not a depleted tank but *motivation, emotion and the pull of a specific temptation in a specific moment*.',
+    ],
+    mechanism: 'The felt experience of "running out of willpower" is real; the mechanism proposed to explain it is not supported. The likely story involves shifts in attention, mood and the value of the goal versus the temptation right now.',
+    use: [
+      'Design for the moment, not the day. People who successfully regulate are not running a bigger battery; they are arranging situations where the temptation is further away and the intention is already decided.',
+      'In practice: pre-decide the specific response ("if X happens, I will do Y"), remove the option physically, and stop scheduling hard things at the end of a day you have already spent.',
+    ],
+    defence: [
+      'Beware any advice that uses a resource metaphor — willpower, bandwidth, energy — as if it were established. The metaphor is doing the persuading, and metaphors are cheap.',
+    ],
+    limit: 'This does not mean self-control is unlimited or that fatigue is imaginary; sleep deprivation and hunger genuinely degrade performance. It means the specific "one shared tank" model is not supported by the evidence.',
+    practise: 'Pick one habit you have been trying to hold by effort. Change the situation instead — remove one trigger, or pre-decide one response — and log whether it holds for a week.',
+    reads: ['lib-v4', 'lib-pr5'],
+    pairs: ['psy-replication-crisis', 'psy-commitment'],
+  },
+];
+
+// The wing's framing note, shown at the top of the view: this is the editorial
+// position, and it is why every entry carries a defence section.
+// ── round 10: the three thinnest families ────────────────────
+// memory had 2 entries, warmth 3 and emotion 3, while memory is the
+// mechanism behind half the story wing. These seven fill the gap and
+// keep the same honesty rule: effect, use, defence, limit, practise.
+const PSY_ADDITIONS = [
+  {
+    id: 'psy-serial-position',
+    category: 'memory',
+    title: 'First and last, nothing in the middle',
+    oneLiner: 'In any list, meeting or speech, people remember the opening, the ending, and almost none of the middle.',
+    field: 'Memory',
+    evidence: 'Murdock, 1962 (serial position curve); Glanzer & Cunitz, 1966',
+    strength: 'Strong',
+    keywords: ['serial position', 'primacy', 'recency', 'middle', 'agenda'],
+    effect: [
+      'Free recall of a list follows a U-shape: the first items (primacy) get more rehearsal, the last items (recency) are still in short-term store, and the middle collapses.',
+      'The same curve shows up in meetings: people remember what was said first, what was said last, and one vivid thing.',
+    ],
+    mechanism: 'Primacy items get extra rehearsal and reach long-term memory; recency items are still active. Middle items get neither and are displaced.',
+    use: [
+      'Put the two things you need remembered at the start and the end — literally, and again in writing.',
+      'When someone else is presenting, do not fight for the middle. Make one vivid contribution early and one summary at the close.',
+    ],
+    defence: [
+      'If a decision is being made in a long meeting, the order of the agenda is doing the persuading. Ask for the options to be re-listed before the vote.',
+    ],
+    limit: 'The curve is robust for free recall of lists; it is weaker evidence for complex, motivated decisions, where content quality matters more than position.',
+    practise: 'In your next meeting, say the thing you care about in the first two minutes and summarize it in the last two. Notice which one people quote back.',
+    pairs: ['psy-peak-end', 'psy-memory-limits'],
+    reads: ['lib-v3', 'lib-pr2'],
+  },
+  {
+    id: 'psy-spacing',
+    category: 'memory',
+    title: 'Spaced beats crammed',
+    oneLiner: 'The same amount of practice, spread out, is remembered far longer — which is why the app schedules reps instead of letting you binge.',
+    field: 'Learning science',
+    evidence: 'Ebbinghaus, 1885; Cepeda et al., 2006 meta-analysis of spacing experiments',
+    strength: 'Strong',
+    keywords: ['spacing', 'spaced repetition', 'forgetting curve', 'practice', 'review'],
+    effect: [
+      'Cramming produces fast gains and fast decay; spaced repetition produces slower gains that survive weeks.',
+      'Retrieval practice (recalling without looking) beats re-reading by a wide margin, in every age group tested.',
+    ],
+    mechanism: 'Retrieving a memory re-consolidates it and strengthens the retrieval route; each successful recall at a delay makes the next recall cheaper.',
+    use: [
+      'Rehearse a script four times over four days rather than four times tonight, and say it from memory before checking.',
+      'Treat the spaced-review queue as the honest signal of what you actually know, not as homework.',
+    ],
+    defence: [
+      'A course that feels fluent and never makes you retrieve anything is selling familiarity as learning. Notice when you are re-reading instead of recalling.',
+    ],
+    limit: 'Effect sizes vary by material; the spacing advantage is smaller for complex, real-world performance than for word lists, though the direction holds',
+    practise: 'Pick one scripted line. Say it from memory today, in two days, and in a week, before checking the text.',
+    pairs: ['psy-memory-limits', 'psy-ego-depletion'],
+    reads: ['lib-v1', 'lib-s3'],
+  },
+  {
+    id: 'psy-warmth-first',
+    category: 'warmth',
+    title: 'Warmth then competence, never the reverse',
+    oneLiner: 'A competent-cold first impression is far harder to repair than a warm-inexact one.',
+    field: 'Social perception',
+    evidence: 'Fiske, Cuddy & Glick, 2007 (stereotype content model); Willis & Todorov, 2006',
+    strength: 'Moderate to strong',
+    keywords: ['warmth', 'competence', 'first impression', 'repair', 'trust'],
+    effect: [
+      'Warmth is judged first and faster, and a warmth deficit contaminates the reading of competence: an impressive, cold person is experienced as threatening rather than as good at their job.',
+      'The reverse error is cheaper: someone read as warm but slightly imprecise is given more room to improve.',
+    ],
+    mechanism: 'Warmth answers "is this person a threat or an ally", which is the question survival prioritised; competence answers "can they act on it", which matters only after the first answer.',
+    use: [
+      'In new rooms, spend your first two minutes being legible and warm rather than impressive. Being underrated for three minutes is not a cost; being feared is.',
+      'Warm without competence reads as nice; competence without warmth reads as a threat. Get the order right and the second one is judged generously.',
+    ],
+    defence: [
+      'When you feel judged as capable-but-cold, more competence will not fix it. One warm, specific, in-person exchange will.',
+    ],
+    limit: 'Warmth-competence dimensions are well replicated; the claim that warmth is always judged first is contested in contexts where competence is the explicit task (a technical interview).',
+    practise: 'In the next introduction, ask a question about the other person before you say anything about your work.',
+    pairs: ['psy-warmth-competence', 'psy-halo'],
+    reads: ['lib-pr1', 'lib-cr1'],
+  },
+  {
+    id: 'psy-see-you-faster',
+    category: 'warmth',
+    title: 'The feeling of being understood',
+    oneLiner: 'People do not warm to the person who says the most; they warm to the person who most accurately restates what they said.',
+    field: 'Relationship science',
+    evidence: 'Reis & Shaver, 1988 (intimacy process model); Weger et al., 2014 (paraphrasing)',
+    strength: 'Moderate',
+    keywords: ['listening', 'paraphrase', 'understanding', 'rapport', 'intimacy'],
+    effect: [
+      'Perceived responsiveness — the sense that someone has understood you and values what they understood — is one of the strongest predictors of closeness.',
+      'Paraphrasing accurately before responding increases perceived responsiveness and reduces defensive replies, even in disagreements.',
+    ],
+    mechanism: 'Being accurately understood signals safety and low cost of interaction, which is the precondition for disclosure.',
+    use: [
+      'Before disagreeing, restate their position at its strongest in one sentence. If they say "yes, exactly", you have earned the right to differ.',
+      'In a difficult conversation, say the feeling and the fact back before offering anything.',
+    ],
+    defence: [
+      'A paraphrase that redirects ("so what you really mean is...") is not listening, it is steering. Accurate means they would sign it.',
+    ],
+    limit: 'Responsiveness research is strong on close relationships and moderate in workplace settings; the paraphrase effect on conflict is consistent but modest.',
+    practise: 'In today\'s hardest conversation, restate the other position until they say "yes, that is it" — then make your point.',
+    pairs: ['psy-trust-build', 'psy-vulnerability'],
+    reads: ['lib-dc2', 'lib-ei1'],
+  },
+  {
+    id: 'psy-naming-emotion',
+    category: 'emotion',
+    title: 'Naming it lowers it',
+    oneLiner: 'Putting a precise word to what you feel reduces its intensity, and it works out loud in the room too.',
+    field: 'Affect labelling',
+    evidence: 'Lieberman et al., 2007 (affect labelling); Torre & Lieberman, 2018 review',
+    strength: 'Moderate',
+    keywords: ['affect labelling', 'naming emotion', 'regulation', 'anger', 'anxiety'],
+    effect: [
+      'Naming an emotion in a word reduces self-reported intensity and dampens amygdala response in fMRI, while increasing activity in regions associated with regulation.',
+      'Precise labels work better than vague ones: "I am embarrassed and a bit jealous" beats "I am stressed".',
+    ],
+    mechanism: 'Labelling recruits language and regulatory regions that compete with the emotional response, turning a state into an object.',
+    use: [
+      'Say the state out loud at the lowest useful volume: "I am feeling defensive, give me a second." It lowers the temperature for both people.',
+      'When the label is about the other person, use an observation and an impact, never a verdict about their character.',
+    ],
+    defence: [
+      'Naming is not resolving. If you can label an emotion perfectly and nothing changes, the label has become a way to narrate without acting.',
+    ],
+    limit: 'Labelling effects are reliable in the short term and for moderate intensity; it is not a treatment for clinical anxiety or trauma, and the fMRI findings come from small samples.',
+    practise: 'Next time you notice a spike, name it in three words out loud before you speak again.',
+    pairs: ['psy-emotion-regulation', 'psy-arousal'],
+    reads: ['lib-ei2', 'lib-dc3'],
+  },
+  {
+    id: 'psy-social-reappraisal',
+    category: 'emotion',
+    title: 'Reappraisal beats suppression, visibly',
+    oneLiner: 'Reframing what a feeling means costs less than hiding that you have it — and other people can see the difference.',
+    field: 'Emotion regulation',
+    evidence: 'Gross, 1998; Gross & John, 2003 (habitual suppression vs reappraisal)',
+    strength: 'Strong',
+    keywords: ['reappraisal', 'suppression', 'nerves', 'emotion regulation', 'performance'],
+    effect: [
+      'Reappraisal — changing how you think about a situation — reduces negative affect and is associated with better relationships and memory. Suppression — hiding the expression — reduces the outward sign while raising physiological arousal and impairing memory for the conversation.',
+      'Habitual suppressors are rated by partners as less warm and less close over time, even though they feel they are hiding well.',
+    ],
+    mechanism: 'Suppression has to be maintained continuously against a live signal, consuming attention; reappraisal changes the input before the response is generated.',
+    use: [
+      'Before something nerve-wracking, reframe the physical symptoms: the racing heart is the same signal as excitement. Reframing nerves as readiness reliably improves performance.',
+      'In a hard conversation, change the goal from "win the point" to "leave the relationship intact with one thing agreed". The feeling follows the goal.',
+    ],
+    defence: [
+      'If someone is stone-faced through a difficult conversation, the arousal is still there and the memory will be worse. Ask again in a different setting.',
+    ],
+    limit: 'Reappraisal is not universally better: in genuinely low-control situations, acceptance-based strategies outperform both, and habitual reappraisal can shade into avoidance',
+    practise: 'Before your next presentation, say out loud: "this feeling is readiness." Then start the first sentence.',
+    pairs: ['psy-arousal', 'psy-emotion-regulation'],
+    reads: ['lib-ei5', 'lib-v4'],
+  },
+  {
+    id: 'psy-negative-bias',
+    category: 'emotion',
+    title: 'Bad is stronger than good',
+    oneLiner: 'One criticism lands harder than five compliments, and a hostile face is found faster than a friendly one.',
+    field: 'Social psychology',
+    evidence: 'Baumeister et al., 2001 (bad is stronger than good); Öhman et al., 2001 (threat detection)',
+    strength: 'Strong',
+    keywords: ['negativity bias', 'criticism', 'threat', 'feedback', 'repair'],
+    effect: [
+      'Across many domains, negative events have larger and longer effects on affect, memory and learning than positive events of the same magnitude.',
+      'Threat cues are detected faster than positive ones, and a single harsh line can dominate the memory of an otherwise good conversation.',
+    ],
+    mechanism: 'A missed threat was historically fatal and a missed opportunity was not, so attention and memory are weighted toward the negative.',
+    use: [
+      'When giving feedback, the ratio matters: several specific positives are needed to carry one genuine critique, and the critique should be specific and actionable.',
+      'When receiving criticism, assume the volume is inflated by bias and translate it down: "one real signal plus four units of threat."',
+    ],
+    defence: [
+      'A person who only ever gives criticism is not giving feedback, they are setting status. Notice when the ratio is doing the work rather than the content.',
+    ],
+    limit: 'The asymmetry is robust; the popular claim of a specific "magic ratio" of five-to-one is an extrapolation and should not be treated as a law.',
+    practise: 'Next time you give feedback, name two specific things that worked before the one thing that did not.',
+    pairs: ['psy-peak-end', 'psy-emotion-regulation'],
+    reads: ['lib-pr1', 'lib-dc1'],
+  },
+];
+
+// the additions above are merged here so the exported array stays one list
+export const PSY_ALL = [...PSY_ENTRIES, ...PSY_ADDITIONS];
+
+export const PSY_MANIFESTO = {
+  title: 'Read the mechanism, then decide what to do with it',
+  body: [
+    'Everything here works. That is not a compliment — it is the reason the defence section exists in every entry. The same lever that makes you a warmer person to be around makes you easier to move, and the difference between the two is rarely the technique.',
+    'Three commitments run through the whole section. Every claim states its evidence and its strength, and famous findings that failed to replicate are labelled as such rather than quietly dropped. Every entry names how the mechanism can be used on you. And nothing here is a script for overriding a refusal: consent, boundaries and a clean no are not obstacles to be worked around.',
+  ],
+  rules: [
+    'If the tactic stops working when the other person knows about it, it is manipulation. Use the ones that survive daylight.',
+    'A no is a complete answer. Any technique whose success depends on outlasting one is out of scope.',
+    'Read your own state before you read theirs. Most bad interactions are two dysregulated people guessing.',
+  ],
+};

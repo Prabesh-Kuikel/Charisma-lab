@@ -59,7 +59,7 @@ export const EXTRA_PROMPTS = [
 
   // ── Provocation ──────────────────────────────────────────
   { id: 'p83', text: 'Is honesty always the best policy? Take a side.', category: 'Provocation', difficulty: 3, prep: 15, speak: 120 },
-  { id: 'p84', text: 'Argue that ambition is overrated.', category: 'Provocation', difficulty: 2, prep: 15, speak: 120 },
+  { id: 'p84', text: 'Argue that ambition is mostly a story people tell to avoid choosing.', category: 'Provocation', difficulty: 2, prep: 15, speak: 120 },
   { id: 'p85', text: 'What is the most useful lie a person can tell themselves?', category: 'Provocation', difficulty: 3, prep: 20, speak: 120 },
   { id: 'p86', text: 'Should you tell a friend their work is not good?', category: 'Provocation', difficulty: 2, prep: 15, speak: 120 },
   { id: 'p87', text: 'Defend small talk to someone who hates it.', category: 'Provocation', difficulty: 2, prep: 15, speak: 120 },
