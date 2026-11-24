@@ -54,8 +54,38 @@ jobs:
       - name: Content audits
         run: npm run audit
 
+      # The endpoint audit talks to a live server. The old script assumed one was
+      # already on :3000, which is never true on a fresh runner — ECONNREFUSED.
+      # The script now starts its own, but this step starts one explicitly as
+      # well, so the workflow passes whatever version of the script is in the
+      # repo. Belt and braces: whichever you have, this step works.
       - name: Endpoint audit
-        run: npm run audit:api
+        run: |
+          PORT=3000 HOST=127.0.0.1 node server/index.js > /tmp/server.log 2>&1 &
+          SERVER_PID=$!
+          for i in $(seq 1 120); do
+            if curl -fsS http://127.0.0.1:3000/api/health > /dev/null 2>&1; then
+              echo "server up after $((i * 250))ms"
+              break
+            fi
+            sleep 0.25
+          done
+          if ! curl -fsS http://127.0.0.1:3000/api/health > /dev/null 2>&1; then
+            echo "::error::the server never came up on :3000"
+            cat /tmp/server.log
+            exit 1
+          fi
+          set +e
+          npm run audit:api
+          STATUS=$?
+          set -e
+          kill $SERVER_PID 2>/dev/null || true
+          wait $SERVER_PID 2>/dev/null || true
+          if [ $STATUS -ne 0 ]; then
+            echo "::error::endpoint audit failed (exit $STATUS) — server log follows"
+            tail -40 /tmp/server.log
+          fi
+          exit $STATUS
 
       - name: Duplicate-rep audit
         run: npm run audit:reps
