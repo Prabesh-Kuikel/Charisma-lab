@@ -101,16 +101,39 @@ Sales, Persuasion, Flirting, Negotiation, Presence & Small Talk, **Hard Conversa
 
 As the library passed eighty chapters, *finding* became the bottleneck, so four surfaces were added on top of the content:
 
-- **Search everything** — `⌘K` / `Ctrl-K`, or `/`, or the field in the top bar. One index over **198 records**: chapters, playbooks, academy modules, all 120 course lessons, frameworks, skill tracks, daily drills and games. Results deep-link to the thing itself — a chapter opens, a playbook opens with its rep controls, a lesson opens on the right day.
+- **Search everything** — `⌘K` / `Ctrl-K`, or `/`, or the field in the top bar. One index over the whole product — chapters, playbooks, academy modules, all 120 course lessons, frameworks, skill tracks, daily drills, games, psychology mechanisms and stories. Results deep-link to the thing itself — a chapter opens, a playbook opens with its rep controls, a lesson opens on the right day.
 - **Start Here** — twelve honest questions scored into five dimensions (opening, depth, humour, difficult conversations, presence), then a four-step route built from your weakest dimension and the situation you picked. The first visit lands here; nothing is gated afterwards.
-- **Progress** — rolling score trend, per-skill deltas with direction, honest coverage (how many of 83 chapters you have actually opened), what has gone quiet, and exactly one recommendation for today, in priority order: due review → falling skill → neglected practice → unexplored area → write a script → take one rep.
+- **Progress** — rolling score trend, per-skill deltas with direction, honest coverage (how many of the chapters you have actually opened), what has gone quiet, and exactly one recommendation for today, in priority order: due review → falling skill → neglected practice → unexplored area → write a script → take one rep.
 - **Backup & Settings** — your progress is browser-only, so it can now be downloaded and restored as one JSON file. Merge keeps whichever side has more XP and unions your days and sessions; replace wins outright. The AI key is deliberately never exported. Erasing everything downloads a safety copy first.
 
 ### 11. Academy — 16 modules
 
 Charisma, humour, tension & flirting, everyday conversation, body language, psychology, small talk, talking to women, difficult conversations, emotional depth, professional, business, storytelling & wit, confidence — plus **Family & The Rooms You Cannot Leave** and **Humour As A Discipline**. Each module: 6 principles, 2–3 mechanics with worked examples, 4–5 scripted exchanges, 4–5 drills and 4+ linked chapters.
 
-### 12. Daily Dojo, Games, Skill Tracks, Coach, Creator Studio
+### 12. Stories That Land — twenty-one tellable anecdotes
+
+Everyone is told to tell stories. Almost nobody is taught how, so this wing treats a
+story as a **structure** rather than a talent. **21 stories across 7 shapes** (origin,
+failure, the turn, conflict, teaching, vision, humour), each written to be told in
+60–90 seconds and broken into beats you rehearse out loud:
+
+- **Say this first** — a worked opening line, because the failure mode is starting a
+  week before the story does.
+- **The beats, in order** — four or five sentences, not paragraphs. This is the unit
+  you memorise, so you can tell it without a script.
+- **The detail that proves it** and **the turn** — the one concrete object that makes
+  it believable, and the moment where something changed.
+- **Why it holds attention** — the mechanism, so you can write your own.
+- **Do not tell this one…** — the section every storytelling guide omits. Most bad
+  storytelling is a good story in the wrong room, and every card names the room.
+- **Rehearse it** — three specific instructions, plus copy-outline and *time it out
+  loud* (hands the story to the Impromptu timer) alongside a coaching hand-off.
+
+Opening a story logs a `story` rep (8 XP), filters by shape and by how you actually
+search — *interview*, *apology*, *funny*, *failure* — and cross-links into the
+Frameworks and Psychology wings where the same mechanism is named.
+
+### 13. Daily Dojo, Games, Skill Tracks, Coach, Creator Studio
 
 - **Daily Dojo:** three rotating drills a day from a 30-drill bank, across every skill, with a weekly theme. Nothing is gated — the plan is a suggestion.
 - **Games:** ten ultraspeaking-style reps (Yes, And Relay, One-Sentence Story, Sell This Object, Objection Whack-a-Mole, Cold Open, Frame Flip) with timers, per-rep scoring and specific fixes.
@@ -119,9 +142,9 @@ Charisma, humour, tension & flirting, everyday conversation, body language, psyc
 - **Creator Studio:** pillars, eight hook patterns, formats with failure modes, platform cadence, a skills ladder, a four-week plan and an idea engine.
 
 ### 8. Master Resource Library
-**83 searchable entries across 14 categories** — Fallback Patterns, Storytelling Frameworks, Robert Greene Power Laws, Dale Carnegie Rules, Voice & Delivery, Wit Patterns, Small Talk, Talking to Women, Difficult Conversations, Emotional Depth, Professional, Business, **Family, Money, Humour**.
+**91 searchable entries across 16 categories** — Fallback Patterns, Storytelling Frameworks, Robert Greene Power Laws, Dale Carnegie Rules, Voice & Delivery, Wit Patterns, Small Talk, Talking to Women, Difficult Conversations, Emotional Depth, Professional, Business, **Family, Money, Humour**.
 
-**All 83 entries are long-form chapters** (~44,000 words): an opening thesis, 3–4 paragraphs of explanation, a worked `Them / You` script, three failure modes, three practice steps, tags and related chapters. Server-side search indexes the full chapter text, not just titles — so "hostage" finds the Yes, And chapter and "verse" finds the delivery chapter.
+**All 91 entries are long-form chapters** (every one over 200 words; median 257): an opening thesis, 3–4 paragraphs of explanation, a worked `Them / You` script, three failure modes, three practice steps, tags and related chapters. Server-side search indexes the full chapter text, not just titles — so "hostage" finds the Yes, And chapter and "verse" finds the delivery chapter.
 
 ### Course ↔ Library integration
 
@@ -132,6 +155,71 @@ The two halves reference each other in both directions:
 - Chapters also carry `related` ids, and every chapter has at least one inbound edge, so the library is a graph rather than a list.
 
 ---
+
+## Works offline (service worker)
+
+The app keeps everything on the device, but until round 10 it still needed the
+network to **open**. There is now a service worker (`public/sw.js`, stamped per
+build by `scripts/build-sw.mjs`):
+
+- the shell (`index.html` + its hashed assets) is precached on install, so the
+  second visit opens with no connection at all;
+- navigations are **network first, cache as the floor**, so a new deploy is
+  picked up the moment you are online and an offline launch still works;
+- assets are **stale-while-revalidate** — hashed filenames change with the
+  content, so serving the cached copy while refreshing is always safe;
+- **cross-origin requests are never cached**, so a stale AI reply can never be
+  served in place of a live one;
+- a waiting worker surfaces as one `reload to update` chip in the top bar, and
+  an offline session shows `offline · still works` rather than an error.
+
+Verified by hard-reloading the static build with the network switched off:
+psychology, stories, the hash router, and logging a rep all work offline.
+
+## Every view is addressable
+
+`#/psychology`, `#/stories`, `#/gym`, `#/library` — the hash router exists for two
+reasons: **Back used to leave the app** (on a phone that is the most-used gesture in
+the product), and a hash URL still resolves from a GitHub Pages subpath with no
+server rewrite. Back and Forward now move between views, and the address bar stays
+in step without stacking an entry per rep.
+
+## Accessibility
+
+- Every dialog (search palette, shortcuts sheet) **traps Tab and gives focus back**
+  to whatever opened it, via one shared `useFocusTrap` hook.
+- All 36 filter chips in the app announce their selected state with
+  `aria-pressed`, so a screen reader hears "selected" instead of guessing from
+  colour. The test suite fails if a new chip forgets it.
+- A skip link, `aria-current` on navigation, live-region toasts, read-aloud on
+  every scripted line, and `prefers-reduced-motion` support throughout.
+
+## Numbers that cannot go stale
+
+`CONTENT-FACTS.md` is **generated** from the same modules the app serves
+(`npm run facts -- --write`), and the test suite fails if the file and the content
+disagree. Twenty-eight rounds of hand-edited release notes had produced a README
+claiming 83 chapters when there were 91; that is now a build error, not a paragraph
+somebody has to notice.
+
+## Security
+
+Local-first, but the same rules apply as if it were public:
+
+| Surface | What is enforced |
+| --- | --- |
+| Response headers | CSP (`script-src 'self'`, `frame-ancestors 'none'`, `object-src 'none'`), `nosniff`, `X-Frame-Options: DENY`, `Referrer-Policy: no-referrer`, COOP/CORP, a microphone-only Permissions-Policy |
+| CORS | Explicit origin allowlist, no wildcard, no credentials |
+| Request bodies | 256 KB JSON limit, `strict` parsing, arrays and scalars refused with a 400, every field type-checked and length-capped at the edge (`str`/`num`/`plainObject`), so a `{"$ne": null}` or a 300 kB transcript never reaches the analyser or SQLite |
+| AI relay | Mode is a closed allowlist; no caller-supplied system prompt; no caller-supplied `baseUrl` (that was an SSRF); upstream is rate-limited and concurrency-capped |
+| Backup import | Untrusted by definition: 8 MB cap, 20 000-element cap, only known keys, only array/object shapes, strings clamped to 4 000 chars, `__proto__`/`constructor`/`prototype` stripped at every depth, and a quota failure reports instead of claiming success |
+| Storage | Two open tabs no longer clobber each other's XP; the in-memory copy re-hydrates from disk and listens for `storage` events |
+| Bind address | Loopback only by default. `HOST=0.0.0.0` on its own now **refuses to start** — this app has no login and stores your whole history in one SQLite file — unless `ALLOW_PUBLIC_BIND=1` is also set, and then it warns on every boot |
+| Offline cache | Cross-origin (AI provider) responses are never cached; the shell cache is versioned per build |
+| Static build | Same CSP baked into `docs/index.html`, relative asset paths only, no inline script, no external script origin |
+
+`npm run test:security` asserts all of it against a running server (21 sections,
+including live type-confusion probes against every write route).
 
 ## API
 
@@ -172,10 +260,10 @@ server/
   content/            courses, mentors, prompts, twisters, wit, arena, body, library
                       lessons-fast.js (30) + lessons-deep.js / -2.js / -3.js (30 each = 90)
                       library-deep.js / -2.js / -3.js = wing one chapters
-                      library-extra*.js       = wings two and three (83 chapters total)
+                      library-extra*.js       = wings two and three (every entry has a chapter)
 src/
   App.jsx             Shell, navigation, data bootstrap
-  views/              Dashboard, Courses, Impromptu, Pronunciation, Wit, Arena, BodyDecoder, Library
+  views/              23 views (Today, Courses, Gym, Psychology, Stories, Library …)
   components/ui.jsx   Ring, Bar, Stat, ScoreRow, icons
   hooks.js            Recorder (MediaRecorder + AnalyserNode + SpeechRecognition), timers, synthesis
   styles.css          Design system

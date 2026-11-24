@@ -11,10 +11,11 @@ The app has **two build targets**. Same UI, same content, same engines — diffe
 | Cross-device sync | ✅ same database everywhere | ❌ per-browser |
 | Streak/XP | server-side | per-device |
 
-Both modes contain all 120 written lessons, **83 long-form chapters**,
-**16 academy modules**, **31 Conversation Gym playbooks**, 10 games, **31 frameworks**,
-**48 body-language cards**, **8 skill tracks**, **40 daily drills**, 28 wit scenarios,
-**13 Arena personas across 6 scenes**,
+Both modes contain all 120 written lessons, **91 long-form chapters**,
+**16 academy modules**, **41 Conversation Gym playbooks**, 10 games, **34 frameworks**,
+**36 psychology mechanisms**, **24 tellable stories**, **48 body-language cards**,
+**8 skill tracks**, **69 daily drills**, 46 wit scenarios,
+**26 Arena personas across 6 scenes**,
 the coach, the creator studio, and the retention layer (spaced review, read-aloud
 on every line, record-and-compare, My Scripts).
 
@@ -232,7 +233,7 @@ cautions: consent-first, non-manipulative, and explicitly anti-coercion.
 
 ## Conversation Gym
 
-**Thirty-one situation playbooks** across ten categories — Starting, Everyday,
+**Forty-one situation playbooks** across ten categories — Starting, Everyday,
 Dating, Difficult, Depth, Professional, Business, **Family, Money, Care**. Not
 theory: each one is the script people were never given.
 
@@ -286,7 +287,7 @@ panel. It suggests the least-rehearsed line, counts reps per line, and every
 playbook has a **write my own version** link that pre-fills the entry.
 Stored in `localStorage` under `charisma-lab.scripts.v1`.
 
-## Library — 83 entries, 83 full chapters
+## Library — 91 entries, 91 full chapters
 
 **Wing two** adds 30 entries with 30 long-form chapters in six categories: Small
 Talk, Talking to Women, Difficult Conversations, Emotional Depth, Professional,
@@ -307,3 +308,32 @@ drills and related-reading edges that all resolve.
 Six content pillars, eight hook patterns, six formats with their failure modes,
 platform cadence, a six-level skills ladder, a four-week publishing plan, an
 idea engine (topics × angles), and a pre-publish checklist.
+
+## Stories That Land — 24 stories, 7 shapes
+
+The one thing everyone is told to do and nobody is taught. Each story is written to
+be **told**, not read: 60–90 seconds, four or five beats, a worked opening line, the
+concrete detail that makes it believable, the turn, the mechanism behind why it
+holds attention, three rehearsal instructions — and **the room it does not belong
+in**, which is the part every storytelling guide leaves out.
+
+Seven shapes, each with its own job: **origin** (how you got here), **failure** (a
+loss you can name out loud — buys credibility faster than any win), **the turn**
+(one moment where something changed), **conflict** (two people wanting incompatible
+things), **teaching** (a lesson carried by an incident), **vision** (the future
+argued through one scene) and **humour** (a small true absurdity, told precisely).
+
+Searchable by the situation you are actually in — *interview*, *apology*, *pitch*,
+*funny*, *wedding*, *feedback* — with a `story` rep logged on open, a copy-outline for
+rehearsing offline, a *time it out loud* hand-off to the Impromptu timer, and a
+Storytelling focus in the coach. Every story cross-links into the Frameworks and
+Psychology wings where the same mechanism is named.
+
+## Human Psychology — 36 mechanisms, 9 families
+
+The mechanisms behind attention, trust and status, each with the effect, the evidence
+and its strength, the mechanism, the honest use, **how the same lever is used on
+you**, where the evidence stops, and one rep. A defence-lens toggle flips the whole
+wing around. Famous-but-weak findings (power posing, ego depletion, the replication
+crisis) are labelled weak rather than sold — the test suite fails if they are ever
+relabelled as strong.

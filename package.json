@@ -6,19 +6,21 @@
     "dev": "node scripts/dev.mjs",
     "dev:api": "node server/index.js",
     "dev:web": "vite",
-    "build": "vite build",
+    "build": "vite build && node scripts/build-sw.mjs dist",
     "start": "node server/index.js",
     "preview": "npm run build && node server/index.js",
     "doctor": "node scripts/doctor.mjs",
-    "build:static": "VITE_LOCAL=1 vite build",
-    "test": "node test/local.test.mjs && node test/game.test.mjs && node test/ai.test.mjs && node test/retention.test.mjs && node test/insights.test.mjs && node test/guard.test.mjs",
+    "build:static": "VITE_LOCAL=1 vite build && node scripts/build-sw.mjs dist",
+    "test": "node test/local.test.mjs && node test/game.test.mjs && node test/ai.test.mjs && node test/retention.test.mjs && node test/insights.test.mjs && node test/guard.test.mjs && node test/practice.test.mjs  && node test/parity.test.mjs && node scripts/repetition.mjs",
     "audit": "node scripts/audit.mjs",
     "audit:api": "node scripts/audit-api.mjs",
-    "test:ui": "node test/render.test.mjs && node test/coach-ai.test.mjs && node test/academy.test.mjs && node test/frameworks.test.mjs && node test/newviews.test.mjs && node test/retention-ui.test.mjs && node test/shell.test.mjs",
+    "test:ui": "npm run bundle:test && node test/render.test.mjs && node test/coach-ai.test.mjs && node test/academy.test.mjs && node test/frameworks.test.mjs && node test/newviews.test.mjs && node test/retention-ui.test.mjs && node test/shell.test.mjs",
     "bundle:test": "esbuild test/entry.jsx --bundle --format=esm --platform=node --jsx=automatic --loader:.js=jsx --loader:.css=empty --outfile=test/app.mjs",
-    "build:pages": "BASE_PATH=./ VITE_LOCAL=1 vite build --outDir docs --emptyOutDir",
-    "test:security": "node test/security.test.mjs",
-    "chapters:ids": "node scripts/gen-chapter-ids.mjs"
+    "build:pages": "BASE_PATH=./ VITE_LOCAL=1 vite build --outDir docs --emptyOutDir && node scripts/post-build-pages.mjs && node scripts/build-sw.mjs docs",
+    "test:security": "node scripts/security-suite.mjs",
+    "chapters:ids": "node scripts/gen-chapter-ids.mjs",
+    "audit:reps": "node scripts/repetition.mjs",
+    "facts": "node scripts/facts.mjs"
   },
   "keywords": [],
   "author": "",
@@ -34,12 +36,13 @@
     "better-sqlite3": "^12.11.1"
   },
   "devDependencies": {
-    "@vitejs/plugin-react": "^4.7.0",
+    "@vitejs/plugin-react": "^6.3.0",
+    "esbuild": "^0.28.2",
     "jsdom": "^29.1.1",
-    "vite": "^5.4.21"
+    "vite": "^8.3.8"
   },
   "type": "module",
   "engines": {
-    "node": ">=22.13"
+    "node": "^20.19.0 || >=22.12.0"
   }
 }

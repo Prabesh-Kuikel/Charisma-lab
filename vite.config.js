@@ -90,7 +90,11 @@ export default defineConfig({
         manualChunks(id) {
           if (!id.includes('server/content/')) return undefined;
           if (/lessons-(fast|deep)/.test(id)) return 'lessons';
-          if (/library-.*deep/.test(id)) return 'chapters';
+          // every long-form chapter module goes in one chunk: the round-7 depth
+          // pass (library-depth-7.js) used to fall through to its own 8 KB chunk,
+          // which was a second request for one file that is always needed with
+          // the others
+          if (/library-.*(deep|depth)/.test(id) || /written-deep/.test(id)) return 'chapters';
           return undefined;
         },
       },
