@@ -23,7 +23,7 @@ check('content has new modules',
   `games ${content.json.games?.length}, skills ${content.json.skills?.length}, drills ${content.json.daily?.drills?.length}`);
 
 check('GET /content — academy modules',
-  (content.json.academy?.length || 0) === 16 && content.json.academy.every((m) => m.drills?.length >= 4 && m.reads?.length >= 4),
+  (content.json.academy?.length || 0) >= 17 && content.json.academy.every((m) => m.drills?.length >= 4 && m.reads?.length >= 4),
   `${content.json.academy?.length} modules, ${(content.json.academy || []).reduce((n, m) => n + m.drills.length, 0)} drills`);
 
 check('GET /content — conversation gym',
@@ -39,8 +39,10 @@ check('GET /content — body deck is 48 cards across 6 clusters',
   `${content.json.body?.length} cards, ${Object.keys(content.json.bodyNotes || {}).length} cluster notes`);
 
 // ── round 5: both arena wings and all eight skill tracks must be served ──
+// round 10 grew the arena from 13 to 26 personas; the floor is a floor, not a
+// frozen count, or every content round re-breaks this line
 check('GET /content — arena has both wings and 6 scenes',
-  (content.json.arena?.length || 0) === 13 && new Set((content.json.arena || []).map((a) => a.scene)).size === 6,
+  (content.json.arena?.length || 0) >= 26 && new Set((content.json.arena || []).map((a) => a.scene)).size >= 6,
   `${content.json.arena?.length} personas, ${new Set((content.json.arena || []).map((a) => a.scene)).size} scenes`);
 
 check('GET /content — skill tracks are 8 with cross-links',
@@ -73,6 +75,18 @@ check('GET /library/:id', lib.status === 200 && !!lib.json.chapter, lib.json?.ti
 
 const search = await call('GET', '/library?q=verse');
 check('GET /library?q=', search.status === 200 && search.json.total > 0, `${search.json?.total} hits`);
+
+// /api/library/categories used to sit below /api/library/:id, so Express
+// matched "categories" as an id and answered 404 "Entry not found". Route order
+// is now a checked property, not a thing to remember.
+const cats = await call('GET', '/library/categories');
+check('GET /library/categories', cats.status === 200 && Array.isArray(cats.json) && cats.json.length >= 5,
+  `${Array.isArray(cats.json) ? cats.json.length : 0} categories`);
+
+// a transcript past the declared cap must be refused, not silently truncated
+// and scored as if it were the whole answer
+const oversize = await call('POST', '/analyze/speech', { transcript: 'word '.repeat(3000) });
+check('POST /analyze/speech rejects >12k transcript', oversize.status === 413, `status ${oversize.status}`);
 
 const act = await call('POST', '/activity', { kind: 'audit', xp: 5 });
 check('POST /activity', act.status === 200 && act.json.ok, `xpGained ${act.json?.xpGained}`);

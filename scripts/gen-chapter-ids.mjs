@@ -14,6 +14,8 @@ const SOURCES = [
   ['library-deep-3.js', 'LIBRARY_DEEP_3'],
   ['library-extra-deep.js', 'LIBRARY_EXTRA_DEEP'],
   ['library-extra-3-deep.js', 'LIBRARY_EXTRA_3_DEEP'],
+  ['library-extra-5-deep.js', 'LIBRARY_EXTRA_5_DEEP'],
+  ['written-deep.js', 'WRITTEN_DEEP'],
 ];
 
 const ids = [];
